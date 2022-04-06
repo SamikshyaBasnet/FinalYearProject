@@ -1,0 +1,516 @@
+.dashboard {
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+}
+
+.sidebar-grid {
+    grid-area: Sidebar;
+    background: #340e36;
+    box-shadow: inset -2px 0px 10px -4px rgba(145, 77, 151, 0.75);
+}
+
+.messages-grid {
+    grid-area: Messages;
+    position: relative;
+    background: #340e36;
+}
+
+.send-messages-grid {
+    grid-area: Send-Messages;
+    background: #340e36;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.user-list-grid {
+    grid-area: User-List;
+    background: #340e36;
+    color: white;
+    border-left: 1.6px solid #472549;
+}
+
+
+
+/* Sidebar.jsx */
+.sidebar-container {
+    display: flex;
+    height: 100%;
+}
+
+
+.channels-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    color: white;
+    flex-basis: 80%;
+    background: #310235;
+}
+
+.workspaces-container {
+    display: flex;
+    height: 100%;
+    box-sizing: border-box;
+    color: white;
+    flex-basis: 20%;
+    border-right: 1.6px solid #472549;
+    height: 100%;
+    text-align: center;
+    background: #340e36;
+}
+
+.channels-extra {
+    display: flex;
+    flex-direction: column;
+}
+
+.channel-extra {
+    color: rgb(247, 240, 240);
+    padding: 10px 10px;
+    cursor: pointer;
+}
+
+.channel-icon {
+    font-size: 21px;
+    cursor: pointer;
+
+}
+
+h5 {
+    color: #fff !important;
+}
+
+.MuiInputBase-input {
+    color: #fff !important;
+}
+
+.MuiInputLabel-animated {
+    color: #fff !important;
+}
+
+.workspace_list {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-button {
+    background-color: #caa729 !important;
+    color: rgb(255, 255, 255) !important;
+}
+
+.workspace_button {
+    background: #b49b40 !important;
+    border: none !important;
+    height: 60px;
+    width: 60px;
+    margin: 10px;
+    font-size: 22px !important;
+}
+
+.addIcon,
+.homeIcon {
+    color: #fff;
+    border: none !important;
+    height: 60px !important;
+    width: 60px !important;
+}
+
+.server-icon svg {
+    width: 48px;
+    height: 48px;
+}
+
+.home-icon svg {
+    width: 48px;
+    height: 48px;
+}
+
+.menu-seperator {
+    border-top: 2px solid #340e36;
+    width: 85%;
+    margin: 0 auto;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.home-icon::after {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    border-bottom: 2px solid grey;
+    width: 80%;
+}
+
+.channel-list {
+    width: 100%;
+    overflow: auto;
+}
+
+.title-workspace {
+    box-shadow: 0 2px 0px 0px #250727;
+    height: 64px;
+    box-sizing: border-box;
+    width: 100%;
+    color: #fff;
+    display: flex;
+    justify-content: space-between !important;
+    align-items: center;
+    font-size: 18px;
+    padding: 0px 12px;
+}
+
+
+.channel-item {
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between !important;
+}
+
+
+.channel-item:hover .channel-settings {
+    display: inline-block !important;
+}
+
+.channel-hashtag {
+    font-style: unset;
+    font-size: 24px;
+    padding-right: 8px;
+    color: grey;
+    vertical-align: sub;
+    font-weight: 900;
+}
+
+.workspace-settings {
+    color: #fff !important;
+    margin-left: 120px;
+}
+
+.channel-settings {
+    font-size: 16px !important;
+    display: none !important;
+    color: #fff !important;
+}
+
+.user-options {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    list-style: none;
+    background: #2a022e !important;
+    border-top: 1px solid #1d061f;
+
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 20px;
+}
+
+
+.user-list-name {
+    margin-left: 1em !important;
+}
+
+.menu-seperator {
+    border-top: 2px solid #2f3136;
+    width: 85%;
+    margin: 0 auto;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.home-icon::after {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    border-bottom: 2px solid grey;
+    width: 80%;
+}
+
+
+
+.channel-item:hover .channel-settings {
+    display: inline-block !important;
+}
+
+.channel-hashtag {
+    font-style: unset;
+    font-size: 24px;
+    padding-right: 8px;
+    color: grey;
+    vertical-align: sub;
+    font-weight: 900;
+}
+
+
+.user-list-name {
+    margin-left: 1em !important;
+}
+
+/* Messages.jsx */
+.messages-container {
+    bottom: 0px;
+    padding: 1em;
+    box-sizing: border-box;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    max-height: calc(100% - 64px);
+    overflow-y: auto;
+    padding-bottom: 0px;
+}
+
+.message {
+    padding: 1em !important;
+    color: white;
+    border-top: 1.6px solid #412344;
+    white-space: pre-line;
+    overflow-wrap: break-word;
+}
+
+.message-text {
+    color: white !important;
+}
+
+.progress-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.channel-title {
+    padding-left: 16px;
+    color: white;
+}
+
+.message-user {
+    display: inline;
+    cursor: pointer;
+    color: white;
+}
+
+.message-user-icon {
+    display: inline;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
+
+
+.message-date {
+    display: inline;
+    color: grey;
+    font-size: 13px;
+    padding-left: 4px;
+}
+
+.user:hover {
+    text-decoration: underline;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+/* SendMessage.jsx */
+.send-message-container {
+    position: relative;
+    height: 100%;
+    padding: 1em;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    flex-basis: 100%;
+    justify-content: center;
+    z-index: 10;
+}
+
+.message-input {
+    flex-basis: 85%;
+}
+
+.send-message-border {
+    position: absolute;
+    width: 98%;
+    border-top: 2px solid #42454a;
+}
+
+.message-text-area {
+    background: #484b52;
+    width: 100%;
+    resize: none;
+    color: white;
+    border-radius: 4px;
+    padding: 1em;
+    font-size: 15px;
+    border: 1px solid #484b52;
+}
+
+.message-text-area:focus {
+    outline: none;
+}
+
+.send-message-emoji-button {
+    color: #707277;
+    cursor: pointer;
+    z-index: 30;
+    position: absolute;
+    right: 1em;
+}
+
+.emoji-wrapper {
+    position: fixed;
+    bottom: 84px;
+    right: 20px;
+}
+
+.emoji-mart {
+    border-radius: 0px !important;
+}
+
+.send-message-emoji-menu {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    bottom: 0;
+    right: 0;
+    z-index: 40;
+}
+
+/* ServerCreateModal.jsx */
+
+.modal-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-prompt {
+    overflow: hidden;
+    width: 80%;
+    max-width: 600px;
+    padding: 1em;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+
+
+
+/* MEDIA QUERIES FOR DESKTOP */
+@media only screen and (min-width: 900px) {
+    .grid-container {
+        height: 100%;
+        display: grid;
+        grid-template-columns: 340px 1fr 1fr 1fr 230px;
+        grid-template-rows: 1fr 1.5fr 0.3fr;
+        grid-template-areas: 'Sidebar Messages Messages Messages User-List''Sidebar Messages Messages Messages User-List''Sidebar Send-Messages Send-Messages Send-Messages User-List';
+    }
+
+    .menu-burger-button {
+        display: none !important;
+    }
+
+
+}
+
+/* MEDIA QUERIES FOR MOBILE */
+
+@media only screen and (max-width: 899px) {
+    .grid-container {
+        height: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1.7fr 0.1fr;
+        grid-template-areas: 'Messages''Send-Messages';
+    }
+
+    .user-list-grid {
+        display: none;
+    }
+
+    .sidebar-container {
+        width: 320px;
+    }
+
+    .sidebar-grid {
+        display: none;
+    }
+
+    .title-container {
+        height: 56px;
+    }
+
+    .users-list-title {
+        height: 56px;
+    }
+
+    .send-message-emoji-button {
+        display: none !important;
+    }
+}
+
+/* Emoji Mart */
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
+}
+
+/* Auth.jsx */
+.auth-wrapper {
+    height: calc(100vh);
+    background: #202225;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Material UI Grid Fixes */
+.grid-card {
+    text-align: center;
+    height: 100%;
+}
+
+.grid-textfield {
+    text-align: center;
+}
+
+.grid-button {
+    text-align: center;
+    padding-top: 1em !important;
+}
+
+.prettyprint {
+    background: #2f3136 !important;
+    border-radius: 6px !important;
+}
+
+.hMyhSt .prettyprint div {
+    border: 2px solid #2a2c31 !important;
+    border-radius: 6px !important;
+}
+
+/* Channel List Voice Users */
+
+.user-voice-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5em;
+    padding-left: 2em;
+}
+
+.user-voice-name {
+    padding-left: 1em;
+}

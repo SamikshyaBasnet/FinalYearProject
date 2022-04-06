@@ -1,0 +1,117 @@
+.create_container {
+    background-color: rgb(235, 223, 238);
+}
+
+.open_container {
+    background-color: rgb(255, 255, 255);
+}
+
+.createworkspace_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* @media screen and (max-width: 850px) {
+    .img {
+        height: 400px !important;
+        width: 400px !important;
+    }
+
+    .create_container h1,
+    .create_container p {
+        padding: 0px !important;
+        margin: 0px !important;
+    }
+
+} */
+
+/* @media screen and (max-width: 800px) {
+    .img {
+        height: 350px !important;
+        width: 350px !important;
+    }
+
+    .create_container h1,
+    .create_container p {
+        padding: 0px !important;
+        margin: 0px !important;
+    }
+
+    .create_container .create_button {
+        margin: 20px 0px !important;
+    }
+
+} */
+
+
+/* @media screen and (min-width: 960px) {
+    .img {
+        height: 450px !important;
+        width: 450px !important;
+    }
+
+    .create_container h1,
+    .create_container p {
+        padding: 0px !important;
+        margin: 0px !important;
+    }
+
+    .create_container .create_button {
+        margin: 20px 0px !important;
+    }
+} */
+
+@media screen and (min-width: 700px) and (max-width: 980px) {
+    .img {
+        height: 330px !important;
+        width: 330px !important;
+    }
+
+    .create_container h1,
+    .create_container p {
+        padding: 0px !important;
+        margin: 0px !important;
+    }
+
+    .create_container .create_button {
+        margin: 20px 0px !important;
+    }
+}
+
+@media screen and (max-width: 750px) {
+    .create_container {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .img {
+        height: 430px !important;
+        width: 430px !important;
+    }
+}
+
+@media screen and (min-width: 200px) and (max-width: 450px) {
+    .create_container {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .img {
+        height: 250px !important;
+        width: 250px !important;
+        align-items: center;
+    }
+
+    .open_container .form,
+    .create_container h1,
+    .create_container p {
+        padding: 0px !important;
+        margin: 0px !important;
+    }
+
+    .create_container .create_button {
+        margin: 20px 0px !important;
+    }
+}

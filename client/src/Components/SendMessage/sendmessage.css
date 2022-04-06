@@ -1,0 +1,76 @@
+/* SendMessage.jsx */
+.send-message-container {
+    position: relative;
+    height: 100%;
+    padding: 0.6em;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    flex-basis: 100%;
+    justify-content: center;
+    z-index: 10;
+}
+
+.message-input {
+    flex-basis: 85%;
+}
+
+.send-message-border {
+    position: absolute;
+    width: 98%;
+    border-top: 2px solid #4d244f;
+}
+
+.message-text-area {
+    background: transparent;
+    width: 100%;
+    resize: none;
+    border-radius: 4px;
+    padding: 0.9em;
+
+    font-size: 15px;
+    height: 50px !important;
+    border: 1px solid #4d244f;
+}
+
+.message-text-area:focus {
+    outline: none;
+}
+
+.send-message-emoji-button, .send-file-button, .send-msg-button {
+    color: #fff;
+    cursor: pointer;
+    z-index: 30;
+    position: absolute;
+  
+}
+.send-message-emoji-button{
+    right: 2.2em;
+}
+.send-file-button{
+    font-size: 25px !important;
+    right: 3.2em;   
+}
+.send-msg-button{
+    font-size: 25px !important;
+    right: 1em;
+}
+
+.emoji-wrapper {
+    position: fixed;
+    bottom: 84px;
+    right: 20px;
+}
+
+.emoji-mart {
+    border-radius: 0px !important;
+}
+
+.send-message-emoji-menu {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    bottom: 0;
+    right: 0;
+    z-index: 40;
+}

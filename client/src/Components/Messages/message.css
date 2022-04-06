@@ -1,0 +1,22 @@
+
+.pinned_msg_container{
+    background-color: rgb(80, 3, 79);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top:-20px;
+    position: sticky;
+    margin: 0px;
+    padding: 0px;
+    z-index: 1;
+}
+.pinmsg{
+    color: rgb(216, 203, 55) !important;
+    cursor: pointer !important;
+}
+.pinned_msg{
+    color: #fff;
+    text-align: center;
+    position: sticky;
+}
