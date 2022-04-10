@@ -67,8 +67,15 @@
     height: 30px;
     cursor: pointer;
 }
+.mesage-body{
+    display: flex;
+
+    justify-content: space-around;
+}
 
 .user-profile {
+    display: flex;
+    justify-content: space-around;
     border-radius: 50% !important;
     background: rgb(189, 130, 54) !important;
     height: 40px !important;

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import SendMessage from '../SendMessage/';
 import Header from '../Header/';
 import Messages from '../Messages/';
+import SendMessages from '../Messages/message.jsx';
 import ActiveUserList from '../ActiveUserList/';
 import { loadUserData, updateActiveState, updateActiveUserList } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -64,7 +65,7 @@ function Dashboard() {
                         setModalVisible={setModalVisible}
                         setModalType={setModalType}
                     />
-                    <Messages />
+                    <SendMessages />
                 </div>
 
                 <div className="user-list-grid">
@@ -72,9 +73,9 @@ function Dashboard() {
 
                 </div>
 
-                <div className="send-messages-grid">
+                {/* <div className="send-messages-grid">
                     <SendMessage />
-                </div>
+                </div> */}
             </div>
 
         </div>

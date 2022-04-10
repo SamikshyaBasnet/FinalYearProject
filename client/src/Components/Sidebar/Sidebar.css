@@ -319,51 +319,8 @@ h5 {
     opacity: 0.6;
 }
 
-/* SendMessage.jsx */
-.send-message-container {
-    position: relative;
-    height: 100%;
-    padding: 1em;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    flex-basis: 100%;
-    justify-content: center;
-    z-index: 10;
-}
 
-.message-input {
-    flex-basis: 85%;
-}
 
-.send-message-border {
-    position: absolute;
-    width: 98%;
-    border-top: 2px solid #42454a;
-}
-
-.message-text-area {
-    background: #484b52;
-    width: 100%;
-    resize: none;
-    color: white;
-    border-radius: 4px;
-    padding: 1em;
-    font-size: 15px;
-    border: 1px solid #484b52;
-}
-
-.message-text-area:focus {
-    outline: none;
-}
-
-.send-message-emoji-button {
-    color: #707277;
-    cursor: pointer;
-    z-index: 30;
-    position: absolute;
-    right: 1em;
-}
 
 .emoji-wrapper {
     position: fixed;

@@ -5,13 +5,9 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 import SmileyFace from '@material-ui/icons/SentimentVerySatisfied';
-import { sendMessage, signOut, sendPrivateMessage } from '../../actions';
+import { sendMessage, sendPrivateMessage } from '../../actions';
 import './sendmessage.css';
-import socketkIOClient from "socket.io-client";
-import io from "socket.io-client";
 import { IoMdAddCircle } from 'react-icons/io';
-import { IoIosSend } from 'react-icons/io';
-
 
 export default function SendMessage() {
 
@@ -24,6 +20,7 @@ export default function SendMessage() {
     const [chatMessage, setChatMessage] = useState('');
     const [emojiMenuVisible, setEmojiMenuVisible] = useState(false);
     const [placeholderTitle, setPlaceholderTitle] = useState('');
+    const [file, setFile] = useState();
 
     // Check active view to determine where we send our messages
     useEffect(() => {
@@ -54,13 +51,11 @@ export default function SendMessage() {
             message.msg = formatMessage(message.msg);
             // Send message to server, or user
             if (activeView === 'workspaces' && message.type === 'channelMessage') {
+                dispatch(sendMessage(message));
 
-                const send = dispatch(sendMessage(message));
-                console.log("send chan=", send)
             } else if (activeView === 'home' && message.type === 'privateMessage') {
-                //socket.emit('simple-chat-private-message', message)
-                const pm = dispatch(sendPrivateMessage(message));
-                console.log("private msg dispatch=", pm);
+                dispatch(sendPrivateMessage(message));
+
             }
             setChatMessage('');
         } else {
@@ -72,16 +67,47 @@ export default function SendMessage() {
     function handleKeyPress(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             if (activeView === 'workspaces')
-                handleSubmit({
-                    workspace: activeWorkspace,
-                    channel: activeChannel,
-                    from: userName,
-                    msg: chatMessage,
-                    type: 'channelMessage'
-                });
+                if (file) {
+                    handleSubmit({
+                        workspace: activeWorkspace,
+                        channel: activeChannel,
+                        from: userName,
+                        msg: file,
+                        type: 'channelMessage',
+                        msgType: "file",
+                        mimeType: file.type,
+                        fileName: file.name,
+                    });
+                }
+                else {
 
+                    handleSubmit({
+                        workspace: activeWorkspace,
+                        channel: activeChannel,
+                        from: userName,
+                        msg: chatMessage,
+                        type: 'channelMessage',
+                    });
+                }
             else if (activeView === 'home')
-                handleSubmit({ from: userName, to: activePMUser, msg: chatMessage, type: 'privateMessage' });
+                if (file) {
+                    handleSubmit({
+                        from: userName,
+                        msg: file,
+                        type: 'privateMessage',
+                        msgType: "file",
+                        mimeType: file.type,
+                        fileName: file.name,
+                    });
+                } else {
+                    handleSubmit({
+                        from: userName,
+                        to: activePMUser,
+                        msg: chatMessage,
+                        type: 'privateMessage',
+                    });
+                }
+
         }
     }
 
@@ -95,7 +121,16 @@ export default function SendMessage() {
         setChatMessage(chatMessage + e.native);
         setEmojiMenuVisible(false);
     }
+    const hiddenFileInput = React.useRef(null);
 
+    const handleFileClick = (e) => {
+        hiddenFileInput.current.click();
+    }
+
+    function selectFile(e) {
+        setChatMessage(e.target.files[0].name)
+        setFile(e.target.files[0]);
+    }
     // Closes emoji menu when clicked outside the div
     window.onclick = (e) => {
         if (String(e.target.className).includes('send-message-emoji-menu')) setEmojiMenuVisible(false);
@@ -113,10 +148,15 @@ export default function SendMessage() {
                     onChange={e => handleOnChange(e)}
                     onKeyPress={e => handleKeyPress(e)}
                 />
+                <IoMdAddCircle onClick={handleFileClick} className="send-file-button" />
 
-                <IoMdAddCircle className="send-file-button" />
+                <input type="file"
+                    ref={hiddenFileInput}
+                    onChange={selectFile}
+                    style={{ display: 'none' }}
+                />
                 <SmileyFace className="send-message-emoji-button" onClick={() => setEmojiMenuVisible(!emojiMenuVisible)} />
-                <IoIosSend className="send-msg-button" onClick={(e => handleSubmit(e))} />
+                {/* <IoIosSend className="send-msg-button" onClick={(e => handleSubmit(e))} /> */}
 
             </div>
             <div className={emojiMenuVisible ? 'send-message-emoji-menu show' : 'send-message-emoji-menu hide'}>

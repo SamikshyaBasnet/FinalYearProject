@@ -24,9 +24,10 @@ import Axios from '../API/api';
 import { GoPin } from 'react-icons/go';
 
 
-export default function Messages() {
+export default function Messages(props) {
     // Get States from Redux Store
     const chatStore = useSelector((state) => state.chat);
+    const { msgtype } = props;
 
     const { activeWorkspace, activeChannel, activeView, activePMUser } = chatStore;
 
@@ -54,6 +55,7 @@ export default function Messages() {
         from: '',
         to: '',
         msg: '',
+        msgtype: { msgtype },
         date: Date,
     }]
     let messagesLength = 0;
@@ -218,8 +220,6 @@ export default function Messages() {
                     <Box sx={{ ...style, width: 450 }}>
                         <div className="pinned_msg">
                             <h4>Pinned Messages</h4>
-                            {/* <p>{pinnedMessage}</p> */}
-
                             <div>
                                 {pinnedMessage.map((msg, i) => {
                                     return (
@@ -299,17 +299,6 @@ export default function Messages() {
                                                 secondary={message.msg}
                                                 className="message-text"
                                             />
-
-
-
-                                            // <div className="message-user" onClick={e => handleUserClick(e, message.from)}>
-                                            //     {message.from.toLowerCase()}
-                                            //     <div className="message-date">{` - ${moment(message.date).format('LLL')}`}</div>
-                                            //     <div style={{ color: '#fff' }}>{message.message}</div>
-
-                                            // </div>
-
-
                                         )}
                                     </ListItem>
                                 </Fade>

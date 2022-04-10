@@ -1,14 +1,16 @@
 /* SendMessage.jsx */
 .send-message-container {
     position: relative;
-    height: 100%;
+    /* height: 100%; */
     padding: 0.6em;
-    box-sizing: border-box;
+    box-sizing: border-box; 
     display: flex;
     align-items: center;
-    flex-basis: 100%;
+    flex-basis: 100%; 
     justify-content: center;
     z-index: 10;
+    top: 442px;
+    background-color: #340e36;
 }
 
 .message-input {
@@ -27,7 +29,6 @@
     resize: none;
     border-radius: 4px;
     padding: 0.9em;
-
     font-size: 15px;
     height: 50px !important;
     border: 1px solid #4d244f;
