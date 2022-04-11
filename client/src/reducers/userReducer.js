@@ -8,6 +8,12 @@ const initialState = {
     isSignedIn: false,
     isAdmin: false,
     email: '',
+    reminders: [{
+        reminderId: '',
+        name: '',
+        body: '',
+        date: Date,
+    }],
 
 };
 
@@ -47,6 +53,18 @@ export const userReducer = (state = initialState, action) => {
                     userName: '',
                     email: '',
             };
+        case ACTION.GET_REMINDERS:
+            return {
+                ...state,
+                reminders: action.payload
+            };
+
+        case ACTION.CREATE_REMINDER:
+            return {
+                ...state,
+                reminders: action.payload
+            };
+
         default:
             return state;
     }

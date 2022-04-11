@@ -88,6 +88,17 @@ export const changePMUser = (user) => ({
     payload: user
 });
 
+//action to get all reminder
+export const getReminder = (reminder) => ({
+    type: ACTION.GET_REMINDERS,
+    payload: reminder
+});
+
+//action to create reminder
+export const createReminder = (reminder) => ({
+    type: ACTION.CREATE_REMINDER,
+    payload: reminder
+});
 
 // Action creator to update active state (socket middleware)
 export const updateActiveState = (user) => ({
@@ -122,6 +133,15 @@ export const loadUserData = (userId) => async (dispatch) => {
 
 };
 
+export const loadReminders = (userId) => async (dispatch) => {
+    let url = `/reminders?userId=${userId}`;
+    const res = await Axios.get(url);
+    console.log("all reminders", res);
+    const rem = dispatch(getReminder(res.data));
+    console.log("remsa ", rem)
+
+}
+
 //SOCEKT ACTIONS
 
 //to send the message
@@ -146,4 +166,11 @@ export const sendPrivateMessage = (message) => ({
 export const receivePrivateMessage = (message) => ({
     type: ACTION.RECEIVE_SOCKET_PRIVATE_MESSAGE,
     payload: message
+});
+
+export const addEmoticon = (updatedMessage) => ({
+
+    type: ACTION.ADD_EMOTICON,
+    updatedMessage
+
 });

@@ -7,7 +7,7 @@ import Header from '../Header/';
 import Messages from '../Messages/';
 import SendMessages from '../Messages/message.jsx';
 import ActiveUserList from '../ActiveUserList/';
-import { loadUserData, updateActiveState, updateActiveUserList } from '../../actions';
+import { loadUserData, loadReminders, updateActiveState, updateActiveUserList } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 
 import '../../App.css';
@@ -44,6 +44,7 @@ function Dashboard() {
             const res = dispatch(loadUserData(userId));
             console.log("load user dTata", res);
             updateActiveStatus();
+            dispatch(loadReminders(userId));
         }
     }, [dispatch, user.isSignedIn, user.userId]);
 

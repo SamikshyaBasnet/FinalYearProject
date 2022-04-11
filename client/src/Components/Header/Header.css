@@ -85,6 +85,10 @@
 
 }
 
+.MuiTableCell-head, .MuiTableCell-body{
+    color: #fff !important;
+}
+
 .user {
     text-align: center;
     padding: 6px;

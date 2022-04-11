@@ -26,6 +26,8 @@ app.use(express.json());
 const userRouter = require('./routes/user')
 const workspaceRouter = require('./routes/workspace');
 const channelRouter = require('./routes/channel');
+const reminderRouter = require('./routes/reminder');
+
 let {
     Message,
     SocketClientList,
@@ -56,9 +58,10 @@ async function main() {
     app.use(userRouter);
     app.use(workspaceRouter);
     app.use(channelRouter);
+    app.use(reminderRouter);
 
     let clients = SocketClientList = [];
-    let connectedUsers = {};
+
     io.on('connection', (socket) => {
         let sessionUserId = '';
         let action = SocketAction;
@@ -112,21 +115,36 @@ async function main() {
             if (action.payload.msgType === "file") {
                 //console.log("its a file", msg);
                 //  const readData = fs.readFile("image");
-                const path = './uploads/';
-                let array = BigInt64Array(0);
-                let buffer = Buffer.from(array.msg)
-                fs.createWriteStream(path).write(buffer);
+                // const path = './uploads/';
+                //let array = new BigInt64Array(0);
+                //let buffer = Buffer.from(array.msg)
+                //fs.createWriteStream(path).write(buffer);
                 // const buffer = await Buffer.from(msg, 'base64').toString();
                 // fs.writeFile('/tmp/image', buffer);
                 //fs.writeFile('/tmp/image', base64data);
-                console.log("data, ", buffer);
-                action = {
-                    type: 'message',
-                    payload: readData
-                }
+                var image = msg.msg;
+                // var data = image.replace(/^data:image\/\w+;base64,/, '');
+                console.log("image", image)
 
-                io.to(workspaceId).emit('update', action);
-                console.log("client message", readData)
+                var file_name = 'user' + msg.from + Date.now() + "image.jpg";
+
+                fs.writeFile("./uploads/" + file_name, image, {
+                    encoding: 'base64'
+                }, function (err) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        action = {
+                            type: 'message',
+                            payload: msg.msg
+                        }
+
+                        io.to(workspaceId).emit('update', action);
+                        //console.log("client message", readData)
+                    }
+                });
+
+
             } else {
                 action = {
                     type: 'message',

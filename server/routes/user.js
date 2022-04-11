@@ -100,10 +100,8 @@ function sendResetPasswordEmail(email, token) {
 // Route to get data associated with a specific user
 // Expects -> userId
 router.get('/user/data', async (req, res) => {
-
     const userId = req.query.userId;
     const data = {};
-
     // Query to get all of the workspaces + channels + data
     await db.query(
         `SELECT workspaces.workspace_id, workspaces.workspace_name, channels.channel_id, 
@@ -144,11 +142,9 @@ router.get('/user/data', async (req, res) => {
 
                 });
             }
+
             //Query to get all Private messages for user
             db.query(
-                // `SELECT users.username as user_from, users.username as user_to, usermessages.message 
-                // FROM usermessages JOIN users ON users.user_id = usermessages.user_to
-                // WHERE users.user_id='${userId}' OR usermessages.user_to='${userId}'`
                 `SELECT b.username as user_from, c.username as user_to, message
                 FROM usermessages a
                 JOIN users b ON b.user_id = a.user_from 

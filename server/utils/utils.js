@@ -46,6 +46,7 @@ getUniqueId = (type) => {
     if (type === 'workspace') sqlQuery = `SELECT * FROM workspaces WHERE workspace_id = '${id}'`;
     else if (type === 'channel') sqlQuery = `SELECT * FROM channels WHERE channel_id = '${id}'`;
     else if (type === 'user') sqlQuery = `SELECT * FROM users WHERE user_id = '${id}'`;
+    else if (type === 'reminder') sqlQuery = `SELECT * FROM reminders WHERE Id= '${id}'`;
     let response = db.query(sqlQuery);
 
     if (response.length > 0) {

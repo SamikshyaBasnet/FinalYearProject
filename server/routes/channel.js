@@ -202,7 +202,7 @@ router.get('/channel/pinnedmessage', async (req, res) => {
             if (err) {
                 throw err
             } else {
-                return res.send(result);
+                res.send(result);
             }
         }
     )
