@@ -141,10 +141,9 @@ function sendEmail(receiverEmail, senderUsername, workspaceName, workspaceId) {
 }
 
 router.post('/workspace/invite', (req, res) => {
-    const {
-        receiverEmail,
-        workspaceId
-    } = req.query;
+    const workspaceId = req.query.workspaceId;
+    const receiverEmail = req.query.receiverEmail;
+
     const senderUsername = req.body.senderUsername;
     const workspaceName = req.body.workspaceName;
     //const senderEmail = req.body.senderEmail;
@@ -162,7 +161,7 @@ router.post('/workspace/invite', (req, res) => {
                     throw err;
                 } else if (result.length > 0) {
                     res.json({
-                        message: `Already a member!`,
+                        message: `This person is already a member!`,
                         invitationSend: false
                     });
                 } else {

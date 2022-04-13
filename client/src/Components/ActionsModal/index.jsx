@@ -97,7 +97,6 @@ export default function ActionsModal({ handleSnackMessage, modalType }) {
 
     const handleInviteFriend = (workspaceId, receiverEmail) => {
 
-        //  var senderEmail = s
         var senderUsername = user.userName;
         var workspaceName = activeWorkspace.split('-')[0]
 
@@ -384,7 +383,7 @@ export default function ActionsModal({ handleSnackMessage, modalType }) {
                             value={receiverEmail}
                             error={true}
                             onChange={e => setReceiverEmail(e.target.value)}
-                            onKeyPress={e => handleKeyPress(e, () => handleInviteFriend(receiverEmail, workspaceId))}
+                            onKeyPress={e => handleKeyPress(() => handleInviteFriend(workspaceId, receiverEmail,))}
                             margin="dense"
                             variant="standard"
                             autoComplete="off"
@@ -396,7 +395,7 @@ export default function ActionsModal({ handleSnackMessage, modalType }) {
                             className="modal-button"
                             variant="contained"
                             color="primary"
-                            onClick={() => handleInviteFriend(receiverEmail, workspaceId)}
+                            onClick={() => handleInviteFriend(workspaceId, receiverEmail)}
                         >
                             Invite
                         </Button>

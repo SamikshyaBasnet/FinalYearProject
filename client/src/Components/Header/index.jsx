@@ -438,20 +438,28 @@ export default function Header() {
                             <Grid container spacing={3} justifyContent="center" alignItems="center" style={{ color: "#fff" }}>
                                 <Grid item xs={12}>
                                     <div className="user-profile">
-                                        {/* <p className="user">
+                                        <p className="user">
                                             {user.userName.charAt(0).toUpperCase()}
-                                        </p> */}
-                                        <AvatarPicker
+                                        </p>
+                                        {/* <AvatarPicker
                                             handleChangeImage={handleImageChange}
                                             avatarImage={avatarImage}
-                                        />
+                                        /> */}
                                     </div>
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <p>Display Name</p>
-                                    <TextField id="outlined-basic" defaultValue={user_name} variant="standard" />
-                                    {/* <p>{user.username}</p> */}
+                                <Grid className="d-flex">
+                                    <Grid item xs={6}>
+                                        <p>Display Name</p>
+                                        <TextField id="outlined-basic" disabled defaultValue={user.userName} variant="standard" />
+                                        {/* <p>{user.username}</p> */}
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <p>Display Name</p>
+                                        <TextField id="outlined-basic" disabled defaultValue={user.userName} variant="standard" />
+                                        {/* <p>{user.username}</p> */}
+                                    </Grid>
                                 </Grid>
+
                                 <Grid item xs={12}>
                                     <p>Local Time</p>
                                     <div className="d-flex">
