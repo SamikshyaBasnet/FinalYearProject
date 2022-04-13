@@ -38,8 +38,7 @@ export default function Messages(props) {
     const [loadMessages, setLoadMessages] = useState(false);
     const [userName, setUserName] = useState('');
     const [anchorEl, setAnchorEl] = useState(null);
-    let [pinnedMessage, setPinnedMessage] = useState([]);
-    let [remainingPinnedMessage, setRemainingPinnedMessage] = useState([]);
+
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -151,11 +150,11 @@ export default function Messages(props) {
     useEffect(() => {
         Axios.get(`/channel/pinnedmessage?channelId=${channelId}`).then((response) => {
             //  console.log("pinned message=", response.data);
-            setPinnedMessage(response.data);
+            //  setPinnedMessage(response.data);
 
         })
     }, [messages]);
-    console.log("pinned messages = ", pinnedMessage)
+    //    console.log("pinned messages = ", pinnedMessage)
 
     const style = {
         position: 'absolute',
@@ -221,7 +220,7 @@ export default function Messages(props) {
                         <div className="pinned_msg">
                             <h4>Pinned Messages</h4>
                             <div>
-                                {pinnedMessage.map((msg, i) => {
+                                {/* {.map((msg, i) => {
                                     return (
                                         <ListItem className="message" key={i}>
                                             <ListItemAvatar className="message-user-icon">
@@ -248,7 +247,7 @@ export default function Messages(props) {
                                         </ListItem>
                                     )
 
-                                })}
+                                })} */}
                             </div>
                         </div>
                     </Box>

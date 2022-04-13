@@ -94,6 +94,12 @@ export const getReminder = (reminder) => ({
     payload: reminder
 });
 
+//action to get all reminder
+export const getPinnedMessages = (message) => ({
+    type: ACTION.GET_PINNED_MESSAGES,
+    payload: message
+});
+
 //action to create reminder
 export const createReminder = (reminder) => ({
     type: ACTION.CREATE_REMINDER,
@@ -139,8 +145,16 @@ export const loadReminders = (userId) => async (dispatch) => {
     console.log("all reminders", res);
     const rem = dispatch(getReminder(res.data));
     console.log("remsa ", rem)
+}
+
+export const loadPinnedMessages = (channelId) => async (dispatch) => {
+    let url = `/channel/pinnedmessage?channelId=${channelId}`;
+    const res = await Axios.get(url);
+    const rem = dispatch(getPinnedMessages(res.data));
+    console.log("pinned Mesages =", rem)
 
 }
+
 
 //SOCEKT ACTIONS
 

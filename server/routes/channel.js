@@ -151,19 +151,18 @@ router.delete('/channel/delete', (req, res) => {
 });
 
 router.post('/message/pin', (req, res) => {
-    const {
-        message,
-    } = req.query;
+    const id = req.query.id;
 
     // Check if user admin
-    db.query(`UPDATE messages SET ispinned = 1 WHERE message='${message}'`,
+    db.query(`UPDATE messages SET ispinned = 1 WHERE message_id='${id}'`,
         (err, result) => {
             if (err) {
                 throw err
             } else {
+
                 res.json({
                     isPinned: true,
-                    message: message,
+                    id: id,
                 })
 
             }
@@ -171,20 +170,19 @@ router.post('/message/pin', (req, res) => {
     )
 });
 
-router.post('/message/unpin', (req, res) => {
-    const {
-        message,
-    } = req.query;
-
+router.delete('/message/unpin', async (req, res) => {
+    const id = req.query.id;
+    console.log("id is", id)
     // Check if user admin
-    db.query(`UPDATE messages SET ispinned = 0 WHERE message='${message}'`,
+    await db.query(`UPDATE messages SET ispinned = 0 WHERE message_id='${id}'`,
         (err, result) => {
             if (err) {
                 throw err
             } else {
+                console.log("result of unpin=", result)
                 res.json({
                     isUnPinned: true,
-                    message: message,
+                    id: id,
                 })
 
             }
@@ -196,7 +194,8 @@ router.post('/message/unpin', (req, res) => {
 router.get('/channel/pinnedmessage', async (req, res) => {
 
     const channelId = req.query.channelId;
-    await db.query(`SELECT username, date, message from messages 
+
+    await db.query(`SELECT message_id, username, message, date from messages 
     WHERE channel_id='${channelId}' AND ispinned='1'`,
         (err, result) => {
             if (err) {
@@ -207,6 +206,7 @@ router.get('/channel/pinnedmessage', async (req, res) => {
         }
     )
 });
+
 // Create channel and all intermediary tables
 const createChannel = (channelId, channelName, workspaceId, created_date) => {
     db.query(

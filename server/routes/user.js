@@ -105,7 +105,7 @@ router.get('/user/data', async (req, res) => {
     // Query to get all of the workspaces + channels + data
     await db.query(
         `SELECT workspaces.workspace_id, workspaces.workspace_name, channels.channel_id, 
-        channels.channel_name, messages.username, messages.message, messages.date
+        channels.channel_name, messages.message_id, messages.username, messages.message, messages.date
         FROM messages
         right JOIN channels ON messages.channel_id = channels.channel_id
         JOIN workspaces ON workspaces.workspace_id = channels.workspace_id
@@ -135,6 +135,7 @@ router.get('/user/data', async (req, res) => {
 
                     if (datas.username !== null && datas.message !== null)
                         data['workspaces'][workspaceName]['channels'][userName].push({
+                            id: datas.message_id,
                             from: datas.username,
                             msg: datas.message,
                             date: datas.date

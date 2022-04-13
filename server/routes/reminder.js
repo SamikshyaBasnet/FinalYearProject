@@ -13,7 +13,6 @@ router.get(`/reminders`, async (req, res) => {
         if (err) {
             throw err
         } else {
-
             return res.send(result);
 
         }
@@ -48,7 +47,6 @@ router.post('/reminders/create', (req, res) => {
 });
 
 router.delete('/reminder/delete', (req, res) => {
-
     const id = req.query.id;
     if (!id) {
         res.status(400).json({

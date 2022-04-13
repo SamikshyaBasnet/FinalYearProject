@@ -4,7 +4,7 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 import SmileyFace from '@material-ui/icons/SentimentVerySatisfied';
-import { sendMessage, sendPrivateMessage } from '../../actions';
+import { sendMessage, sendPrivateMessage, loadPinnedMessages } from '../../actions';
 import '../SendMessage/sendmessage.css';
 import { IoMdAddCircle } from 'react-icons/io';
 import Image from './image';
@@ -36,8 +36,9 @@ import { GoPin } from 'react-icons/go';
 export default function SendMessages() {
 
     // Get State from Redux Store
-    const { activeWorkspace, activeChannel, activeView, activePMUser } = useSelector((state) => state.chat);
+    const { activeWorkspace, activeChannel, activeView, activePMUser, pinnedMessages } = useSelector((state) => state.chat);
     const chatStore = useSelector((state) => state.chat);
+
     const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const channelId = activeChannel.split('-')[1];
@@ -54,8 +55,6 @@ export default function SendMessages() {
     const [loadMessages, setLoadMessages] = useState(false);
     const [userName, setUserName] = useState('');
     const [anchorEl, setAnchorEl] = useState(null);
-    let [pinnedMessage, setPinnedMessage] = useState([]);
-    let [remainingPinnedMessage, setRemainingPinnedMessage] = useState([]);
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -69,6 +68,7 @@ export default function SendMessages() {
     // Get message list from channel or from specific user
 
     let messages = [{
+        id: '',
         from: '',
         to: '',
         msg: '',
@@ -81,6 +81,7 @@ export default function SendMessages() {
 
         messages = chatStore.workspaces[activeWorkspace]['channels'][activeChannel];
         messagesLength = messages.length;
+        console.log("All messages =", messages)
 
     } else {
         messages = chatStore.privateMessages[activePMUser];
@@ -102,11 +103,6 @@ export default function SendMessages() {
         }
     }, [loadMessages, messages, messageContainerRef, messageContainerBottomRef]);
 
-    // Checks is message is a code block
-    const isTextCodeBlock = (message = '') => {
-        if (message.startsWith('```') && message.endsWith('```')) return true;
-        else return false;
-    };
 
     // Handles to load more messages when scroll at top
     const handleScrollTop = (e) => {
@@ -128,12 +124,6 @@ export default function SendMessages() {
         }
     };
 
-    // Formats the code block
-    const formatCode = (message) => {
-        return message.split('```')[1];
-        // console.log("format code ", message);
-    };
-
     // Handles clicks for setting anchor to User Info (To private message)
     const handleUserClick = (e, userName) => {
         setUserName(userName);
@@ -147,31 +137,33 @@ export default function SendMessages() {
         setAnchorEl(null);
     };
 
-    // const handlePinMessage = (message) => {
-    //     Axios.post(`/message/pin?message=${message}`).then((response) => {
+    useEffect(() => {
+        dispatch(loadPinnedMessages(channelId));
 
-    //     })
-    // }
+    }, [dispatch, channelId]);
 
-    const handleUnpinMessage = (message) => {
-        // Axios.post(`/message/unpin?message=${message}`).then((response) => {
-        //     console.log("respones pin message from", message)
-        //     pinnedMessage.filter(message => message.message !== message)
-        //     setPinnedMessage(pinnedMessage);
-        //     console.log("after removing=", pinnedMessage)
-        // });
+
+    const handlePinMessage = (id) => {
+        Axios.post(`/message/pin?id=${id}`
+        ).then((response) => {
+            if (response.data.isPinned === true) {
+                console.log("pin msg response=", response);
+                dispatch(loadPinnedMessages(channelId));
+            }
+
+        });
 
     }
 
-    //load pin msg
-    // useEffect(() => {
-    //     Axios.get(`/channel/pinnedmessage?channelId=${channelId}`).then((response) => {
-    //         //  console.log("pinned message=", response.data);
-    //         setPinnedMessage(response.data);
+    const handleUnpinMessage = (id) => {
+        Axios.delete(`/message/unpin?id=${id}`).then((response) => {
+            console.log('rany unpin', response)
+            if (response.data.isUnPinned === true) {
+                dispatch(loadPinnedMessages(channelId));
+            }
+        });
+    }
 
-    //     })
-    // }, [messages]);
-    // console.log("pinned messages = ", pinnedMessage)
 
     const style = {
         position: 'absolute',
@@ -358,10 +350,8 @@ export default function SendMessages() {
                         <Box sx={{ ...style, width: 450 }}>
                             <div className="pinned_msg">
                                 <h4>Pinned Messages</h4>
-                                {/* <p>{pinnedMessage}</p> */}
-
                                 <div>
-                                    {pinnedMessage.map((msg, i) => {
+                                    {pinnedMessages.map((msg, i) => {
                                         return (
                                             <ListItem className="message" key={i}>
                                                 <ListItemAvatar className="message-user-icon">
@@ -377,7 +367,7 @@ export default function SendMessages() {
                                                         <div className="message-user">
                                                             {msg.username.toLowerCase()}
                                                             <div className="message-date">{` - ${moment(msg.date).format('LLL')}`}</div>
-                                                            <p style={{ textDecoration: 'underline' }} onClick={handleUnpinMessage(msg.message)}>Unpin</p>
+                                                            <p style={{ textDecoration: 'underline' }} onClick={() => handleUnpinMessage(msg.message_id)}>Unpin</p>
                                                         </div>
                                                     }
 
@@ -436,7 +426,7 @@ export default function SendMessages() {
                                                         <div className="message-user">
                                                             {message.from.toLowerCase()}
                                                             <div className="message-date">{` - ${moment(message.date).format('LLL')}`}</div>
-                                                            {/* <GoPin onClick={handlePinMessage(message.msg)} style={{ marginLeft: '20px' }} /> */}
+                                                            <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} />
                                                         </div>
 
                                                     }
@@ -447,7 +437,6 @@ export default function SendMessages() {
 
                                             }
 
-                                            {/* )} */}
                                         </ListItem>
                                     </Fade>
                                 );

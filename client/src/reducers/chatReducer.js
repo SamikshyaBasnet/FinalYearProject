@@ -9,6 +9,7 @@ export let ChatStore = {
         '': {
             channels: {
                 '': {
+                    id: '',
                     from: '',
                     msg: '',
                     date: Date,
@@ -34,6 +35,12 @@ export let ChatStore = {
     },
     activeView: '',
     activePMUser: '',
+    pinnedMessages: [{
+        id: '',
+        username: '',
+        msg: '',
+        date: Date,
+    }]
 
 }
 
@@ -52,7 +59,7 @@ let initialState = {
     allUserList: [],
     activeView: 'workspaces',
     activePMUser: 'none',
-
+    pinnedMessages: [],
 };
 let state;
 ChatStore = state;
@@ -170,6 +177,11 @@ export const chatReducer = (state = initialState, action) => {
             return {
                 ...state,
                 allUserList: action.payload
+            };
+        case ACTION.GET_PINNED_MESSAGES:
+            return {
+                ...state,
+                pinnedMessages: action.payload
             };
         case ACTION.UPDATE_ACTIVE_USERS:
             return {

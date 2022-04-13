@@ -95,7 +95,6 @@ export default function Header() {
                 console.log("create response=", response);
                 setName('');
                 setBody('');
-
                 const reminder = { Name: name, Body: body, Date: selectedDate }
                 console.log("create", reminder)
                 dispatch(loadReminders(userId));
