@@ -3,7 +3,9 @@ const db = require('../db/db');
 var nodemailer = require('nodemailer');
 const utilsFunction = require('../utils/utils');
 let router = express.Router();
-
+var randtoken = require('rand-token');
+const bcrypt = require("bcrypt");
+const saltRounds = 10
 // Route to create a workspace
 // Expects -> workspace NAme
 // Expects -> User Id
@@ -157,13 +159,15 @@ router.post('/user/clickedjoined', (req, res) => {
         join_date,
         verified_date
     } = req.query;
+    const current = new Date();
     const user_last_active = `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`;
-    db.query(`SELECT * FROM users WHERE email=${email}`, (err, result) => {
-        if (error) {
+    db.query(`SELECT * FROM users WHERE email='${email}'`, (err, result) => {
+        if (err) {
             res.json({
                 message: "Sorry!Error occured on server. Please give us a time."
             });
         }
+        console.log("result", result);
         if (result.length > 0) {
             return res.json({
                 registered: false,
@@ -180,7 +184,7 @@ router.post('/user/clickedjoined', (req, res) => {
                     })
                 }
                 const isVerified = 1
-                db.query(`INSERT INTO users (user_id, username, email, password, join_date, user_last_active, isVerified, verifiedDate, token) VALUES ('${userId}', '${username}', '${email}', '${hash}', '${join_date}', '${user_last_active}' '${created_date}', '${isVerified}', '${verified_date}', '${token}')`,
+                db.query(`INSERT INTO users (user_id, username, email, password, join_date, user_last_active, isVerified, verifiedDate, token) VALUES ('${userId}', '${username}', '${email}', '${hash}', '${join_date}', '${user_last_active}', '${isVerified}', '${verified_date}', '${token}')`,
                     (error, result) => {
                         if (error) {
                             console.log(error);

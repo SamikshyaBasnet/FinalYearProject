@@ -331,7 +331,6 @@ router.post('/user/register', async (req, res) => {
                                 })
                             } else {
                                 sendEmail(email, token)
-                                //db.query(`INSERT INTO userworkspaces (user_id, workspace_id) VALUES ( '${userId}', 'FANfDprXmt')`);
                                 return res.status(201).json({
                                     registered: true,
                                     userName: username,

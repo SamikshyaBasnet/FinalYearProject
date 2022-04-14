@@ -82,6 +82,7 @@ const InvitedUser = () => {
             if (res) {
                 setRegisterStatus(res.data.message);
                 setIsRegistered(res.data.registered);
+                console.log("res", res)
 
             }
             dispatch(signUp(res.data));
