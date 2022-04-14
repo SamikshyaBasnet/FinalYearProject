@@ -21,6 +21,7 @@
     position: relative;
     display: flex;
     justify-content: center;
+    
 }
 
 .user-list-grid {
@@ -320,8 +321,6 @@ h5 {
 }
 
 
-
-
 .emoji-wrapper {
     position: fixed;
     bottom: 84px;
@@ -370,7 +369,9 @@ h5 {
         display: grid;
         grid-template-columns: 340px 1fr 1fr 1fr 230px;
         grid-template-rows: 1fr 1.5fr 0.3fr;
-        grid-template-areas: 'Sidebar Messages Messages Messages User-List''Sidebar Messages Messages Messages User-List''Sidebar Send-Messages Send-Messages Send-Messages User-List';
+        grid-template-areas: 'Sidebar Messages Messages Messages User-List'
+        'Sidebar Messages Messages Messages User-List'
+        'Sidebar Send-Messages Send-Messages Send-Messages User-List';
     }
 
     .menu-burger-button {
@@ -388,7 +389,8 @@ h5 {
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: 1.7fr 0.1fr;
-        grid-template-areas: 'Messages''Send-Messages';
+        grid-template-areas: 'Messages'
+        'Send-Messages';
     }
 
     .user-list-grid {

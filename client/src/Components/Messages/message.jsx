@@ -426,7 +426,7 @@ export default function SendMessages() {
                                                         <div className="message-user">
                                                             {message.from.toLowerCase()}
                                                             <div className="message-date">{` - ${moment(message.date).format('LLL')}`}</div>
-                                                            <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} />
+                                                            {activeView === "workspaces" ? <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} /> : null}
                                                         </div>
 
                                                     }
@@ -443,7 +443,9 @@ export default function SendMessages() {
                             })
                             : null}
                     </List>
+
                     <div ref={element => (messageContainerBottomRef = element)} id="messagesContainerBottom"></div>
+
                     <Popover
                         id="user-info"
                         open={userInfoVisible}
@@ -459,7 +461,6 @@ export default function SendMessages() {
 
                 </div>
             </div>
-
             <div className="send-message-border" />
             <div className="send-message-container">
                 <TextareaAutosize
@@ -479,6 +480,7 @@ export default function SendMessages() {
                 <SmileyFace className="send-message-emoji-button" onClick={() => setEmojiMenuVisible(!emojiMenuVisible)} />
 
             </div>
+
             <div className={emojiMenuVisible ? 'send-message-emoji-menu show' : 'send-message-emoji-menu hide'}>
                 <div className="emoji-wrapper">
                     <Picker onSelect={e => handleEmojiClick(e)} />

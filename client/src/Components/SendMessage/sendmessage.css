@@ -1,7 +1,6 @@
 /* SendMessage.jsx */
 .send-message-container {
     position: relative;
-    /* height: 100%; */
     padding: 0.6em;
     box-sizing: border-box; 
     display: flex;
@@ -9,7 +8,7 @@
     flex-basis: 100%; 
     justify-content: center;
     z-index: 10;
-    top: 442px;
+    top: 390px;
     background-color: #340e36;
 }
 

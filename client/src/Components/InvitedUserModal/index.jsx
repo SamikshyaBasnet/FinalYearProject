@@ -1,13 +1,10 @@
-import './register.css'
+import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
-
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import { useState } from 'react'
 import logo from '../../assets/images/slacklogo.jpg';
 import { Link } from "react-router-dom";
-import Axios from '../API/api';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 import {
     Form,
     Row,
@@ -15,31 +12,31 @@ import {
     Alert,
     InputGroup
 } from "react-bootstrap";
+import './inviteuser.css';
+import { useLocation, useNavigate } from "react-router-dom";
+import Axios from '../API/api';
 import { signUp } from '../../actions';
+import "../Register/register.css";
 
-function Register() {
-    // Dispatch
-    const dispatch = useDispatch();
+
+const InvitedUser = () => {
+    const navigate = useNavigate();
 
     const [seePassword, setSeePassword] = useState(false);
     const [seeConfirmPassword, setSeeConfirmPassword] = useState(false);
 
     const [registerStatus, setRegisterStatus] = useState("");
+    const [isRegistered, setIsRegistered] = useState(false);
+
     const [formData, setFormData] = useState({
-        email: '',
         username: '',
         password: '',
         confirmPassword: '',
-    })
+    });
 
-    const [isVerified, setIsVerified] = useState(false);
-    const [isRegistered, setIsRegistered] = useState(false);
-
-    const { email, username, password, confirmPassword } = formData;
+    const { username, password, confirmPassword } = formData;
     const schema = Yup.object().shape({
-        email: Yup.string()
-            .required('Email is required')
-            .email('Email is invalid'),
+
         username: Yup.string()
             .required('Username is required'),
         password: Yup.string()
@@ -58,25 +55,6 @@ function Register() {
 
     }
 
-    const current = new Date();
-    const join_date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-    const verified_date = "";
-    const token = "";
-    Axios.defaults.withCredentials = true;
-
-    const handleRegister = () => {
-        Axios.post('/user/register',
-            { username: username, email: email, password: password, join_date: join_date, isVerified: isVerified, verified_date: verified_date, toke: token })
-            .then((response) => {
-                console.log(response);
-                if (response) {
-                    setRegisterStatus(response.data.message);
-                    setIsRegistered(response.data.registered)
-                    console.log(response.data.message);
-                }
-                dispatch(signUp(response.data));
-            });
-    }
     const passwordVisibilityHandler = () => {
         setSeePassword(!seePassword)
 
@@ -85,27 +63,44 @@ function Register() {
         setSeeConfirmPassword(!seeConfirmPassword)
     }
 
+    const dispatch = useDispatch();
+
+    const current = new Date();
+    const join_date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
+    Axios.defaults.withCredentials = true;
+
+
+    //getting query params from the url
+    const search = useLocation().search;
+    const email = new URLSearchParams(search).get('email');
+    const workspaceId = new URLSearchParams(search).get('workspaceId');
+    const workspaceName = new URLSearchParams(search).get('workspaceName');
+
+    // const email = 
+    const handleOnClick = () => {
+        Axios.post(`/user/clickedjoined?email=${email}&username=${username}&password=${password}&workspaceId=${workspaceId}&join_date=${join_date}&verified_data=${join_date}`).then((res) => {
+            if (res) {
+                setRegisterStatus(res.data.message);
+                setIsRegistered(res.data.registered);
+
+            }
+            dispatch(signUp(res.data));
+            if (res.data.registered === true) {
+                navigate('/dashboard')
+
+            }
+
+        })
+    }
+
     return (
         <div className="register">
             <div className="register__container">
                 <img className='logo' src={logo} alt="Slack Logo" />
-                <h4 className='fw-bold mb-4 text-center'>Sign up to Slack</h4>
-                <Form onSubmit={handleSubmit(handleRegister)}>
+                <h4 className='fw-bold mb-4 text-center'>Join {workspaceName}</h4>
+                <Form onSubmit={handleSubmit(handleOnClick)}>
                     <Row>
-                        <Col md="6">
-                            <Form.Group className="mb-4" controlId="formBasicEmail">
-                                <Form.Control
-                                    {...register('email')}
-                                    value={email}
-                                    onChange={(e) => onChange(e)}
-                                    name="email"
-                                    className={`input  ${errors.email ? 'is-invalid' : ''}`}
-                                    type="email" placeholder="Enter email"
-                                />
-                                <div className="invalid-feedback">{errors.email?.message}</div>
-                            </Form.Group>
-                        </Col>
-                        <Col md="6">
+                        <Col md="12">
                             <Form.Group className="mb-4" controlId="formBasicUsername">
                                 <Form.Control
                                     {...register('username')}
@@ -123,9 +118,10 @@ function Register() {
                         <Col md="6">
                             <Form.Group className="mb-4" controlId="formBasicPassword">
                                 <InputGroup className="mb-3">
-                                    <Form.Control name="password"
+                                    <Form.Control
                                         {...register('password')}
                                         value={password}
+                                        name="password"
                                         onChange={(e) => onChange(e)}
                                         className={`input ${errors.password ? 'is-invalid' : ''}`}
                                         type={seePassword ? 'text' : 'password'} placeholder="Password"
@@ -144,9 +140,10 @@ function Register() {
                         <Col md="6">
                             <Form.Group className="mb-4" controlId="formBasicConfirmPassword">
                                 <InputGroup>
-                                    <Form.Control name="confirmPassword"
+                                    <Form.Control
                                         {...register('confirmPassword')}
                                         value={confirmPassword}
+                                        name="confirmPassword"
                                         onChange={(e) => onChange(e)}
                                         className={`input ${errors.confirmPassword ? 'is-invalid' : ''}`}
                                         type={seeConfirmPassword ? 'text' : 'password'} placeholder="Confirm Password"
@@ -178,8 +175,7 @@ function Register() {
                 </div>
             </div >
         </div >
-
     )
 }
 
-export default Register
+export default InvitedUser

@@ -1,0 +1,9 @@
+.invited-button{
+    display: block;
+    text-transform: inherit !important;
+    background-color: #4a154b !important;
+    color: white !important;
+    font-weight: bold !important;
+    border: 1px solid #4a154b !important;
+    transition: all 0.5s ease;
+}

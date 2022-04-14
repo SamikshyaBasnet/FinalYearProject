@@ -527,7 +527,7 @@ router.get('/user/logout', async (req, res) => {
 // Expects -> User Id
 // Expects -> Userid
 
-router.post('/user/edit', (req, res) => {
+router.post('/user/usernameedit', (req, res) => {
     const {
         userName,
         userId
@@ -569,6 +569,9 @@ const editUserName = (userName, userId) => {
     db.query(
         `UPDATE users SET username = '${userName}' WHERE user_id = '${userId}'`
     );
+    // db.query(
+    //     `UPDATE messages SET username = '${userName}' WHERE user_id = '${userId}'`
+    // );
 };
 
 

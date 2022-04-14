@@ -11,6 +11,7 @@ import ResetPassword from './Components/PasswordManager/resetPassword';
 import Workspace from './Components/Workspace';
 import CreateWorkSpace from './Components/Workspace/create';
 import { useDispatch } from 'react-redux';
+import InvitedUser from './Components/InvitedUserModal';
 
 
 
@@ -43,6 +44,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/workspace" element={<Workspace />} />
           <Route path="/workspace/create" element={<CreateWorkSpace />} />
+          <Route path="/user/invited" element={<InvitedUser />} />
         </Routes>
       </Router>
     </div>

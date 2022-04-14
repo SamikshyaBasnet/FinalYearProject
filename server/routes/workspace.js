@@ -97,8 +97,8 @@ function sendEmail(receiverEmail, senderUsername, workspaceName, workspaceId) {
             <tbody>
             <tr style="width:100%">
             <td style="width:100%">
-            <span style="display:inline-block;border-radius:4px;background-color:#611f69" class="m_-5661414453106287171button_link_wrapper m_-5661414453106287171plum">
-            <a class="m_-5661414453106287171button_link m_-5661414453106287171plum" href="https://join.slack.com/t/shawols/invite/enQtMjY2MDUyNzQ0MzQzMC0wYmNkY2FjOTZjNWZkZGIxZTg5ZjRmZDcxYzY4MzYxMGU1MTFhYThhMjNlODg1ZDVjNTc0NzM2MjY2NWE3NmQ2?x=x-p2669470084260-2652578352903-2669471625604" style="border-top:13px solid;border-bottom:13px solid;border-right:24px solid;border-left:24px solid;border-color:#611f69;border-radius:4px;background-color:#611f69;color:#ffffff;font-size:16px;line-height:18px;word-break:break-word;display:inline-block;text-align:center;font-weight:900;text-decoration:none!important" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://join.slack.com/t/shawols/invite/enQtMjY2MDUyNzQ0MzQzMC0wYmNkY2FjOTZjNWZkZGIxZTg5ZjRmZDcxYzY4MzYxMGU1MTFhYThhMjNlODg1ZDVjNTc0NzM2MjY2NWE3NmQ2?x%3Dx-p2669470084260-2652578352903-2669471625604&amp;source=gmail&amp;ust=1647756193200000&amp;usg=AOvVaw0mCgOL0i2OovXe731-HCuN">
+            <span style="display:inline-block;border-radius:4px;background-color:#611f69 padding:12px"  class="m_-5661414453106287171button_link_wrapper m_-5661414453106287171plum">
+            <a class="m_-5661414453106287171button_link m_-5661414453106287171plum" href="http://localhost:3000/user/invited?email=${receiverEmail}&workspaceId=${workspaceId}&workspaceName=${workspaceName}">
             Join Now
             </a>
             </span>
@@ -106,11 +106,18 @@ function sendEmail(receiverEmail, senderUsername, workspaceName, workspaceId) {
             </tr>
             </tbody>
             </table>
+           
             <div style="margin-top:16px;display:block;border-top:1px solid #e1e1e4;padding-top:16px;padding-bottom:16px;margin-left:24px;margin-right:24px;text-align:center"><h4 style="font-size:17px;font-weight:900">
            ${senderUsername} has already joined
             </h4>
             <img src="https://ci5.googleusercontent.com/proxy/uXst8cQrtaGT-NdH2AnO1hfxjw9Z_0D64reLPTrWQStPW7Gcqn-SIF-GLeBeGM1JcSnCcrFGX0FRMLE7BLPXjSX0lYBA-0L4AAmVOdqn7nuaKjU75OiGhbsfUGqJmBxRhc6tpYpl=s0-d-e1-ft#https://avatars.slack-edge.com/2021-10-29/2667268126003_a3820a30ea711bcd0693_72.png" height="40" width="40" style="height:40px;width:40px;border-radius:4px;margin-right:8px" alt="Profile picture of ${senderUsername}." title="Profile picture of ${senderUsername}." class="CToWUd"/>
             </div>
+            <div style="margin-top:16px;display:block;border-top:1px solid #e1e1e4;padding-top:16px;padding-bottom:16px;margin-left:24px;margin-right:24px;text-align:center">
+            <h4 style="font-size:17px;font-weight:900">
+            If you are already in slack. Copy the workspace id of ${workspaceName} which is ${workspaceId} and join from 
+            your dashboard. Its easy!
+            </h4>
+            </div
             </td>
             </tr>
             </tbody>
@@ -139,6 +146,66 @@ function sendEmail(receiverEmail, senderUsername, workspaceName, workspaceId) {
     }
 
 }
+
+router.post('/user/clickedjoined', (req, res) => {
+
+    const {
+        email,
+        workspaceId,
+        username,
+        password,
+        join_date,
+        verified_date
+    } = req.query;
+    const user_last_active = `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`;
+    db.query(`SELECT * FROM users WHERE email=${email}`, (err, result) => {
+        if (error) {
+            res.json({
+                message: "Sorry!Error occured on server. Please give us a time."
+            });
+        }
+        if (result.length > 0) {
+            return res.json({
+                registered: false,
+                message: "You are already in Slack, You can login to join the server!"
+            })
+        } else {
+            const userId = utilsFunction.getUniqueId('user');
+            // console.log(userId);
+            var token = randtoken.generate(20);
+            bcrypt.hash(password, saltRounds, (err, hash) => {
+                if (err) {
+                    res.status(400).json({
+                        err: err
+                    })
+                }
+                const isVerified = 1
+                db.query(`INSERT INTO users (user_id, username, email, password, join_date, user_last_active, isVerified, verifiedDate, token) VALUES ('${userId}', '${username}', '${email}', '${hash}', '${join_date}', '${user_last_active}' '${created_date}', '${isVerified}', '${verified_date}', '${token}')`,
+                    (error, result) => {
+                        if (error) {
+                            console.log(error);
+                            res.json({
+                                registered: false,
+                                message: "Problem occured in database. Please give us some time."
+                            })
+                        } else {
+                            db.query(`INSERT INTO userworkspaces (user_id, workspace_id) VALUES ( '${userId}', '${workspaceId}')`);
+                            return res.status(201).json({
+                                registered: true,
+                                userName: username,
+                                userId: userId,
+                            })
+                        }
+
+                    }
+                )
+
+            })
+        }
+
+
+    });
+});
 
 router.post('/workspace/invite', (req, res) => {
     const workspaceId = req.query.workspaceId;
@@ -177,7 +244,9 @@ router.post('/workspace/invite', (req, res) => {
         )
     }
 
-})
+});
+
+
 
 // Route to join a workspace
 // Expects -> workspace Id
@@ -417,6 +486,8 @@ const deleteworkspace = (workspaceId) => {
     db.query(`DELETE FROM workspaceadmins where workspace_id = '${workspaceId}'`);
     db.query(`DELETE FROM channels where workspace_id = '${workspaceId}'`);
 };
+
+
 
 
 module.exports = router;

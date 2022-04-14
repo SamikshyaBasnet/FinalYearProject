@@ -100,10 +100,10 @@ async function main() {
 
         socket.on('simple-chat-message', async (msg = Message) => {
             //storing message in database;
-            // const sqlquery = `INSERT INTO messages (channel_id, username, message, date) VALUES 
-            // ('${msg.channel.split('-')[1]}', '${msg.from}', '${msg.msg}', '${date}')`
+            const sqlquery = `INSERT INTO messages (channel_id, username, message, date) VALUES 
+            ('${msg.channel.split('-')[1]}', '${msg.from}', '${msg.msg}', '${date}')`
 
-            // db.query(sqlquery);
+            db.query(sqlquery);
             const workspaceId = msg.workspace.split('-')[1];
 
             //formatting the action for client
@@ -111,48 +111,48 @@ async function main() {
                 type: 'message',
                 payload: msg
             }
-            console.log("client message", msg)
-            if (action.payload.msgType === "file") {
-                //console.log("its a file", msg);
-                //  const readData = fs.readFile("image");
-                // const path = './uploads/';
-                //let array = new BigInt64Array(0);
-                //let buffer = Buffer.from(array.msg)
-                //fs.createWriteStream(path).write(buffer);
-                // const buffer = await Buffer.from(msg, 'base64').toString();
-                // fs.writeFile('/tmp/image', buffer);
-                //fs.writeFile('/tmp/image', base64data);
-                var image = msg.msg;
-                // var data = image.replace(/^data:image\/\w+;base64,/, '');
-                console.log("image", image)
 
-                var file_name = 'user' + msg.from + Date.now() + "image.jpg";
+            // if (action.payload.msgType === "file") {
+            //     //console.log("its a file", msg);
+            //     //  const readData = fs.readFile("image");
+            //     // const path = './uploads/';
+            //     //let array = new BigInt64Array(0);
+            //     //let buffer = Buffer.from(array.msg)
+            //     //fs.createWriteStream(path).write(buffer);
+            //     // const buffer = await Buffer.from(msg, 'base64').toString();
+            //     // fs.writeFile('/tmp/image', buffer);
+            //     //fs.writeFile('/tmp/image', base64data);
+            //     var image = msg.msg;
+            //     // var data = image.replace(/^data:image\/\w+;base64,/, '');
+            //     console.log("image", image)
 
-                fs.writeFile("./uploads/" + file_name, image, {
-                    encoding: 'base64'
-                }, function (err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        action = {
-                            type: 'message',
-                            payload: msg.msg
-                        }
+            //     var file_name = 'user' + msg.from + Date.now() + "image.jpg";
 
-                        io.to(workspaceId).emit('update', action);
-                        //console.log("client message", readData)
-                    }
-                });
+            //     fs.writeFile("./uploads/" + file_name, image, {
+            //         encoding: 'base64'
+            //     }, function (err) {
+            //         if (err) {
+            //             console.log(err);
+            //         } else {
+            //             action = {
+            //                 type: 'message',
+            //                 payload: msg.msg
+            //             }
+
+            //             io.to(workspaceId).emit('update', action);
+            //             //console.log("client message", readData)
+            //         }
+            //     });
 
 
-            } else {
-                action = {
-                    type: 'message',
-                    payload: msg
-                }
-                io.to(workspaceId).emit('update', action);
-            }
+            // } else {
+            //     action = {
+            //         type: 'message',
+            //         payload: msg
+            //     }
 
+            // }
+            io.to(workspaceId).emit('update', action);
 
 
             // Emit the message to everyone that joined that server

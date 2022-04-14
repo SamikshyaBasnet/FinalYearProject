@@ -59,11 +59,13 @@ export default function Header() {
     const [sideBarDrawerVisible, setSideBarDrawerVisible] = useState(false);
     const [userListDrawerVisible, setUserListDrawerVisible] = useState(false);
     const [title, setTitle] = useState('');
-
-    const [userName, setUserName] = useState('');
+    let user_name = user.userName;
+    const [userName, setUserName] = useState(user_name);
     const [dateState, setDateState] = useState(new Date());
     const [name, setName] = useState('');
     const [body, setBody] = useState('');
+    //to edit username
+    const [isEditUsername, setIsEditUsername] = useState(false);
 
     //date pircker state
     let [selectedDate, setSelectedDate] = useState(new Date());
@@ -164,8 +166,9 @@ export default function Header() {
 
     };
     const handleRenameUserName = (userName) => {
+        setIsEditUsername(!isEditUsername);
         Axios.post(
-            `/user/edit?userName=${userName}&userId=${userId}`
+            `/user/usernameedit?userName=${userName}&userId=${userId}`
         ).then((response) => {
             if (response.data.renamed === true) {
                 setUserName(userName)
@@ -178,85 +181,6 @@ export default function Header() {
         })
     };
 
-
-    function ChildModal() {
-        const [open, setOpen] = React.useState(false);
-        const handleOpen = () => {
-            setOpen(true);
-        };
-        const handleClose = () => {
-            setOpen(false);
-        };
-
-        return (
-            <div>
-                <div className="d-flex justify-content-center py-2">
-                    <Button
-                        className="modal-button"
-                        variant="contained"
-                        color="primary" onClick={handleOpen}>Edit Profile
-                    </Button>
-                </div>
-
-                <Modal
-                    hideBackdrop
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="child-modal-title"
-                    aria-describedby="child-modal-description"
-                    disableBackdropClick
-                >
-                    <Box sx={{ ...style, width: 450 }}>
-                        <Grid container spacing={3} justifyContent="center" alignItems="center">
-                            <Grid item xs={12}>
-                                <Typography variant="h5" color="primary" align="center">
-                                    Edit Profile
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} className="grid-textfield">
-                                <Typography variant="body1" style={{ color: 'white' }} paragraph>
-                                    {' '}
-                                    Enter a new User Name
-                                </Typography>
-
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    error={true}
-                                    required
-                                    label="User Name"
-                                    //value={userName}
-                                    onChange={(e) => setUserName(e.target.value)}
-                                    variant="standard"
-                                    autoComplete="on"
-                                />
-                            </Grid>
-                            <Grid item xs={6} className="grid-button">
-                                <Button
-                                    className="modal-button"
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => handleRenameUserName(userName)}
-                                >
-                                    Save
-                                </Button>
-                            </Grid>
-                        </Grid>
-                        <div className="d-flex justify-content-center py-5">
-                            <Button
-                                className="modal-button"
-                                variant="contained"
-                                color="primary"
-                            //onClick={handleClose}
-                            >
-                                Close
-                            </Button>
-                        </div>
-                    </Box>
-                </Modal>
-            </div>
-        );
-    }
 
 
     // On active view change change title
@@ -279,7 +203,7 @@ export default function Header() {
             }
         })
     }
-    var user_name = user.username;
+
     return (
         <AppBar position="static" className="appbar header">
             <Toolbar className="navbar header">
@@ -433,9 +357,9 @@ export default function Header() {
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >
-                        <Box sx={style}>
+                        <Box sx={style} style={{ width: "350px", overflowY: "hidden" }}>
                             {/* <Slide direction={createDirection} in={createVisible} mountOnEnter unmountOnExit timeout={100}> */}
-                            <Grid container spacing={3} justifyContent="center" alignItems="center" style={{ color: "#fff" }}>
+                            <Grid container spacing={3} style={{ color: "#fff" }}>
                                 <Grid item xs={12}>
                                     <div className="user-profile">
                                         <p className="user">
@@ -447,18 +371,27 @@ export default function Header() {
                                         /> */}
                                     </div>
                                 </Grid>
-                                <Grid className="d-flex">
-                                    <Grid item xs={6}>
-                                        <p>Display Name</p>
-                                        <TextField id="outlined-basic" disabled defaultValue={user.userName} variant="standard" />
+                                <Grid item xs={12}>
+                                    <p>Display Name</p>
+                                </Grid>
+                                <Grid spacing={3} className="d-flex justify-content-start">
+                                    <Grid className="mx-2" item xs={6}>
+
+                                        <TextField id="outlined-basic" value={userName} disabled={isEditUsername ? false : true}
+                                            onChange={(e) => setUserName(e.target.value)} variant="standard" />
                                         {/* <p>{user.username}</p> */}
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <p>Display Name</p>
-                                        <TextField id="outlined-basic" disabled defaultValue={user.userName} variant="standard" />
-                                        {/* <p>{user.username}</p> */}
+                                        <Button
+                                            className="modal-button"
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => handleRenameUserName(userName)}>
+                                            {isEditUsername ? "Save" : "Edit"}
+                                        </Button>
                                     </Grid>
                                 </Grid>
+
 
                                 <Grid item xs={12}>
                                     <p>Local Time</p>
@@ -497,8 +430,6 @@ export default function Header() {
                                 </Grid>
 
                             </Grid>
-
-                            <ChildModal />
                         </Box>
                     </Modal>
                 </div>
