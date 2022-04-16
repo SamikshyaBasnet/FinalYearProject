@@ -217,6 +217,7 @@ async function main() {
                     clients.splice(i, 1);
                 }
             });
+            const disconnect = true;
 
             console.log('user ' + ' disconnected');
         });

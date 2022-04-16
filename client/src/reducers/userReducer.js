@@ -8,6 +8,7 @@ const initialState = {
     isSignedIn: false,
     isAdmin: false,
     email: '',
+    isActive: false,
     reminders: [{
         reminderId: '',
         name: '',
@@ -36,7 +37,9 @@ export const userReducer = (state = initialState, action) => {
                     userName: action.payload.userName,
                     isAdmin: action.payload.isAdmin,
                     email: action.payload.email,
+                    isActive: true,
             };
+
         case ACTION.ISUSER_AUTHENICATED:
             return {
                 ...state,
@@ -52,6 +55,7 @@ export const userReducer = (state = initialState, action) => {
                     userId: '',
                     userName: '',
                     email: '',
+                    isActive: false,
             };
         case ACTION.GET_REMINDERS:
             return {

@@ -37,6 +37,7 @@ import {
     loadUserData,
     loadReminders,
     loadSearchedMessages,
+    loadPrivateSearchedMessages,
 } from '../../actions';
 import Sidebar from '../Sidebar';
 import ActiveUserList from '../ActiveUserList';
@@ -127,6 +128,7 @@ export default function Header() {
     const [open, setOpen] = React.useState(false);
     const [reminderOpen, setReminderOpen] = React.useState(false);
     const [openCreateReminder, setOpenCreateReminder] = useState(false);
+    const [openSearchModal, setOpenSearchModal] = React.useState(false);
 
 
     const handleOpen = () => {
@@ -141,6 +143,11 @@ export default function Header() {
     const handleReminderClose = () => {
         setReminderOpen(false);
     };
+
+    const handleSearchModalClose = () => {
+        setOpenSearchModal(false);
+    };
+
     const handleCreateReminderOpen = () => {
         setOpenCreateReminder(true)
     };
@@ -152,17 +159,26 @@ export default function Header() {
 
     // Handles changes in message box (catches enter to not send new lines. (Must send SHIFT+ENTER))
     function handleOnChange(e) {
-        console.log("hi");
+
         if (e.target.value !== '\n') setSearchMessage(e.target.value);
-        console.log(e.target.value)
+
     }
 
     function handleKeyPress(e, searchMessage, channelId) {
-        console.log("message=", searchMessage)
+
         if (e.key === 'Enter' && !e.shiftKey) {
-            dispatch(loadSearchedMessages(searchMessage, channelId))
+
+            if (activeView === "workspaces") {
+                dispatch(loadSearchedMessages(searchMessage, channelId))
+            }
+            else {
+                dispatch(loadPrivateSearchedMessages(searchMessage))
+            }
+            setOpenSearchModal(true)
+            setSearchMessage('');
         }
-        setOpen(true);
+        searchedMessages = [];
+
     }
 
     //avatar picker
@@ -173,6 +189,18 @@ export default function Header() {
         setAvatarImage(imageFile);
     };
 
+    //  Signs the user out
+    const handleSignOut = () => {
+        const userId = user.userId;
+        console.log("Logout user id ", userId)
+        Axios.get(`/user/logout?userId=${userId}`).then(res => {
+            if (res) {
+                dispatch(signOut())
+                localStorage.removeItem("token")
+                navigate('/')
+            }
+        })
+    }
     const style = {
         position: 'absolute',
         top: '50%',
@@ -184,7 +212,7 @@ export default function Header() {
         boxShadow: 24,
         overflow: "scroll",
         p: 4,
-        height: 400,
+        height: 480,
 
     };
     const handleRenameUserName = (userName) => {
@@ -214,17 +242,6 @@ export default function Header() {
         }
     }, [activeView, activePMUser, activeChannel]);
 
-    const handleSignOut = () => {
-        const userId = user.userId;
-        console.log("Logout user id ", userId)
-        Axios.get(`/user/logout?userId=${userId}`).then(res => {
-            if (res) {
-                dispatch(signOut())
-                localStorage.removeItem("token")
-                navigate('/')
-            }
-        })
-    }
 
     return (
         <AppBar position="static" className="appbar header">
@@ -265,8 +282,6 @@ export default function Header() {
                         aria-describedby="modal-modal-description"
                     >
                         <Box sx={style}>
-                            {/* <Slide direction={createDirection} in={createVisible} mountOnEnter unmountOnExit timeout={100}> */}
-
                             <Grid container spacing={3} justifyContent="center" alignItems="center" style={{ color: "#fff" }}>
                                 <Grid item xs={12}>
                                     <Button className="modal-button" onClick={handleCreateReminderOpen}>{openCreateReminder ? "Close" : "Create"}</Button>
@@ -369,8 +384,8 @@ export default function Header() {
                     <SearchIcon className="search" />
 
                     <Modal
-                        open={open}
-                        onClose={handleClose}
+                        open={openSearchModal}
+                        onClose={handleSearchModalClose}
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >
@@ -378,33 +393,44 @@ export default function Header() {
                             <div className="pinned_msg">
                                 <h4>All the Messages</h4>
                                 <div>
-                                    {searchedMessages.map((msg, i) => {
-                                        return (
-                                            <ListItem className="message" key={i}>
-                                                <ListItemAvatar className="message-user-icon">
-                                                    <div className="user-profile">
-                                                        <p className="user">
-                                                            {msg.username.charAt(0).toUpperCase()}
-                                                        </p>
-                                                    </div>
+                                    {searchedMessages.length === 0 ? (
+                                        <div style={{
+                                            width: "400px", display: "flex", justifyContent: "center", alignItems: "center"
+                                        }}>
+                                            No messages Found!
+                                        </div>
+                                    ) :
+                                        <div>
+                                            {searchedMessages.map((msg, i) => {
+                                                return (
+                                                    <ListItem className="message" key={i}>
+                                                        <ListItemAvatar className="message-user-icon">
+                                                            <div className="user-profile">
+                                                                <p className="user">
+                                                                    {msg.username.charAt(0).toUpperCase()}
+                                                                </p>
+                                                            </div>
 
-                                                </ListItemAvatar>
-                                                <ListItemText
-                                                    primary={
-                                                        <div className="message-user">
-                                                            {msg.username.toLowerCase()}
-                                                            <div className="message-date">{` - ${moment(msg.date).format('LLL')}`}</div>
-                                                        </div>
-                                                    }
+                                                        </ListItemAvatar>
+                                                        <ListItemText
+                                                            primary={
+                                                                <div className="message-user">
+                                                                    {msg.username.toLowerCase()}
+                                                                    <div className="message-date">{` - ${moment(msg.date).format('LLL')}`}</div>
+                                                                </div>
+                                                            }
 
-                                                    secondary={msg.message}
-                                                    className="message-text"
-                                                />
+                                                            secondary={msg.message}
+                                                            className="message-text"
+                                                        />
 
-                                            </ListItem>
-                                        )
+                                                    </ListItem>
+                                                )
 
-                                    })}
+                                            })}
+                                        </div>
+                                    }
+
                                 </div>
                             </div>
                         </Box>
@@ -450,7 +476,7 @@ export default function Header() {
                                             variant="contained"
                                             color="primary"
                                             onClick={() => handleRenameUserName(userName)}>
-                                            {isEditUsername ? "Save" : "Edit"}
+                                            {isEditUsername ? "Save" : "Change"}
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -491,7 +517,9 @@ export default function Header() {
                                         {user.email}
                                     </p>
                                 </Grid>
-
+                                <Grid item xs={12}>
+                                    <Button className="modal-button" onClick={handleSignOut}>Sign out</Button>
+                                </Grid>
                             </Grid>
                         </Box>
                     </Modal>

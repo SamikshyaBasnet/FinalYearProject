@@ -41,13 +41,13 @@ export const socketMiddleWare = (baseUrl) => {
                 let workspaceIds = [];
                 workspaces.forEach((workspace, i) => {
                     workspaceIds[i] = workspace.split('-')[1];
-                    socket.emit('subscribe', workspace);
+                    // socket.emit('subscribe', workspace);
                 });
 
                 // Subscribe to each workspace (Creates a room on socket io)
-                // workspaceIds.forEach((workspaceId) => {
-                //     socket.emit('subscribe', workspaceId);
-                // });
+                workspaceIds.forEach((workspaceId) => {
+                    socket.emit('subscribe', workspaceId);
+                });
             }
 
             // If user creates a workspace we need to join that room

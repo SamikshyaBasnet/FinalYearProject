@@ -194,7 +194,13 @@ export const chatReducer = (state = initialState, action) => {
         case ACTION.GET_SEARCHED_MESSAGES:
             return {
                 ...state,
-                pinnedMessages: action.payload
+                searchedMessages: action.payload
+            };
+
+        case ACTION.GET_SEARCHED_PRIVATE_MESSAGES:
+            return {
+                ...state,
+                searchedMessages: action.payload
             };
         case ACTION.UPDATE_ACTIVE_USERS:
             return {

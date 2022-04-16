@@ -23,6 +23,7 @@ export const signOut = () => ({
     payload: null
 });
 
+
 //is user authenticated?
 export const isUserAuth = (user) => ({
     type: ACTION.ISUSER_AUTHENICATED,
@@ -100,6 +101,15 @@ export const getPinnedMessages = (message) => ({
     payload: message
 });
 
+export const getSearchedMessages = (message) => ({
+    type: ACTION.GET_SEARCHED_MESSAGES,
+    payload: message
+});
+
+export const getSearchedPrivateMessages = (message) => ({
+    type: ACTION.GET_SEARCHED_PRIVATE_MESSAGES,
+    payload: message
+});
 //action to create reminder
 export const createReminder = (reminder) => ({
     type: ACTION.CREATE_REMINDER,
@@ -142,26 +152,32 @@ export const loadUserData = (userId) => async (dispatch) => {
 export const loadReminders = (userId) => async (dispatch) => {
     let url = `/reminders?userId=${userId}`;
     const res = await Axios.get(url);
-    console.log("all reminders", res);
-    const rem = dispatch(getReminder(res.data));
-    console.log("remsa ", rem)
+    dispatch(getReminder(res.data));
+
 }
 
 export const loadPinnedMessages = (channelId) => async (dispatch) => {
     let url = `/channel/pinnedmessage?channelId=${channelId}`;
     const res = await Axios.get(url);
-    const rem = dispatch(getPinnedMessages(res.data));
-    console.log("pinned Mesages =", rem)
+    dispatch(getPinnedMessages(res.data));
+
 
 }
 
 export const loadSearchedMessages = (message, channelId) => async (dispatch) => {
     let url = `/channel/searchmessage?channelId=${channelId}&message=${message}`;
     const res = await Axios.get(url);
-    const rem = dispatch(getPinnedMessages(res.data));
-    console.log("search Mesages =", rem)
+    dispatch(getSearchedMessages(res.data));
 }
 
+//for private message
+
+export const loadPrivateSearchedMessages = (message) => async (dispatch) => {
+    let url = `/usermessage/searchprivatemessage?message=${message}`;
+    const res = await Axios.get(url);
+    console.log("serch pm respinse", res)
+    dispatch(getSearchedPrivateMessages(res.data));
+}
 
 //SOCEKT ACTIONS
 
