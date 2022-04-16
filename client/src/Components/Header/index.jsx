@@ -21,10 +21,14 @@ import {
     TextField,
     Table,
     TableBody,
-
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
     TableCell, TableContainer, TableHead, TableRow, Paper
 
 } from '@material-ui/core';
+import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
 import Axios from '../API/api';
 import { useNavigate } from 'react-router-dom';
@@ -32,29 +36,28 @@ import {
     signOut,
     loadUserData,
     loadReminders,
+    loadSearchedMessages,
 } from '../../actions';
 import Sidebar from '../Sidebar';
 import ActiveUserList from '../ActiveUserList';
 import { FcCalendar, FcAlarmClock } from 'react-icons/fc'
 import AccessTimeIcon from '@material-ui/icons/AccessTime'
 import SearchIcon from '@material-ui/icons/Search'
-import AvatarPicker from "./AvatarPicker";
-
-
 
 export default function Header() {
 
     // Get State from Redux Store
     const chatStore = useSelector((state) => state.chat);
-    const { activeChannel, activePMUser, activeView } = chatStore;
+    const { activeChannel, activePMUser, activeView, searchedMessages } = chatStore;
     const user = useSelector((state) => state.user);
     const { userId } = useSelector((state) => state.user);
     let { reminders } = useSelector((state) => state.user);
+    const channelId = activeChannel.split('-')[1];
 
     let allreminders = []
     allreminders = reminders;
     // allreminders.push(reminders);
-    console.log("from store", allreminders)
+
     // Local state
     const [sideBarDrawerVisible, setSideBarDrawerVisible] = useState(false);
     const [userListDrawerVisible, setUserListDrawerVisible] = useState(false);
@@ -64,6 +67,9 @@ export default function Header() {
     const [dateState, setDateState] = useState(new Date());
     const [name, setName] = useState('');
     const [body, setBody] = useState('');
+    //search messge
+    const [searchMessage, setSearchMessage] = useState('');
+
     //to edit username
     const [isEditUsername, setIsEditUsername] = useState(false);
 
@@ -88,7 +94,7 @@ export default function Header() {
 
 
     selectedDate = `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()} ${selectedDate.getHours()}:${selectedDate.getMinutes()}:${selectedDate.getSeconds()}`;
-    console.log("sele", selectedDate)
+
 
     const handleCreateReminder = (name, body, selectedDate) => {
         Axios.post(`/reminders/create?name=${name}&body=${body}&date=${selectedDate}&userId=${userId}`
@@ -142,6 +148,22 @@ export default function Header() {
         setOpenCreateReminder(false);
     };
 
+    //searh message functionality
+
+    // Handles changes in message box (catches enter to not send new lines. (Must send SHIFT+ENTER))
+    function handleOnChange(e) {
+        console.log("hi");
+        if (e.target.value !== '\n') setSearchMessage(e.target.value);
+        console.log(e.target.value)
+    }
+
+    function handleKeyPress(e, searchMessage, channelId) {
+        console.log("message=", searchMessage)
+        if (e.key === 'Enter' && !e.shiftKey) {
+            dispatch(loadSearchedMessages(searchMessage, channelId))
+        }
+        setOpen(true);
+    }
 
     //avatar picker
 
@@ -207,8 +229,6 @@ export default function Header() {
     return (
         <AppBar position="static" className="appbar header">
             <Toolbar className="navbar header">
-
-
                 <IconButton
                     edge="start"
                     color="inherit"
@@ -340,11 +360,58 @@ export default function Header() {
                         </Box>
                     </Modal>
                 </div>
-                {/* <div className="header__middle">
-                    <input placeholder="Search" />
+                <div className="header__middle">
+                    <input placeholder="Search Message"
+                        value={searchMessage}
+                        onChange={e => handleOnChange(e)}
+                        onKeyPress={e => handleKeyPress(e, searchMessage, channelId)}
+                    />
                     <SearchIcon className="search" />
 
-                </div> */}
+                    <Modal
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={{ ...style, width: 450 }}>
+                            <div className="pinned_msg">
+                                <h4>All the Messages</h4>
+                                <div>
+                                    {searchedMessages.map((msg, i) => {
+                                        return (
+                                            <ListItem className="message" key={i}>
+                                                <ListItemAvatar className="message-user-icon">
+                                                    <div className="user-profile">
+                                                        <p className="user">
+                                                            {msg.username.charAt(0).toUpperCase()}
+                                                        </p>
+                                                    </div>
+
+                                                </ListItemAvatar>
+                                                <ListItemText
+                                                    primary={
+                                                        <div className="message-user">
+                                                            {msg.username.toLowerCase()}
+                                                            <div className="message-date">{` - ${moment(msg.date).format('LLL')}`}</div>
+                                                        </div>
+                                                    }
+
+                                                    secondary={msg.message}
+                                                    className="message-text"
+                                                />
+
+                                            </ListItem>
+                                        )
+
+                                    })}
+                                </div>
+                            </div>
+                        </Box>
+                    </Modal>
+
+
+                </div>
                 <div className="header__right">
                     <div className="user-profile" onClick={handleOpen}>
                         <p className="user">
@@ -365,10 +432,6 @@ export default function Header() {
                                         <p className="user">
                                             {user.userName.charAt(0).toUpperCase()}
                                         </p>
-                                        {/* <AvatarPicker
-                                            handleChangeImage={handleImageChange}
-                                            avatarImage={avatarImage}
-                                        /> */}
                                     </div>
                                 </Grid>
                                 <Grid item xs={12}>

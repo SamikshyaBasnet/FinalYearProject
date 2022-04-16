@@ -30,7 +30,6 @@ export const socketMiddleWare = (baseUrl) => {
             //call sign in action to send the socket workspace our userid to indentify individual socekt connections
             if (action.type === ACTION.SIGN_IN) {
                 socket.emit('simple-chat-sign-in', action.payload);
-                console.log("signin payload", action.payload);
                 listener = setupSocketListener(socket, storeAPI);
             }
 
@@ -40,15 +39,15 @@ export const socketMiddleWare = (baseUrl) => {
                 // Get list of workspace Ids (used for "room" names on socket workspace)
                 let workspaces = Object.keys(action.payload.workspaces);
                 let workspaceIds = [];
-
                 workspaces.forEach((workspace, i) => {
                     workspaceIds[i] = workspace.split('-')[1];
+                    socket.emit('subscribe', workspace);
                 });
 
                 // Subscribe to each workspace (Creates a room on socket io)
-                workspaceIds.forEach(workspaceId => {
-                    socket.emit('subscribe', workspaceId);
-                });
+                // workspaceIds.forEach((workspaceId) => {
+                //     socket.emit('subscribe', workspaceId);
+                // });
             }
 
             // If user creates a workspace we need to join that room
@@ -61,8 +60,9 @@ export const socketMiddleWare = (baseUrl) => {
             if (action.type === ACTION.UPDATE_ACTIVE_STATE) {
                 socket.emit('update-active');
             }
-            // socket.removeAllListeners();
+            // 
             return next(action)
+            // socket.removeAllListeners();
         };
 
     };

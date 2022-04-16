@@ -155,6 +155,13 @@ export const loadPinnedMessages = (channelId) => async (dispatch) => {
 
 }
 
+export const loadSearchedMessages = (message, channelId) => async (dispatch) => {
+    let url = `/channel/searchmessage?channelId=${channelId}&message=${message}`;
+    const res = await Axios.get(url);
+    const rem = dispatch(getPinnedMessages(res.data));
+    console.log("search Mesages =", rem)
+}
+
 
 //SOCEKT ACTIONS
 

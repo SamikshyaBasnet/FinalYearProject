@@ -35,12 +35,18 @@ export let ChatStore = {
     },
     activeView: '',
     activePMUser: '',
+    searchedMessages: [{
+        id: '',
+        username: '',
+        msg: '',
+        date: Date,
+    }],
     pinnedMessages: [{
         id: '',
         username: '',
         msg: '',
         date: Date,
-    }]
+    }],
 
 }
 
@@ -59,7 +65,9 @@ let initialState = {
     allUserList: [],
     activeView: 'workspaces',
     activePMUser: 'none',
+    searchedMessages: [],
     pinnedMessages: [],
+
 };
 let state;
 ChatStore = state;
@@ -179,6 +187,11 @@ export const chatReducer = (state = initialState, action) => {
                 allUserList: action.payload
             };
         case ACTION.GET_PINNED_MESSAGES:
+            return {
+                ...state,
+                pinnedMessages: action.payload
+            };
+        case ACTION.GET_SEARCHED_MESSAGES:
             return {
                 ...state,
                 pinnedMessages: action.payload

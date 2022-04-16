@@ -81,7 +81,7 @@ export default function SendMessages() {
 
         messages = chatStore.workspaces[activeWorkspace]['channels'][activeChannel];
         messagesLength = messages.length;
-        console.log("All messages =", messages)
+
 
     } else {
         messages = chatStore.privateMessages[activePMUser];
@@ -147,8 +147,8 @@ export default function SendMessages() {
         Axios.post(`/message/pin?id=${id}`
         ).then((response) => {
             if (response.data.isPinned === true) {
-                console.log("pin msg response=", response);
                 dispatch(loadPinnedMessages(channelId));
+                console.log("pin msg response=", response);
             }
 
         });
@@ -228,7 +228,7 @@ export default function SendMessages() {
                         setImageSrc(reader.result)
                     }
 
-                    reader.readAsDataURL(blob);
+                    reader.readAsDataURL(file);
 
                     handleSubmit({
                         workspace: activeWorkspace,

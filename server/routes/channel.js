@@ -150,6 +150,31 @@ router.delete('/channel/delete', (req, res) => {
     }
 });
 
+// Route to delete a channel
+// Expects -> ChannelId
+// Expects -> UserId
+router.delete('/channel/leave', (req, res) => {
+    const {
+        channelId,
+        userId,
+    } = req.query;
+    if (!channelId || !userId) {
+        res.status(400).json({
+            message: 'Invalid Params',
+            deleted: false,
+        });
+    } else {
+        // Check if user admin
+
+        leaveChannel(channelId, userId);
+        res.status(200).json({
+            message: `Channel left successfully!`,
+            channelId: channelId,
+            left: true,
+        });
+    }
+});
+
 router.post('/message/pin', (req, res) => {
     const id = req.query.id;
 
@@ -159,10 +184,11 @@ router.post('/message/pin', (req, res) => {
             if (err) {
                 throw err
             } else {
-
+                console.log("result", result)
                 res.json({
                     isPinned: true,
                     id: id,
+
                 })
 
             }
@@ -207,6 +233,25 @@ router.get('/channel/pinnedmessage', async (req, res) => {
     )
 });
 
+
+//get search messages
+
+router.get('/channel/searchmessage', async (req, res) => {
+
+    const channelId = req.query.channelId;
+    const message = req.query.message;
+
+    await db.query(`SELECT message_id, username, message, date from messages 
+    WHERE channel_id='${channelId}' AND message='${message}'`,
+        (err, result) => {
+            if (err) {
+                throw err
+            } else {
+                res.send(result);
+            }
+        }
+    )
+});
 // Create channel and all intermediary tables
 const createChannel = (channelId, channelName, workspaceId, created_date) => {
     db.query(
@@ -223,6 +268,11 @@ const renameChannel = (channelName, channelId) => {
 
 const deleteChannel = (channelId) => {
     db.query(`DELETE FROM channels WHERE channel_id = '${channelId}'`);
+};
+
+
+const leaveChannel = (channelId, userId) => {
+    db.query(`DELETE FROM userchannels WHERE channel_id = '${channelId}' AND user_id='${userId}' `);
 };
 
 module.exports = router;

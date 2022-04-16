@@ -208,6 +208,20 @@ export default function ActionsModal({ handleSnackMessage, modalType }) {
         });
     };
 
+    // Method to leave  channels
+    const handleLeaveChannel = (channelId) => {
+        Axios.delete(
+            `/channel/leave?channelId=${channelId}&userId=${userId}`
+        ).then((response) => {
+            if (response.data.left === true) {
+                handleSnackMessage(response.data.message, true);
+            }
+            else {
+                handleSnackMessage(response.data.message, false);
+            }
+        });
+    };
+
     // Handles keypress and calls the callback method
     const handleKeyPress = (e, callbackMethod) => {
         if (e.key === 'Enter') {
@@ -664,6 +678,46 @@ export default function ActionsModal({ handleSnackMessage, modalType }) {
         );
     };
 
+    const renderChannelLeave = () => {
+        return (
+            <Slide direction="left" in={true} mountOnEnter unmountOnExit timeout={100}>
+                <Grid container spacing={3} justifyContent="center" alignItems="center">
+                    <Grid item xs={12}>
+                        <Typography variant="h5" color="primary" align="center">
+                            Leave Channel
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} className="grid-textfield">
+                        <Typography variant="body1" paragraph>
+                            {' '}
+                            Are you sure you want to leave - {activeChannel.split('-')[0]}{' '}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} className="grid-button">
+                        <Button
+                            className="modal-button"
+                            variant="contained"
+                            color="primary"
+                            style={{ backgroundColor: 'green', marginRight: '8px' }}
+                            onClick={() => handleLeaveChannel(activeChannel.split('-')[1])}
+                        >
+                            Yes
+                        </Button>
+                        <Button
+                            className="modal-button"
+                            variant="contained"
+                            color="primary"
+                            style={{ backgroundColor: 'red', marginLeft: '8px' }}
+                            onClick={() => handleSnackMessage('Not leaving channel', false)}
+                        >
+                            No
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Slide>
+        );
+    };
+
     if (modalType === 'workspace-create-join')
         return (
             <Paper className="container-prompt">
@@ -686,7 +740,11 @@ export default function ActionsModal({ handleSnackMessage, modalType }) {
         return <Paper className="container-prompt">{renderChannelRename()}</Paper>;
     } else if (modalType === 'channel-delete') {
         return <Paper className="container-prompt">{renderChannelDelete()}</Paper>;
-    } else if (modalType === 'workspace-delete') {
+
+    } else if (modalType === 'channel-leave') {
+        return <Paper className="container-prompt">{renderChannelLeave()}</Paper>;
+    }
+    else if (modalType === 'workspace-delete') {
         return <Paper className="container-prompt">{renderworkspaceDelete()}</Paper>;
     } else return null;
 }

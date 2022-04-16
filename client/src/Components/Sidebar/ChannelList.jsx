@@ -47,6 +47,7 @@ function ChannelList(props) {
     // Local state
     const [workspaceAnchorEl, setworkspaceAnchorEl] = useState(null);
     const [channelAnchorEl, setChannelAnchorEl] = useState(null);
+    const [memberChannelAnchorEl, setMemberChannelAnchorEl] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
 
     // When user or active workspace changes, check if we are admin
@@ -69,12 +70,17 @@ function ChannelList(props) {
 
     // Checks if only 1 channel, if so does not call callback to delete channel
     const handleChannelDelete = (callback) => {
-        if (channels.length === 1) {
-            handleSnackMessage('Please delete the workspace if only 1 channel', false);
-        } else {
-            callback();
-        }
+        // if (channels.length === 1) {
+        //     handleSnackMessage('Please delete the workspace if only 1 channel', false);
+        // } else {
+        //     callback();
+        // }
+        callback();
     };
+
+    const handleChannelLeave = (callback) => {
+        callback();
+    }
 
     // Handles to show modal, and its type
     const handleModalShow = (modalType) => {
@@ -88,10 +94,16 @@ function ChannelList(props) {
         else if (type === 'channel') setChannelAnchorEl(e.currentTarget);
     };
 
+    // Handles showing of Settings Menu
+    const handleMemberSettingsClick = (e, type) => {
+        if (type === 'member-channel') setMemberChannelAnchorEl(e.currentTarget);
+    };
+
     // Handles closing settings menu
     const handleClose = () => {
         setworkspaceAnchorEl(null);
         setChannelAnchorEl(null);
+        setMemberChannelAnchorEl(null);
     };
 
     //  Signs the user out
@@ -164,7 +176,15 @@ function ChannelList(props) {
                                             <FiSettings className="channel-settings" />{''}
                                         </IconButton>
                                     </Tooltip>
-                                ) : null}
+                                ) :
+                                    // <Tooltip title="Channel Settings" key="member-channel-settings" placement="right">
+                                    //     <IconButton onClick={e => handleMemberSettingsClick(e, 'member-channel')}>
+                                    //         {' '}
+                                    //         <FiSettings className="channel-settings" />{''}
+                                    //     </IconButton>
+                                    // </Tooltip>
+                                    null
+                                }
 
                             </ListItem>
                         </Slide>
@@ -183,29 +203,7 @@ function ChannelList(props) {
                 <PersonAddOutlined className="channel-icon" />
                 <h8>&nbsp; Invite People</h8>
             </div>
-            {/* <div className='channel-extra'>
-                <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMore style={{ color: "#ccc" }} />}>
-                        <TiMessages className="channel-icon" onClick={() => handleChangeView('home')} />
-                        <h8>Direct Messages</h8>
-                    </AccordionSummary>
-                    <AccordionDetails onClick={() => handleChangeView('home')}>
-                        <PrivateMessageUserList />
-                    </AccordionDetails>
 
-                </Accordion >
-            </div> */}
-            {/* <div className="user-options">
-                <ListItem className="user-info">
-                    <ListItemAvatar>
-                        <Avatar>
-                            <Person />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary={user.userName} />
-                   
-                </ListItem>
-            </div> */}
             <Button className="modal-button" onClick={handleSignOut}>Sign out</Button>
             <Menu
                 id="workspace-settings-menu"
@@ -235,6 +233,22 @@ function ChannelList(props) {
                     {' '}
                     Delete Channel{' '}
                 </MenuItem>
+
+            </Menu>
+
+            <Menu
+                id="member-channel-settings-menu"
+                anchorEl={memberChannelAnchorEl}
+                open={Boolean(memberChannelAnchorEl)}
+                onClick={handleClose}
+                onClose={handleClose}
+            >
+
+                <MenuItem onClick={() => handleChannelLeave(() => handleModalShow('channel-leave'))}>
+                    {' '}
+                    Leave Channel{' '}
+                </MenuItem>
+
             </Menu>
         </div >
 

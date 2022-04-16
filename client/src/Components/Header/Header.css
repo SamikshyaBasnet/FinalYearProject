@@ -31,7 +31,7 @@
 }
 
 .header__middle {
-    flex: 0.4;
+    flex: 0.2;
     background-color: #421f44;
     text-align: center;
     display: flex;
@@ -46,7 +46,7 @@
     border: none;
     color: white;
     text-align: center;
-    min-width: 30vw;
+    min-width: 20vw;
 }
 
 .header__middle>input:focus {

@@ -468,6 +468,8 @@ const createWorkspace = (workspaceId, workspaceName, channelId, userId, created_
     db.query(
         `INSERT INTO channels (channel_id, channel_name, workspace_id, created_date) VALUES ('${channelId}', 'general', '${workspaceId}', '${created_date}')`
     );
+    db.query(`INSERT INTO userworkspaces (user_id, channel_id) VALUES ('${userId}', '${channelId}')`);
+
 };
 
 // Joins workspace and returns the workspace name
