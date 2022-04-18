@@ -47,6 +47,7 @@ export let ChatStore = {
         msg: '',
         date: Date,
     }],
+    fileMsg: '',
 
 }
 
@@ -67,6 +68,7 @@ let initialState = {
     activePMUser: 'none',
     searchedMessages: [],
     pinnedMessages: [],
+    fileMsg: '',
 
 };
 let state;
@@ -211,6 +213,11 @@ export const chatReducer = (state = initialState, action) => {
             return {
                 ...state,
                 activePMUser: action.payload
+            };
+        case ACTION.SEND_FILE:
+            return {
+                ...state,
+                fileMsg: action.payload.filename
             };
 
         default:

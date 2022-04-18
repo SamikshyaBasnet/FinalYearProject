@@ -9,15 +9,22 @@
     color: white;
     height: 66px !important;
     background-color: #2a032b !important;
+    font-family: 'Karla', sans-serif !important;
 }
-.header{
-    font-family: "Karla",
-    sans-serif !important;
+.header, .modal, .MuiTableCell-body, .modal-button, .MuiTableCell-head{
+    font-family: 'Karla', sans-serif !important;
 }
 .header .MuiSvgIcon-root {
     opacity: 0.6;
 }
 
+
+.modal-button{
+    text-transform: capitalize !important;
+}
+.MuiBox-root .MuiBox-root-21{
+    font-family: 'Karla', sans-serif !important;
+}
 .header__left {
     flex: 0.3;
     display: flex;

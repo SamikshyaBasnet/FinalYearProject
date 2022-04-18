@@ -68,9 +68,11 @@
 }
 
 .channel-extra {
+    display: flex;
     color: rgb(247, 240, 240);
     padding: 10px 10px;
     cursor: pointer;
+    font-size: 16px;
 }
 
 .channel-icon {
@@ -329,6 +331,9 @@ h5 {
 
 .emoji-mart {
     border-radius: 0px !important;
+}
+.channel-extra-name{
+    font-style: 12px !important;
 }
 
 .send-message-emoji-menu {

@@ -114,31 +114,31 @@ async function main() {
 
             console.log("actio-", action)
 
-            if (action.payload.msgType === "file") {
+            // if (action.payload.msgType === "file") {
 
-                const buffer = Buffer.from(msg.msg, 'base64');
-                var file_name = 'user' + msg.from + Date.now() + "image.jpg";
+            //     const buffer = Buffer.from(msg, 'base64');
+            //     var file_name = 'user' + msg.from + Date.now() + "image.jpg";
 
-                fs.writeFile("./uploads/" + file_name, buffer, {
-                    encoding: 'base64'
-                }, function (err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
+            //     fs.writeFile("./uploads/" + file_name, buffer, {
+            //         encoding: 'base64'
+            //     }, function (err) {
+            //         if (err) {
+            //             console.log(err);
+            //         } else {
 
-                        // const b64 = Buffer.from()
-                        // action = {
-                        //     type: 'message',
-                        //     payload: msg
-                        // }
-                        console.log("file msg", action)
-                        io.to(workspaceId).emit('update', action);
-                        //console.log("client message", readData)
-                    }
-                });
-            }
+            //             // const b64 = Buffer.from()
+            //             action = {
+            //                 type: 'message',
+            //                 payload: msg
+            //             }
+            //             console.log("file msg", action)
+            //             io.to(workspaceId).emit('update', action);
+            //             //console.log("client message", readData)
+            //         }
+            //     });
+            // }
 
-            io.to(workspaceId).emit('update', action);
+            io.to(workspaceId).emit('simple-chat-message', action);
 
             // Emit the message to everyone that joined that server
 
@@ -167,7 +167,7 @@ async function main() {
                     user: message.from.toLowerCase()
                 }
             };
-
+            console.log("pm", action)
             // console.log(clients)
             clients.find(client => {
                 if (client.userId === to[0].user_id) {

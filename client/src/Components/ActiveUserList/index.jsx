@@ -43,14 +43,14 @@ const ActiveUserList = () => {
                 {allUserList.map((user) => {
                     return (
                         <ListItem button className="user-list-item" onClick={e => handleUserClick(e, user.username)}>
-                            <ListItemAvatar key={user.username} className="message-user-icon">
+                            <ListItemAvatar className="message-user-icon">
                                 {/* <Avatar>
                                     <img alt="user icon" height="48" />
                                     <div className="user-list-online"></div>
                                 </Avatar> */}
 
-                                <div className="user-profile">
-                                    <p className="user">
+                                <div key={user.username} className="user-profile">
+                                    <p key={user.username} className="user">
                                         {user.username.charAt(0).toUpperCase()}
                                     </p>
                                 </div>

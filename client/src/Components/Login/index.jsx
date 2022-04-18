@@ -12,11 +12,15 @@ import {
     Alert,
     InputGroup
 } from "react-bootstrap";
+import socketClient from "socket.io-client";
+
 import Axios from '../API/api';
 import { signIn } from '../../actions';
 import { isUserAuth } from '../../actions';
 
 function Login() {
+    const baseUrl = 'http://localhost:5000';
+    var socket = socketClient(baseUrl);
 
     const dispatch = useDispatch();
     const [loginStatus, setLoginStatus] = useState("");
@@ -58,7 +62,9 @@ function Login() {
                 dispatch(signIn(response.data));
                 dispatch(isUserAuth(response.data))
                 localStorage.setItem("token", response.data.token)
+                localStorage.setItem("userId", response.data.userId)
                 navigate('/dashboard')
+                socket.emit('simple-chat-sign-in', response.data);
             }
             else {
                 setLoginStatus(response.data.message);
@@ -79,8 +85,9 @@ function Login() {
         ).then((response) => {
             console.log("token", response);
             if (response.data.auth === true) {
-                navigate('/dashboard');
                 dispatch(isUserAuth(response.data))
+                navigate('/dashboard');
+
             }
         })
     }, [])
@@ -111,7 +118,7 @@ function Login() {
                     <Form.Group className="mb-3" controlId="formBasicPassword">
                         <Form.Label>Password</Form.Label>
                         <InputGroup className="mb-3">
-                            <Form.Control name="password"
+                            <Form.Control
                                 {...register('password')}
                                 value={password}
                                 name="password"

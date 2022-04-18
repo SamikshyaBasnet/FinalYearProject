@@ -1,9 +1,12 @@
 import './App.css';
-// import Header from '../Header';
+import { useNavigate } from 'react-router-dom';
 import Login from './Components/Login';
 //import Sidebar from './Sidebar';
 import Dashboard from './Components/Dashboard';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { signIn, loadUserData } from './actions';
+import Axios from 'axios';
+import { useEffect } from 'react';
 import Register from './Components/Register';
 import ForgotPassword from './Components/PasswordManager/forgotPassword';
 import VerifyEmail from './Components/Register/verifyEmail';
@@ -17,25 +20,31 @@ import InvitedUser from './Components/InvitedUserModal';
 
 function App() {
 
+
   const dispatch = useDispatch();
-  // Axios.defaults.withCredentials = true;
+  Axios.defaults.withCredentials = true;
 
-  // Check local storage if have login info
-  // Dispatch sign in action with our userId and redirect to dashboard
-  // const checkLocalStorageAuth = () => {
+  //Check local storage if have login info
+  //Dispatch sign in action with our userId and redirect to dashboard
 
-  //   const user = JSON.parse(localStorage.getItem('user'));
-  //   if (user) {
+  useEffect(() => {
+    checkLocalStorageAuth()
+  }, [])
 
-  //     dispatch(signIn(user));
-  //   }
-  // };
+  const checkLocalStorageAuth = () => {
+    const user = localStorage.getItem('userId');
+    console.log("user =", user);
+    if (user) {
+      dispatch(loadUserData(user));
+      // navigate('/dashboard')
+    }
+  };
 
   return (
     <div className='app'>
       <Router>
         <Routes>
-          {/* {checkLocalStorageAuth()} */}
+
           <Route exact path='/' element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email" element={<VerifyEmail />} />

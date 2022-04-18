@@ -7,9 +7,9 @@ import Header from '../Header/';
 import Messages from '../Messages/';
 import SendMessages from '../Messages/message.jsx';
 import ActiveUserList from '../ActiveUserList/';
-import { loadUserData, loadReminders, updateActiveState, updateActiveUserList } from '../../actions';
+import { loadUserData, isUserAuth, loadReminders, updateActiveState, updateActiveUserList } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
-
+import Axios from '../API/api';
 import '../../App.css';
 
 function Dashboard() {
@@ -47,6 +47,33 @@ function Dashboard() {
             dispatch(loadReminders(userId));
         }
     }, [dispatch, user.isSignedIn, user.userId]);
+
+
+    useEffect(() => {
+        checkLocalStorageAuth()
+    }, [])
+
+    const checkLocalStorageAuth = () => {
+        const user = localStorage.getItem('userId');
+        console.log("user =", user);
+
+        if (user) {
+            dispatch(loadUserData(user));
+            navigate('/dashboard')
+        }
+        Axios.get("/user/isUserAuth", {
+            headers: {
+                "x-access-token": localStorage.getItem("token"),
+            }
+        }
+        ).then((response) => {
+            console.log("token", response);
+            if (response.data.auth === true) {
+                dispatch(isUserAuth(response.data))
+                navigate('/dashboard');
+            }
+        })
+    };
 
     // Watches viewport height (fix for mobile address bar size)
     window.addEventListener('resize', () => {

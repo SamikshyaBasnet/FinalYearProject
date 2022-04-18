@@ -3,7 +3,9 @@ import {
     ACTION
 } from './types';
 
-
+import socketClient from "socket.io-client";
+const baseUrl = 'http://localhost:5000';
+var socket = socketClient(baseUrl);
 
 //sign up
 export const signUp = (user) => ({
@@ -147,6 +149,19 @@ export const loadUserData = (userId) => async (dispatch) => {
     const acch = Object.keys(res.data.data.workspaces[Object.keys(res.data.data.workspaces)[0]].channels)[0]
     //console.log("active channel =", acch)
 
+    let workspaces = Object.keys(res.data.data.workspaces);
+
+    let workspaceIds = [];
+    workspaces.forEach((workspace, i) => {
+        workspaceIds[i] = workspace.split('-')[1];
+        // socket.emit('subscribe', workspace);
+    });
+
+
+    // Subscribe to each workspace (Creates a room on socket io)
+    workspaceIds.forEach((workspaceId) => {
+        socket.emit('subscribe', workspaceId);
+    });
 };
 
 export const loadReminders = (userId) => async (dispatch) => {
@@ -154,6 +169,16 @@ export const loadReminders = (userId) => async (dispatch) => {
     const res = await Axios.get(url);
     dispatch(getReminder(res.data));
 
+}
+
+export const sendFile = (formData) => async (dispatch) => {
+
+    Axios.post(
+        "/upload",
+        formData
+    ).then((res) => {
+        console.log("send file res", res)
+    });
 }
 
 export const loadPinnedMessages = (channelId) => async (dispatch) => {
@@ -188,7 +213,7 @@ export const sendMessage = (message) => ({
 });
 
 //to receive the message to channel 
-export const receiveMessage = (message) => ({
+export const receiveGroupMessage = (message) => ({
     type: ACTION.RECIEVE_SOCKET_MESSAGE,
     payload: message
 });

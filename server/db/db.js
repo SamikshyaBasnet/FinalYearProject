@@ -20,12 +20,16 @@ const user = "root";
 const password = ""
 const database = "slack_app";
 
+
 // Setup Mysql
 var db = mysql.createPool({
     host,
     user,
     password,
-    database
+    database,
+
 });
+
+
 db.query = util.promisify(db.query);
 module.exports = db;

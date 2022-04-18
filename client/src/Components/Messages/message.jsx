@@ -4,10 +4,10 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 import SmileyFace from '@material-ui/icons/SentimentVerySatisfied';
-import { sendMessage, sendPrivateMessage, loadPinnedMessages } from '../../actions';
+import { receivePrivateMessage, sendMessage, sendPrivateMessage, loadPinnedMessages, receiveGroupMessage } from '../../actions';
 import '../SendMessage/sendmessage.css';
-import { IoMdAddCircle } from 'react-icons/io';
-import Image from './image';
+import { BsFillFileEarmarkImageFill } from 'react-icons/bs';
+import socketClient from "socket.io-client";
 import {
     List,
     ListItem,
@@ -34,6 +34,8 @@ import { GoPin } from 'react-icons/go';
 
 
 export default function SendMessages() {
+    const baseUrl = 'http://localhost:5000';
+    var socket = socketClient(baseUrl);
 
     // Get State from Redux Store
     const { activeWorkspace, activeChannel, activeView, activePMUser, pinnedMessages } = useSelector((state) => state.chat);
@@ -200,11 +202,12 @@ export default function SendMessages() {
     function handleSubmit(message) {
 
         if (activeView === 'workspaces' && message.type === 'channelMessage') {
-            dispatch(sendMessage(message));
-
+            socket.emit('simple-chat-message', message);
+            dispatch(receiveGroupMessage(message))
 
         } else if (activeView === 'home' && message.type === 'privateMessage') {
-            dispatch(sendPrivateMessage(message));
+            socket.emit('simple-chat-private-message', message);
+            dispatch(sendPrivateMessage(message))
 
         }
         setChatMessage('');
@@ -220,26 +223,27 @@ export default function SendMessages() {
             if (activeView === 'workspaces')
                 if (file) {
                     console.log("chat msg,", chatMessage.type)
-                    const blob = new Blob([file]);
-                    var reader = new FileReader();
 
+                    var reader = new FileReader();
+                    var base64;
                     console.log("reader result", reader);
                     reader.onload = function () {
-                        setImageSrc(reader.result)
-                    }
+                        base64 = reader.result.replace(/.*base64,/, '');
 
+                        setImageSrc(base64)
+                        handleSubmit({
+                            workspace: activeWorkspace,
+                            channel: activeChannel,
+                            from: user.userName,
+                            msg: base64,
+                            type: 'channelMessage',
+                            msgType: "file",
+                            mimeType: file.type,
+                            fileName: file.name,
+                        });
+                    }
                     reader.readAsDataURL(file);
 
-                    handleSubmit({
-                        workspace: activeWorkspace,
-                        channel: activeChannel,
-                        from: user.userName,
-                        msg: file,
-                        type: 'channelMessage',
-                        msgType: "file",
-                        mimeType: file.type,
-                        fileName: file.name,
-                    });
                     console.log("msg", file);
 
                     // setImageSrc(reader.result);
@@ -420,7 +424,7 @@ export default function SendMessages() {
                                                 //     secondary={<img src={imageSrc} alt="img" />}
                                                 //     className="message-text"
                                                 // />
-                                                <img src={imageSrc} alt="img" />
+                                                <img src={message.msg} alt="img" />
                                                 : <ListItemText
                                                     primary={
                                                         <div className="message-user">
@@ -471,7 +475,7 @@ export default function SendMessages() {
                     onChange={e => handleOnChange(e)}
                     onKeyPress={e => handleKeyPress(e)}
                 />
-                <IoMdAddCircle onClick={handleFileClick} className="send-file-button" />
+                <BsFillFileEarmarkImageFill onClick={handleFileClick} className="send-file-button" />
                 <input type="file"
                     ref={hiddenFileInput}
                     onChange={selectFile}

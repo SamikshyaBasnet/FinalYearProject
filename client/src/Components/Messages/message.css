@@ -20,3 +20,8 @@
     text-align: center;
     position: sticky;
 }
+
+.image{
+    height: 50px;
+    width: auto;
+}

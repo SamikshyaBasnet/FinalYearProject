@@ -196,12 +196,12 @@ function ChannelList(props) {
             <br />
             <div className='channel-extra' onClick={() => handleModalShow('channel-create')}>
                 <IoMdAdd className="channel-icon" />
-                <h8>&nbsp; Add Channel</h8>
+                <p className="channel-extra-name">&nbsp; Add Channel</p>
             </div>
 
             <div className='channel-extra' onClick={() => handleModalShow('invite-people')}>
                 <PersonAddOutlined className="channel-icon" />
-                <h8>&nbsp; Invite People</h8>
+                <p className="channel-extra-name">&nbsp; Invite People</p>
             </div>
 
             <Button className="modal-button" onClick={handleSignOut}>Sign out</Button>

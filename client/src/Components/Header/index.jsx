@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import '../../App.css';
+// import '../../App.css';
 import './Header.css';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -280,6 +280,7 @@ export default function Header() {
                         onClose={handleReminderClose}
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
+
                     >
                         <Box sx={style}>
                             <Grid container spacing={3} justifyContent="center" alignItems="center" style={{ color: "#fff" }}>
@@ -463,7 +464,7 @@ export default function Header() {
                                 <Grid item xs={12}>
                                     <p>Display Name</p>
                                 </Grid>
-                                <Grid spacing={3} className="d-flex justify-content-start">
+                                <Grid className="d-flex justify-content-start">
                                     <Grid className="mx-2" item xs={6}>
 
                                         <TextField id="outlined-basic" value={userName} disabled={isEditUsername ? false : true}
