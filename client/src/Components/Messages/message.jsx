@@ -151,14 +151,10 @@ export default function SendMessages() {
     const handleFileSubmit = async (e) => {
         e.preventDefault()
         let formData = new FormData()
-        const inputfile = e.target.files[0];
+        // const inputfile = e.target.files[0];
         formData.append('file', image.data)
-        // workspace: activeWorkspace,
-        // channel: activeChannel,
-        // from: user.userName,
-        // msg: chatMessage,
-        // type: 'channelMessage',
-        await Axios.post(`/fileupload?username=${user.userName}&file=${inputfile}channel=${activeChannel}&type='channelMessage'`, formData).then((res) => {
+
+        await Axios.post(`/fileupload?username=${user.userName}&channel=${activeChannel}&fileName=${chatMessage}`, formData).then((res) => {
             console.log("file upload res=", res)
             setChatMessage('');
         })
@@ -391,47 +387,6 @@ export default function SendMessages() {
                             </div>
                         </Box>
                     </Modal>
-
-                    <List>
-                        {/* {messageType === "file" ? alert("file") : alert("its message")} */}
-                        {messages !== null
-                            ? messages.slice(messagesLength - messageIndex, messagesLength).map((message, i) => {
-                                // Filter for null messages (dummy message on backend should fix...)
-                                return (
-
-                                    <Fade in={true} timeout={500}>
-                                        <ListItem className="message" key={i}>
-                                            <ListItemAvatar className="message-user-icon">
-                                                <div className="user-profile">
-                                                    <p className="user">
-                                                        {message.from.charAt(0).toUpperCase()}
-                                                    </p>
-                                                </div>
-
-                                            </ListItemAvatar>
-
-                                            <ListItemText
-                                                primary={
-                                                    <div className="message-user">
-                                                        {message.from.toLowerCase()}
-                                                        <div className="message-date">{` - ${moment(message.date).format('LLL')}`}</div>
-                                                        {activeView === "workspaces" ? <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} /> : null}
-                                                    </div>
-
-                                                }
-
-                                                secondary={message.msg}
-                                                className="message-text"
-                                            />
-
-
-
-                                        </ListItem>
-                                    </Fade>
-                                );
-                            })
-                            : null}
-                    </List>
 
                     <div ref={element => (messageContainerBottomRef = element)} id="messagesContainerBottom"></div>
 
