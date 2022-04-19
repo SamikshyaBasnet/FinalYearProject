@@ -50,6 +50,10 @@ export default function SendMessages() {
     const [emojiMenuVisible, setEmojiMenuVisible] = useState(false);
     const [placeholderTitle, setPlaceholderTitle] = useState('');
     const [file, setFile] = useState();
+    const [fileType, setFileType] = useState('');
+    const [image, setImage] = useState({ preview: '', data: '' });
+    const [messageType, setMessageType] = useState('');
+
 
     //messages
     const [userInfoVisible, setUserInfoVisible] = useState(false);
@@ -144,6 +148,22 @@ export default function SendMessages() {
 
     }, [dispatch, channelId]);
 
+    const handleFileSubmit = async (e) => {
+        e.preventDefault()
+        let formData = new FormData()
+        const inputfile = e.target.files[0];
+        formData.append('file', image.data)
+        // workspace: activeWorkspace,
+        // channel: activeChannel,
+        // from: user.userName,
+        // msg: chatMessage,
+        // type: 'channelMessage',
+        await Axios.post(`/fileupload?username=${user.userName}&file=${inputfile}channel=${activeChannel}&type='channelMessage'`, formData).then((res) => {
+            console.log("file upload res=", res)
+            setChatMessage('');
+        })
+
+    }
 
     const handlePinMessage = (id) => {
         Axios.post(`/message/pin?id=${id}`
@@ -194,6 +214,12 @@ export default function SendMessages() {
 
 
     function selectFile(e) {
+        const img = {
+            preview: URL.createObjectURL(e.target.files[0]),
+            data: e.target.files[0],
+        }
+        setImage(img)
+        setFileType(e.target.files[0].type)
         setChatMessage(e.target.files[0].name)
         setFile(e.target.files[0]);
     }
@@ -215,43 +241,20 @@ export default function SendMessages() {
 
     }
 
-    const [imageSrc, setImageSrc] = useState("");
+
     // Handles enter event to submit message
     function handleKeyPress(e) {
 
         if (e.key === 'Enter' && !e.shiftKey) {
             if (activeView === 'workspaces')
                 if (file) {
-                    console.log("chat msg,", chatMessage.type)
+                    console.log("its file");
+                    handleFileSubmit(e)
 
-                    var reader = new FileReader();
-                    var base64;
-                    console.log("reader result", reader);
-                    reader.onload = function () {
-                        base64 = reader.result.replace(/.*base64,/, '');
-
-                        setImageSrc(base64)
-                        handleSubmit({
-                            workspace: activeWorkspace,
-                            channel: activeChannel,
-                            from: user.userName,
-                            msg: base64,
-                            type: 'channelMessage',
-                            msgType: "file",
-                            mimeType: file.type,
-                            fileName: file.name,
-                        });
-                    }
-                    reader.readAsDataURL(file);
-
-                    console.log("msg", file);
-
-                    // setImageSrc(reader.result);
-
-                    console.log("img src,", imageSrc)
+                    setMessageType('file')
                 }
                 else {
-
+                    setMessageType('text')
                     handleSubmit({
                         workspace: activeWorkspace,
                         channel: activeChannel,
@@ -260,6 +263,7 @@ export default function SendMessages() {
                         type: 'channelMessage',
                     });
                 }
+
             else if (activeView === 'home')
                 if (file) {
                     handleSubmit({
@@ -304,7 +308,7 @@ export default function SendMessages() {
         if (String(e.target.className).includes('send-message-emoji-menu')) setEmojiMenuVisible(false);
     };
 
-
+    console.log("message type =", messageType)
     return (
         <React.Fragment>
             <div>
@@ -389,7 +393,7 @@ export default function SendMessages() {
                     </Modal>
 
                     <List>
-
+                        {/* {messageType === "file" ? alert("file") : alert("its message")} */}
                         {messages !== null
                             ? messages.slice(messagesLength - messageIndex, messagesLength).map((message, i) => {
                                 // Filter for null messages (dummy message on backend should fix...)
@@ -406,40 +410,21 @@ export default function SendMessages() {
 
                                             </ListItemAvatar>
 
+                                            <ListItemText
+                                                primary={
+                                                    <div className="message-user">
+                                                        {message.from.toLowerCase()}
+                                                        <div className="message-date">{` - ${moment(message.date).format('LLL')}`}</div>
+                                                        {activeView === "workspaces" ? <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} /> : null}
+                                                    </div>
 
-                                            {message.msgType === "file" ?
+                                                }
 
-                                                // <Image fileName={message.fileName} blob={blob} />
-                                                //    alert("file file")
-                                                // <ListItemText
-                                                //     primary={
-                                                //         <div className="message-user">
-                                                //             {message.from.toLowerCase()}
-                                                //             <div className="message-date">{` - ${moment(message.date).format('LLL')}`}</div>
-                                                //             {/* <GoPin onClick={handlePinMessage(message.msg)} style={{ marginLeft: '20px' }} /> */}
-                                                //         </div>
+                                                secondary={message.msg}
+                                                className="message-text"
+                                            />
 
-                                                //     }
 
-                                                //     secondary={<img src={imageSrc} alt="img" />}
-                                                //     className="message-text"
-                                                // />
-                                                <img src={message.msg} alt="img" />
-                                                : <ListItemText
-                                                    primary={
-                                                        <div className="message-user">
-                                                            {message.from.toLowerCase()}
-                                                            <div className="message-date">{` - ${moment(message.date).format('LLL')}`}</div>
-                                                            {activeView === "workspaces" ? <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} /> : null}
-                                                        </div>
-
-                                                    }
-
-                                                    secondary={message.msg}
-                                                    className="message-text"
-                                                />
-
-                                            }
 
                                         </ListItem>
                                     </Fade>

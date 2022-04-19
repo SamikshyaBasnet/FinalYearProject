@@ -6,9 +6,11 @@ const dotenv = require("dotenv");
 const http = require('http');
 const db = require('./db/db')
 const fs = require("fs");
+const multer = require('multer')
 
 let app = express();
 let server = http.createServer(app);
+
 
 const io = require("socket.io")(server, {
     cors: {
@@ -44,12 +46,17 @@ async function main() {
     server.listen(PORT, () => {
         console.log(`API Listening on ${PORT}`);
     })
-
-    app.use(cors({
-        origin: ["http://localhost:3000"],
-        methods: ["GET", "POST", "DELETE"],
-        credentials: true,
-    }))
+    const corsOptions = {
+        origin: 'http://localhost:3000',
+        credentials: true, //access-control-allow-credentials:true
+        optionSuccessStatus: 200
+    }
+    app.use(cors(corsOptions));
+    // app.use(cors({
+    //     origin: ["http://localhost:3000"],
+    //     methods: ["GET", "POST", "DELETE"],
+    //     credentials: true,
+    // }))
     app.use(cookieParser());
     app.use(bodyParser.urlencoded({
         extended: true
@@ -59,6 +66,38 @@ async function main() {
     app.use(workspaceRouter);
     app.use(channelRouter);
     app.use(reminderRouter);
+    var file;
+
+    const storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, 'uploads/')
+            //  console.log("file = ", file);
+            file = file.mimetype;
+        },
+
+        filename: (req, file, cb) => {
+            cb(null, file.originalname)
+
+        },
+    })
+
+
+    const upload = multer({
+        storage: storage
+    })
+    // username=${user.userName}&channel=${activeChannel}&type='channelMessage
+    app.post('/fileupload', upload.single('file'), function (req, res) {
+        const {
+            username,
+            channel,
+            type,
+            file
+        } = req.query;
+
+        console.log("more infor=", username, channel, type);
+        res.json({})
+        console.log("file", file)
+    })
 
     let clients = SocketClientList = [];
 
@@ -113,30 +152,6 @@ async function main() {
             }
 
             console.log("actio-", action)
-
-            // if (action.payload.msgType === "file") {
-
-            //     const buffer = Buffer.from(msg, 'base64');
-            //     var file_name = 'user' + msg.from + Date.now() + "image.jpg";
-
-            //     fs.writeFile("./uploads/" + file_name, buffer, {
-            //         encoding: 'base64'
-            //     }, function (err) {
-            //         if (err) {
-            //             console.log(err);
-            //         } else {
-
-            //             // const b64 = Buffer.from()
-            //             action = {
-            //                 type: 'message',
-            //                 payload: msg
-            //             }
-            //             console.log("file msg", action)
-            //             io.to(workspaceId).emit('update', action);
-            //             //console.log("client message", readData)
-            //         }
-            //     });
-            // }
 
             io.to(workspaceId).emit('simple-chat-message', action);
 
