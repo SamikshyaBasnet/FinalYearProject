@@ -64,7 +64,7 @@ function Login() {
                 localStorage.setItem("token", response.data.token)
                 localStorage.setItem("userId", response.data.userId)
                 navigate('/dashboard')
-                socket.emit('simple-chat-sign-in', response.data);
+                // socket.emit('simple-chat-sign-in', response.data);
             }
             else {
                 setLoginStatus(response.data.message);

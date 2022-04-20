@@ -28,10 +28,10 @@ export const socketMiddleWare = (baseUrl) => {
             }
 
             //call sign in action to send the socket workspace our userid to indentify individual socekt connections
-            // if (action.type === ACTION.SIGN_IN) {
-            //     socket.emit('simple-chat-sign-in', action.payload);
-            //     listener = setupSocketListener(socket, storeAPI);
-            // }
+            if (action.type === ACTION.SIGN_IN) {
+                socket.emit('simple-chat-sign-in', action.payload);
+                listener = setupSocketListener(socket, storeAPI);
+            }
 
             // Pull workspace list off initial data load
             // Use to "join" our workspace "rooms"
@@ -51,10 +51,10 @@ export const socketMiddleWare = (baseUrl) => {
             // }
 
             // If user creates a workspace we need to join that room
-            // if (action.type === ACTION.CREATE_WORKSPACE) {
-            //     let workspaceId = action.payload.workspace.split('-')[1];
-            //     socket.emit('subscribe', workspaceId);
-            // }
+            if (action.type === ACTION.CREATE_WORKSPACE) {
+                let workspaceId = action.payload.workspace.split('-')[1];
+                socket.emit('subscribe', workspaceId);
+            }
 
             // Updates our active state on server
             // if (action.type === ACTION.UPDATE_ACTIVE_STATE) {
@@ -74,17 +74,15 @@ export const socketMiddleWare = (baseUrl) => {
 // Listens to socket workspace for specific events for messages / private messages
 // TODO listen for listen for types of workspace + payload of message
 function setupSocketListener(socket = Socket, storeAPI) {
-    // return socket.on('update', (action) => {
-    //     console.log("action=", action);
+    return socket.on('update', (action) => {
+        //     console.log("action=", action);
 
-    if (action.type === 'private-message') {
-        storeAPI.dispatch({
-            type: ACTION.RECEIVE_SOCKET_PRIVATE_MESSAGE,
-            payload: action.payload
-        });
-    }
-    //
-    // if (action.type === 'private-message') 
+        if (action.type === 'private-message') {
+            storeAPI.dispatch({
+                type: ACTION.RECEIVE_SOCKET_PRIVATE_MESSAGE,
+                payload: action.payload
+            });
+        }
 
-    // });
+    })
 }

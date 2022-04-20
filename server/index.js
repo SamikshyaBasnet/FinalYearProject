@@ -242,7 +242,7 @@ async function main() {
             });
             const disconnect = true;
 
-            console.log('user ' + ' disconnected');
+            // console.log('user ' + ' disconnected');
         });
     });
 }

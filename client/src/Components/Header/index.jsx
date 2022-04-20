@@ -198,6 +198,7 @@ export default function Header() {
                 dispatch(signOut())
                 localStorage.removeItem("token")
                 navigate('/')
+
             }
         })
     }

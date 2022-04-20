@@ -28,8 +28,10 @@ import Axios from '../API/api';
 import { useNavigate } from 'react-router-dom';
 import { Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import PrivateMessageUserList from './PrivateMessageUserList';
-
+import socketClient from "socket.io-client";
 function ChannelList(props) {
+    const baseUrl = 'http://localhost:5000';
+    var socket = socketClient(baseUrl);
 
     const navigate = useNavigate();
     // Get State from Redux Store
@@ -115,6 +117,7 @@ function ChannelList(props) {
                 dispatch(signOut())
                 localStorage.removeItem("token")
                 navigate('/')
+                socket.emit('disconnect');
             }
         })
     }
