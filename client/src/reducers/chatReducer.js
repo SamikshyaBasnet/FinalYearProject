@@ -12,6 +12,7 @@ export let ChatStore = {
                     id: '',
                     from: '',
                     msg: '',
+                    msgType: '',
                     date: Date,
                 },
             },
@@ -22,6 +23,7 @@ export let ChatStore = {
             from: '',
             to: '',
             msg: '',
+            msgType: '',
             date: Date
         },
     },
@@ -39,6 +41,7 @@ export let ChatStore = {
         id: '',
         username: '',
         msg: '',
+        type: '',
         date: Date,
     }],
     pinnedMessages: [{
@@ -78,7 +81,7 @@ export const chatReducer = (state = initialState, action) => {
 
         case ACTION.RECIEVE_SOCKET_MESSAGE:
             let {
-                workspace, channel, from, msg, date
+                workspace, channel, from, msg, msgType, date
             } = action.payload;
 
             return {
@@ -92,6 +95,7 @@ export const chatReducer = (state = initialState, action) => {
                             [channel]: [...state.workspaces[workspace]['channels'][channel], {
                                 from: from,
                                 msg: msg,
+                                msgType: msgType,
                                 date: date
                             }]
                         }
@@ -110,6 +114,7 @@ export const chatReducer = (state = initialState, action) => {
                                 from: action.payload.from,
                                 to: action.payload.to,
                                 msg: action.payload.msg,
+                                msgType: action.payload.type,
                                 date: action.payload.date
                             }
                         ]
@@ -124,6 +129,7 @@ export const chatReducer = (state = initialState, action) => {
                             from: action.payload.from,
                             to: action.payload.to,
                             msg: action.payload.msg,
+                            msgType: action.payload.type,
                             date: action.payload.date
                         }]
                     }

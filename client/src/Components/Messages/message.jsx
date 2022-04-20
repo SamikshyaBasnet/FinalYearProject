@@ -78,6 +78,7 @@ export default function SendMessages() {
         from: '',
         to: '',
         msg: '',
+        msgType: '',
         date: Date,
     }]
     let messagesLength = 0;
@@ -151,7 +152,8 @@ export default function SendMessages() {
     const handleFileSubmit = async (e) => {
         e.preventDefault()
         let formData = new FormData()
-        // const inputfile = e.target.files[0];
+        const inputfile = e.target.files[0];
+        console.log("filbgkv", inputfile);
         formData.append('file', image.data)
 
         await Axios.post(`/fileupload?username=${user.userName}&channel=${activeChannel}&fileName=${chatMessage}`, formData).then((res) => {
@@ -215,7 +217,12 @@ export default function SendMessages() {
             data: e.target.files[0],
         }
         setImage(img)
-        setFileType(e.target.files[0].type)
+
+
+        var filetype = e.target.files[0].type
+        filetype = filetype.split('/')[0]
+        setFileType(filetype);
+
         setChatMessage(e.target.files[0].name)
         setFile(e.target.files[0]);
     }
@@ -248,6 +255,14 @@ export default function SendMessages() {
                     handleFileSubmit(e)
 
                     setMessageType('file')
+                    handleSubmit({
+                        workspace: activeWorkspace,
+                        channel: activeChannel,
+                        from: user.userName,
+                        msg: chatMessage,
+                        msgType: 'file',
+                        type: 'channelMessage',
+                    });
                 }
                 else {
                     setMessageType('text')
@@ -256,6 +271,7 @@ export default function SendMessages() {
                         channel: activeChannel,
                         from: user.userName,
                         msg: chatMessage,
+                        msgType: 'text',
                         type: 'channelMessage',
                     });
                 }
@@ -267,14 +283,14 @@ export default function SendMessages() {
                         msg: file,
                         type: 'privateMessage',
                         msgType: "file",
-                        mimeType: file.type,
-                        fileName: file.name,
+
                     });
                 } else {
                     handleSubmit({
                         from: user.userName,
                         to: activePMUser,
                         msg: chatMessage,
+                        msgType: "text",
                         type: 'privateMessage',
                     });
                 }
@@ -387,6 +403,57 @@ export default function SendMessages() {
                             </div>
                         </Box>
                     </Modal>
+                    <List>
+                        {messages !== null
+                            ? messages.slice(messagesLength - messageIndex, messagesLength).map((message, i) => {
+                                // Filter for null messages (dummy message on backend should fix...)
+                                return (
+
+                                    <Fade in={true} timeout={500}>
+                                        <ListItem className="message" key={i}>
+                                            <ListItemAvatar className="message-user-icon">
+                                                <div className="user-profile">
+                                                    <p className="user">
+                                                        {message.from.charAt(0).toUpperCase()}
+                                                    </p>
+                                                </div>
+
+                                            </ListItemAvatar>
+
+                                            <ListItemText
+                                                primary={
+                                                    <div className="message-user">
+                                                        {message.from.toLowerCase()}
+                                                        <div className="message-date">{` - ${moment(message.date).format('LLL')}`}</div>
+                                                        {activeView === "workspaces" ? <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} /> : null}
+                                                    </div>
+
+                                                }
+
+                                                secondary={
+                                                    <div>
+                                                        {message.msgType === 'text' ?
+                                                            <p>{message.msg}</p> :
+                                                            <div>
+                                                                <p>{message.msg}</p>
+                                                                {/* <img src={image.preview} width='100' height='100' /> */}
+                                                            </div>
+                                                            // <p>file</p>
+                                                        }
+                                                    </div>
+                                                    // message.msg
+                                                }
+                                                className="message-text"
+                                            />
+
+
+
+                                        </ListItem>
+                                    </Fade>
+                                );
+                            })
+                            : null}
+                    </List>
 
                     <div ref={element => (messageContainerBottomRef = element)} id="messagesContainerBottom"></div>
 

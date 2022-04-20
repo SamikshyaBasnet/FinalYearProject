@@ -67,10 +67,14 @@ async function main() {
     app.use(channelRouter);
     app.use(reminderRouter);
     var file;
-
+    var folder = 'files'
+    if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder);
+    }
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, 'uploads/')
+
+            cb(null, __dirname + folder)
             //  console.log("file = ", file);
             file = file.mimetype;
         },
@@ -96,8 +100,8 @@ async function main() {
             type,
             fileName
         } = req.query;
-        const sqlquery = `INSERT INTO messages (channel_id, username, message, date) VALUES 
-        ('${channel.split('-')[1]}', '${username}', '${fileName}', '${date}')`
+        const sqlquery = `INSERT INTO messages (channel_id, username, message, type, date) VALUES 
+        ('${channel.split('-')[1]}', '${username}', '${fileName}', 'file', '${date}')`
         db.query(sqlquery);
         console.log("more infor=", username, channel, fileName);
         res.json({})
@@ -141,8 +145,8 @@ async function main() {
 
         socket.on('simple-chat-message', async (msg = Message) => {
             //storing message in database;
-            const sqlquery = `INSERT INTO messages (channel_id, username, message, date) VALUES 
-            ('${msg.channel.split('-')[1]}', '${msg.from}', '${msg.msg}', '${date}')`
+            const sqlquery = `INSERT INTO messages (channel_id, username, message, type, date) VALUES 
+            ('${msg.channel.split('-')[1]}', '${msg.from}', '${msg.msg}', '${msg.msgType}',  '${date}')`
             console.log("Message", msg)
             db.query(sqlquery);
             const workspaceId = msg.workspace.split('-')[1];
@@ -170,8 +174,8 @@ async function main() {
             var to = await db.query(`SELECT user_id from users WHERE username = '${message.to}'`);
 
             db.query(
-                `INSERT INTO usermessages (user_from, user_to, message, date) VALUES (
-                   '${from[0].user_id}', '${to[0].user_id}', '${message.msg}', '${date}')`
+                `INSERT INTO usermessages (user_from, user_to, message, type, date) VALUES (
+                   '${from[0].user_id}', '${to[0].user_id}', '${message.msg}', '${message.msgType}','${date}')`
             );
 
             //finding which socket the action to send to 
@@ -181,6 +185,7 @@ async function main() {
                     from: message.from,
                     to: message.to,
                     msg: message.msg,
+                    type: message.msgType,
                     user: message.from.toLowerCase()
                 }
             };
@@ -200,6 +205,7 @@ async function main() {
                     from: message.from,
                     to: message.to,
                     msg: message.msg,
+                    type: message.msgType,
                     user: message.to.toLowerCase()
                 }
             };

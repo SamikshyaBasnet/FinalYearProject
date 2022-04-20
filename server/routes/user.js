@@ -105,7 +105,7 @@ router.get('/user/data', async (req, res) => {
     // Query to get all of the workspaces + channels + data
     await db.query(
         `SELECT workspaces.workspace_id, workspaces.workspace_name, channels.channel_id, 
-        channels.channel_name, messages.message_id, messages.username, messages.message, messages.date
+        channels.channel_name, messages.message_id, messages.username, messages.message, messages.type, messages.date
         FROM messages
         right JOIN channels ON messages.channel_id = channels.channel_id
         JOIN workspaces ON workspaces.workspace_id = channels.workspace_id
@@ -138,6 +138,7 @@ router.get('/user/data', async (req, res) => {
                             id: datas.message_id,
                             from: datas.username,
                             msg: datas.message,
+                            msgType: datas.type,
                             date: datas.date
                         });
 
@@ -146,7 +147,7 @@ router.get('/user/data', async (req, res) => {
 
             //Query to get all Private messages for user
             db.query(
-                `SELECT b.username as user_from, c.username as user_to, message
+                `SELECT b.username as user_from, c.username as user_to, message, type
                 FROM usermessages a
                 JOIN users b ON b.user_id = a.user_from 
                 JOIN users c ON c.user_id = a.user_to 
@@ -184,6 +185,7 @@ router.get('/user/data', async (req, res) => {
                                 from: privateMessage.user_from,
                                 to: privateMessage.user_to,
                                 msg: privateMessage.message,
+                                msgType: privateMessage.type,
                                 date: privateMessage.date
                             });
 

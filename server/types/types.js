@@ -13,6 +13,7 @@
      workspace: '',
      channel: '',
      from: '',
+     msgType: '',
      msg: '',
  }
 
@@ -20,6 +21,7 @@
      from: '',
      to: '',
      msg: '',
+     msgType: '',
  }
 
  module.exports = {
