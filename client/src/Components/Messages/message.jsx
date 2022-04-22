@@ -6,8 +6,10 @@ import { Picker } from 'emoji-mart';
 import SmileyFace from '@material-ui/icons/SentimentVerySatisfied';
 import { receivePrivateMessage, sendMessage, sendPrivateMessage, loadPinnedMessages, receiveGroupMessage } from '../../actions';
 import '../SendMessage/sendmessage.css';
-import { BsFillFileEarmarkImageFill } from 'react-icons/bs';
+import { IoIosAddCircle } from 'react-icons/io';
 import socketClient from "socket.io-client";
+import { HiDownload } from 'react-icons/hi';
+import { saveAs } from 'file-saver';
 import {
     List,
     ListItem,
@@ -52,7 +54,7 @@ export default function SendMessages() {
     const [file, setFile] = useState();
     const [fileType, setFileType] = useState('');
     const [image, setImage] = useState({ preview: '', data: '' });
-    const [messageType, setMessageType] = useState('');
+
 
 
     //messages
@@ -144,6 +146,13 @@ export default function SendMessages() {
         setAnchorEl(null);
     };
 
+    const saveFile = (path, name) => {
+        saveAs(
+            path,
+            name
+        );
+    };
+
     useEffect(() => {
         dispatch(loadPinnedMessages(channelId));
 
@@ -152,8 +161,8 @@ export default function SendMessages() {
     const handleFileSubmit = async (e) => {
         e.preventDefault()
         let formData = new FormData()
-        const inputfile = e.target.files[0];
-        console.log("filbgkv", inputfile);
+
+
         formData.append('file', image.data)
 
         await Axios.post(`/fileupload?username=${user.userName}&channel=${activeChannel}&fileName=${chatMessage}`, formData).then((res) => {
@@ -251,10 +260,9 @@ export default function SendMessages() {
         if (e.key === 'Enter' && !e.shiftKey) {
             if (activeView === 'workspaces')
                 if (file) {
-                    console.log("its file");
+
                     handleFileSubmit(e)
 
-                    setMessageType('file')
                     handleSubmit({
                         workspace: activeWorkspace,
                         channel: activeChannel,
@@ -265,7 +273,7 @@ export default function SendMessages() {
                     });
                 }
                 else {
-                    setMessageType('text')
+
                     handleSubmit({
                         workspace: activeWorkspace,
                         channel: activeChannel,
@@ -320,7 +328,6 @@ export default function SendMessages() {
         if (String(e.target.className).includes('send-message-emoji-menu')) setEmojiMenuVisible(false);
     };
 
-    console.log("message type =", messageType)
     return (
         <React.Fragment>
             <div>
@@ -425,7 +432,7 @@ export default function SendMessages() {
                                                     <div className="message-user">
                                                         {message.from.toLowerCase()}
                                                         <div className="message-date">{` - ${moment(message.date).format('LLL')}`}</div>
-                                                        {activeView === "workspaces" ? <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} /> : null}
+                                                        {activeView === "workspaces" && message.msgType === "text" ? <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} /> : null}
                                                     </div>
 
                                                 }
@@ -434,9 +441,10 @@ export default function SendMessages() {
                                                     <div>
                                                         {message.msgType === 'text' ?
                                                             <p>{message.msg}</p> :
-                                                            <div>
+                                                            <div className="d-flex">
                                                                 <p>{message.msg}</p>
                                                                 {/* <img src={image.preview} width='100' height='100' /> */}
+                                                                <HiDownload onClick={() => saveFile(`/uploads/${message.msg}`, message.msg)} className="mx-2" style={{ cursor: "pointer", fontSize: "22px" }} />
                                                             </div>
                                                             // <p>file</p>
                                                         }
@@ -482,7 +490,7 @@ export default function SendMessages() {
                     onChange={e => handleOnChange(e)}
                     onKeyPress={e => handleKeyPress(e)}
                 />
-                <BsFillFileEarmarkImageFill onClick={handleFileClick} className="send-file-button" />
+                <IoIosAddCircle onClick={handleFileClick} className="send-file-button" />
                 <input type="file"
                     ref={hiddenFileInput}
                     onChange={selectFile}

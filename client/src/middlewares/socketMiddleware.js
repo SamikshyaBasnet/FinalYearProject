@@ -84,5 +84,7 @@ function setupSocketListener(socket = Socket, storeAPI) {
             });
         }
 
+        socket.removeAllListeners();
     })
+
 }

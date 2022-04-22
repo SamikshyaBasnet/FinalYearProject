@@ -403,23 +403,40 @@ const verifyJWT = (req, res, next) => {
                     message: "U failed to authenticate"
                 })
             } else {
-                // req.userId = decoded.id;
-                // next();
+                //req.userId = decoded.id;
+                //  next();
                 return res.json({
-                    auth: true
+                    auth: true,
+                    userId: req.userId
                 })
             }
-        })
+        });
+
     }
 }
 
 //user authenticated?
 router.get('/user/isUserAuth', verifyJWT, (req, res) => {
-    // const userId = req.body.userId;
-    res.json({
-        auth: true,
-        message: "Authenticated!! Congrats!",
+    const userId = req.query.userId;
+    console.log("userid =", userId)
+    db.query(`SELECT * FROM users WHERE userId=${userId}`, (err, result) => {
+        if (err) {
+            res.send(err)
+        } else if (result.length > 0) {
+            const username = result[0].username;
+            const userId = result[0].user_id;
+            const email = result[0].email;
+            res.json({
+                auth: true,
+                userName: username,
+                userId: userId,
+                email: email,
+                message: "Authenticated!! Congrats!",
+            });
+        }
+
     })
+
 })
 
 //login users

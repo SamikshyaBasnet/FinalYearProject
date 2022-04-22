@@ -196,7 +196,8 @@ export default function Header() {
         Axios.get(`/user/logout?userId=${userId}`).then(res => {
             if (res) {
                 dispatch(signOut())
-                localStorage.removeItem("token")
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId")
                 navigate('/')
 
             }

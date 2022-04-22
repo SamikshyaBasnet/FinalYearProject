@@ -60,9 +60,11 @@ function ChannelList(props) {
             await Axios.get(`/workspace/admin?workspaceId=${workspaceId}&userId=${user.userId}`).then((response) => {
                 setIsAdmin(response.data.isAdmin);
             });
+
         }
         getAdmin();
     }, [activeWorkspace, user]);
+    console.log("is adming", isAdmin)
 
     // Handle channel change, and closes drawer if on mobile view
     const handleChannelChange = (channel) => {
@@ -115,7 +117,8 @@ function ChannelList(props) {
         Axios.get(`/user/logout?userId=${userId}`).then(res => {
             if (res) {
                 dispatch(signOut())
-                localStorage.removeItem("token")
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
                 navigate('/')
                 socket.emit('disconnect');
             }

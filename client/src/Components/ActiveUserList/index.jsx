@@ -5,6 +5,7 @@ import UserInfo from '../UserInfo';
 import './activeuser.css';
 import Axios from '../API/api';
 import { MessageSharp } from '@material-ui/icons';
+import { HiUsers } from 'react-icons/hi'
 
 const ActiveUserList = () => {
 
@@ -39,7 +40,12 @@ const ActiveUserList = () => {
     return (
         <div className="user-list-container">
             <List className="users-list">
-                <ListItem className="users-list-title">Users List</ListItem>
+                <div className="d-flex">
+                    <ListItem className="users-list-title">Users List</ListItem>
+                    <ListItem className="users-list-title" style={{ fontSize: "26px" }}> <HiUsers /></ListItem>
+
+                </div>
+
                 {allUserList.map((user) => {
                     return (
                         <ListItem button className="user-list-item" onClick={e => handleUserClick(e, user.username)}>

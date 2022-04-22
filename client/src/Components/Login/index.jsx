@@ -60,11 +60,10 @@ function Login() {
             console.log(response);
             if (response.data.auth === true) {
                 dispatch(signIn(response.data));
-                dispatch(isUserAuth(response.data))
                 localStorage.setItem("token", response.data.token)
                 localStorage.setItem("userId", response.data.userId)
                 navigate('/dashboard')
-                // socket.emit('simple-chat-sign-in', response.data);
+                //    socket.emit('simple-chat-sign-in', response.data);
             }
             else {
                 setLoginStatus(response.data.message);
@@ -75,9 +74,10 @@ function Login() {
         )
 
     }
+    var userId = localStorage.getItem("userId");
 
     useEffect(() => {
-        Axios.get("/user/isUserAuth", {
+        Axios.get(`/user/isUserAuth?userId=${userId}`, {
             headers: {
                 "x-access-token": localStorage.getItem("token"),
             }
@@ -86,6 +86,7 @@ function Login() {
             console.log("token", response);
             if (response.data.auth === true) {
                 dispatch(isUserAuth(response.data))
+                //  dispatch(signIn(response.data))
                 navigate('/dashboard');
 
             }

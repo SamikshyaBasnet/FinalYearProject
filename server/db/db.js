@@ -27,8 +27,10 @@ var db = mysql.createPool({
     user,
     password,
     database,
+    charset: "utf8mb4"
 
 });
+
 
 
 db.query = util.promisify(db.query);

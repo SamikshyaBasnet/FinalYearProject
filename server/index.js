@@ -74,7 +74,7 @@ async function main() {
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
 
-            cb(null, __dirname + folder)
+            cb(null, '../client/public/uploads')
             //  console.log("file = ", file);
             file = file.mimetype;
         },
@@ -102,7 +102,7 @@ async function main() {
         } = req.query;
         const sqlquery = `INSERT INTO messages (channel_id, username, message, type, date) VALUES 
         ('${channel.split('-')[1]}', '${username}', '${fileName}', 'file', '${date}')`
-        db.query(sqlquery);
+        //     db.query(sqlquery);
         console.log("more infor=", username, channel, fileName);
         res.json({})
         console.log("file", file)

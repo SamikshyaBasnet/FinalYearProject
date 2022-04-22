@@ -44,7 +44,6 @@ export const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isSignedIn: true,
-                    userId: action.payload.userId,
 
             };
         case ACTION.SIGN_OUT:
