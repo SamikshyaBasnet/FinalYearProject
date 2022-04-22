@@ -10,6 +10,7 @@ import { IoIosAddCircle } from 'react-icons/io';
 import socketClient from "socket.io-client";
 import { HiDownload } from 'react-icons/hi';
 import { saveAs } from 'file-saver';
+import InputEmoji from 'react-input-emoji';
 import {
     List,
     ListItem,
@@ -238,14 +239,14 @@ export default function SendMessages() {
     // Handles submission of messages
     // Dispatches event and sets TextField value to empty
     function handleSubmit(message) {
-
         if (activeView === 'workspaces' && message.type === 'channelMessage') {
             socket.emit('simple-chat-message', message);
             dispatch(receiveGroupMessage(message))
 
         } else if (activeView === 'home' && message.type === 'privateMessage') {
-            socket.emit('simple-chat-private-message', message);
+            //socket.emit('simple-chat-private-message', message);
             dispatch(sendPrivateMessage(message))
+            //dispatch(receivePrivateMessage(message));
 
         }
         setChatMessage('');
@@ -273,7 +274,6 @@ export default function SendMessages() {
                     });
                 }
                 else {
-
                     handleSubmit({
                         workspace: activeWorkspace,
                         channel: activeChannel,
@@ -286,12 +286,13 @@ export default function SendMessages() {
 
             else if (activeView === 'home')
                 if (file) {
+                    handleFileSubmit(e)
                     handleSubmit({
                         from: user.userName,
-                        msg: file,
-                        type: 'privateMessage',
+                        msg: chatMessage,
+                        to: activePMUser,
                         msgType: "file",
-
+                        type: 'privateMessage',
                     });
                 } else {
                     handleSubmit({
@@ -314,7 +315,7 @@ export default function SendMessages() {
     // When click emoji, close the menu
     function handleEmojiClick(e) {
         setChatMessage(chatMessage + e.native);
-        setEmojiMenuVisible(false);
+        setEmojiMenuVisible(true);
     }
     const hiddenFileInput = React.useRef(null);
 
@@ -419,11 +420,17 @@ export default function SendMessages() {
                                     <Fade in={true} timeout={500}>
                                         <ListItem className="message" key={i}>
                                             <ListItemAvatar className="message-user-icon">
-                                                <div className="user-profile">
-                                                    <p className="user">
-                                                        {message.from.charAt(0).toUpperCase()}
-                                                    </p>
-                                                </div>
+
+                                                {user.profile === "" ?
+                                                    <div className="user-profile">
+                                                        <p className="user">
+                                                            {message.from.charAt(0).toUpperCase()}
+
+                                                        </p>
+                                                    </div> :
+                                                    <img className='user-profile-pic' src={`/uploads/${user.profile}`} alt="" height="20" width="20" />
+
+                                                }
 
                                             </ListItemAvatar>
 
@@ -502,7 +509,7 @@ export default function SendMessages() {
 
             <div className={emojiMenuVisible ? 'send-message-emoji-menu show' : 'send-message-emoji-menu hide'}>
                 <div className="emoji-wrapper">
-                    <Picker onSelect={e => handleEmojiClick(e)} />
+                    <Picker onSelect={(e) => handleEmojiClick(e)} />
                 </div>
 
             </div>

@@ -64,7 +64,7 @@ function ChannelList(props) {
         }
         getAdmin();
     }, [activeWorkspace, user]);
-    console.log("is adming", isAdmin)
+
 
     // Handle channel change, and closes drawer if on mobile view
     const handleChannelChange = (channel) => {

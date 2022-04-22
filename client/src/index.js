@@ -22,6 +22,7 @@ import { socketMiddleWare } from './middlewares/socketMiddleware';
 const baseUrl = 'http://localhost:5000/';
 const store = createStore(reducers, composeWithDevTools(applyMiddleware(thunk, socketMiddleWare(baseUrl))));
 
+//const store = createStore(reducers, composeWithDevTools(applyMiddleware(thunk)));
 //store.subscribe(() => saveToLocalStorage(store.getState()));
 
 

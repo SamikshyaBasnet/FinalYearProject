@@ -19,6 +19,16 @@ export const signIn = (user) => ({
     payload: user
 });
 
+
+//
+export const loadUserProfileData = (userId) => async (dispatch) => {
+    let url = `/user/user-data?userId=${userId}`;
+    const res = await Axios.get(url);
+    console.log("user result", res);
+    const init = dispatch(userPData(res.data));
+    console.log("initial data", init);
+};
+
 // On sign out
 export const signOut = () => ({
     type: ACTION.SIGN_OUT,
@@ -54,6 +64,7 @@ export const getUsersInWorkspace = (workspaceId) => async (dispatch) => {
         type: ACTION.GET_ALL_USERS,
         payload: res.data
     });
+    console.log("all users in q=", res.data)
 };
 
 
@@ -127,6 +138,11 @@ export const updateActiveState = (user) => ({
 export const initialData = (data) => ({
     type: ACTION.GET_INITIAL_DATA,
     payload: data
+});
+
+export const userPData = (data) => ({
+    type: ACTION.GET_USER_DATA,
+    payload: data
 })
 
 // Loads user Data. Gets all Servers + Channel History
@@ -163,6 +179,11 @@ export const loadUserData = (userId) => async (dispatch) => {
         socket.emit('subscribe', workspaceId);
     });
 };
+
+export const uploadProfile = (image) => ({
+    type: ACTION.UPLOAD_PROFILE,
+    payload: image
+});
 
 export const loadReminders = (userId) => async (dispatch) => {
     let url = `/reminders?userId=${userId}`;

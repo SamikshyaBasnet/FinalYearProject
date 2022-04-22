@@ -66,17 +66,14 @@ async function main() {
     app.use(workspaceRouter);
     app.use(channelRouter);
     app.use(reminderRouter);
-    var file;
-    var folder = 'files'
-    if (!fs.existsSync(folder)) {
-        fs.mkdirSync(folder);
-    }
+
+
+
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
 
-            cb(null, '../client/public/uploads')
+            cb(null, '../client/public/uploads/')
             //  console.log("file = ", file);
-            file = file.mimetype;
         },
 
         filename: (req, file, cb) => {
@@ -85,14 +82,10 @@ async function main() {
         },
     })
 
-
     const upload = multer({
         storage: storage
     });
-    var current = new Date();
-    const date = `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`;
 
-    // username=${user.userName}&channel=${activeChannel}&type='channelMessage
     app.post('/fileupload', upload.single('file'), function (req, res) {
         const {
             username,
@@ -100,19 +93,55 @@ async function main() {
             type,
             fileName
         } = req.query;
-        const sqlquery = `INSERT INTO messages (channel_id, username, message, type, date) VALUES 
-        ('${channel.split('-')[1]}', '${username}', '${fileName}', 'file', '${date}')`
-        //     db.query(sqlquery);
+
         console.log("more infor=", username, channel, fileName);
         res.json({})
         console.log("file", file)
-    })
+    });
+
+    // app.post('/uploadprofile', upload.single('image'), function (req, res) {
+
+
+    //     var imgsrc = req.query.fileName;
+    //     var userId = req.query.userId;
+    //     console.log("file name=", imgsrc);
+    //     var insertData = `UPDATE users SET profile='${imgsrc}' WHERE user_id='${userId}'`
+
+    //     db.query(insertData, (err, result) => {
+    //         if (err) {
+    //             console.log('error', err)
+    //         }
+
+    //         res.send(imgsrc)
+    //     })
+
+    // });
+
+
+
+    var current = new Date();
+    const date = `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`;
+
+    // username=${user.userName}&channel=${activeChannel}&type='channelMessage
+
+
+
 
     let clients = SocketClientList = [];
 
     io.on('connection', (socket) => {
         let sessionUserId = '';
         let action = SocketAction;
+
+        socket.on('get online users', (onlineUsers) => {
+            //Send over the onlineUsers
+            socket.emit('get online users', onlineUsers);
+            console.log(
+                "onlin",
+                onlineUsers
+            )
+        })
+
 
         //after getting userid after signing in from user
         // adding the userid to the clients list to identify the socket id
@@ -131,7 +160,12 @@ async function main() {
             });
             console.log("clients=", clients)
 
-            db.query(`UPDATE users SET user_last_active ='${date}' WHERE user_id = '${sessionUserId}'`);
+            // clients.map((client) => {
+            //     var userId = client.sessionUserId
+            //     db.query(`UPDATE users SET isActive ='1' WHERE user_id = '${userId}'`);
+            // })
+            db.query(`UPDATE users SET isActive ='1' WHERE user_id = '${sessionUserId}'`);
+
         });
 
 
@@ -156,8 +190,6 @@ async function main() {
                 type: 'message',
                 payload: msg
             }
-
-            console.log("actio-", action)
 
             io.to(workspaceId).emit('simple-chat-message', action);
 
@@ -185,7 +217,7 @@ async function main() {
                     from: message.from,
                     to: message.to,
                     msg: message.msg,
-                    type: message.msgType,
+                    msgType: message.msgType,
                     user: message.from.toLowerCase()
                 }
             };
@@ -205,7 +237,7 @@ async function main() {
                     from: message.from,
                     to: message.to,
                     msg: message.msg,
-                    type: message.msgType,
+                    msgType: message.msgType,
                     user: message.to.toLowerCase()
                 }
             };
@@ -241,8 +273,8 @@ async function main() {
                 }
             });
             const disconnect = true;
-
-            // console.log('user ' + ' disconnected');
+            delete onlineUsers[socket.username]
+            console.log('user ' + ' disconnected');
         });
     });
 }

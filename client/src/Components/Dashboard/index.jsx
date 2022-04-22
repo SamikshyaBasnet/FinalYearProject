@@ -7,7 +7,7 @@ import Header from '../Header/';
 import Messages from '../Messages/';
 import SendMessages from '../Messages/message.jsx';
 import ActiveUserList from '../ActiveUserList/';
-import { loadUserData, isUserAuth, loadReminders, updateActiveState, updateActiveUserList, signIn } from '../../actions';
+import { loadUserData, isUserAuth, loadUserProfileData, loadReminders, updateActiveState, updateActiveUserList, signIn } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Axios from '../API/api';
 import '../../App.css';
@@ -71,6 +71,7 @@ function Dashboard() {
             if (response.data.auth === true) {
                 dispatch(isUserAuth(response.data))
                 //   dispatch(signIn(response.data))
+                dispatch(loadUserProfileData(user));
                 navigate('/dashboard');
             }
         })

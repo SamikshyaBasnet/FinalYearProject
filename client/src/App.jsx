@@ -4,7 +4,7 @@ import Login from './Components/Login';
 //import Sidebar from './Sidebar';
 import Dashboard from './Components/Dashboard';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { signIn, loadUserData } from './actions';
+import { signIn, loadUserData, loadUserProfileData } from './actions';
 import Axios from 'axios';
 import { useEffect } from 'react';
 import Register from './Components/Register';
@@ -36,6 +36,7 @@ function App() {
     console.log("user =", user);
     if (user) {
       dispatch(loadUserData(user));
+      dispatch(loadUserProfileData(user));
       // navigate('/dashboard')
     }
   };

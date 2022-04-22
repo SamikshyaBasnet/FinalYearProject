@@ -31,6 +31,7 @@ export let ChatStore = {
     activeChannel: '',
     allUserList: {
         user_name: '',
+        profile: '',
     },
     activeUserList: {
         user_name: '',
@@ -114,7 +115,7 @@ export const chatReducer = (state = initialState, action) => {
                                 from: action.payload.from,
                                 to: action.payload.to,
                                 msg: action.payload.msg,
-                                msgType: action.payload.type,
+                                msgType: action.payload.msgType,
                                 date: action.payload.date
                             }
                         ]

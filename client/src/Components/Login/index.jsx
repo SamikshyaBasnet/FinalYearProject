@@ -16,7 +16,7 @@ import socketClient from "socket.io-client";
 
 import Axios from '../API/api';
 import { signIn } from '../../actions';
-import { isUserAuth } from '../../actions';
+import { isUserAuth, loadUserProfileData } from '../../actions';
 
 function Login() {
     const baseUrl = 'http://localhost:5000';
@@ -87,6 +87,7 @@ function Login() {
             if (response.data.auth === true) {
                 dispatch(isUserAuth(response.data))
                 //  dispatch(signIn(response.data))
+                dispatch(loadUserProfileData(userId));
                 navigate('/dashboard');
 
             }

@@ -8,8 +8,69 @@ var nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 var randtoken = require('rand-token');
 
-
+const multer = require('multer');
 let router = express.Router();
+
+
+//update pp
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+
+        cb(null, '../client/public/uploads/')
+        //  console.log("file = ", file);
+    },
+
+    filename: (req, file, cb) => {
+        cb(null, file.originalname)
+
+    },
+})
+
+const upload = multer({
+    storage: storage
+});
+
+router.post('/uploadprofile', upload.single('image'), function (req, res) {
+
+
+    var imgsrc = req.query.fileName;
+    var userId = req.query.userId;
+    console.log("file name=", imgsrc);
+    var insertData = `UPDATE users SET profile='${imgsrc}' WHERE user_id='${userId}'`
+
+    db.query(insertData, (err, result) => {
+        if (err) {
+            console.log('error', err)
+        }
+
+        res.send(imgsrc)
+    })
+
+});
+
+router.get('/user/user-data', async (req, res) => {
+    const userId = req.query.userId;
+
+    db.query(`SELECT username, email, profile, user_id FROM users
+    WHERE user_id='${userId}'`, (err, result) => {
+        if (err) {
+            res.status(400).send('Server error');
+            console.log("error occured", err);
+            throw err;
+        } else {
+            console.log("user profile data=", result)
+            res.json({
+                userId: userId,
+                userName: result[0].username,
+                profile: result[0].profile,
+                email: result[0].email,
+            });
+
+        }
+    });
+
+})
 
 //send email -- email verification
 function sendEmail(email, token) {
@@ -147,7 +208,7 @@ router.get('/user/data', async (req, res) => {
 
             //Query to get all Private messages for user
             db.query(
-                `SELECT b.username as user_from, c.username as user_to, message, type
+                `SELECT b.username as user_from, c.username as user_to, a.message, a.type
                 FROM usermessages a
                 JOIN users b ON b.user_id = a.user_from 
                 JOIN users c ON c.user_id = a.user_to 
@@ -462,10 +523,9 @@ router.post("/user/login", (req, res) => {
                             console.log("error", err);
                         }
                         if (response) {
-
-
                             const username = result[0].username;
                             const userId = result[0].user_id;
+                            const profile = result[0].profile;
                             const email = result[0].email;
                             const token = jwt.sign({
                                 userId
@@ -488,6 +548,7 @@ router.post("/user/login", (req, res) => {
                                     token: token,
                                     userName: username,
                                     email: email,
+                                    profile: profile,
 
                                 })
                             });
@@ -581,6 +642,9 @@ router.post('/user/usernameedit', (req, res) => {
 
     }
 });
+
+
+
 
 // rename a channel
 const editUserName = (userName, userId) => {

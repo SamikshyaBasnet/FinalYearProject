@@ -412,7 +412,7 @@ router.get('/workspace/allusers', (req, res) => {
             workspaceId: workspaceId
         });
     } else {
-        db.query(`SELECT DISTINCT users.username FROM userworkspaces
+        db.query(`SELECT DISTINCT users.username, users.profile FROM userworkspaces
         JOIN users ON users.user_id = userworkspaces.user_id 
           WHERE userworkspaces.workspace_id = '${workspaceId}'`,
             (error, result) => {

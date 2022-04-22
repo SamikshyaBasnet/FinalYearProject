@@ -9,6 +9,7 @@ const initialState = {
     isAdmin: false,
     email: '',
     isActive: false,
+    profile: '',
     reminders: [{
         reminderId: '',
         name: '',
@@ -38,8 +39,14 @@ export const userReducer = (state = initialState, action) => {
                     isAdmin: action.payload.isAdmin,
                     email: action.payload.email,
                     isActive: true,
-            };
+                    profile: action.payload.profile,
 
+            };
+        case ACTION.UPLOAD_PROFILE:
+            return {
+                ...state,
+                profile: action.payload,
+            };
         case ACTION.ISUSER_AUTHENICATED:
             return {
                 ...state,
@@ -56,12 +63,35 @@ export const userReducer = (state = initialState, action) => {
                     email: '',
                     isActive: false,
             };
+
         case ACTION.GET_REMINDERS:
             return {
                 ...state,
                 reminders: action.payload
             };
+        case ACTION.SIGN_IN:
+            return {
+                ...state,
+                isSignedIn: true,
+                    userId: action.payload.userId,
+                    userName: action.payload.userName,
+                    isAdmin: action.payload.isAdmin,
+                    email: action.payload.email,
+                    isActive: true,
+                    profile: action.payload.profile,
 
+            };
+        case ACTION.GET_USER_DATA:
+            return {
+                ...state,
+                userId: action.payload.userId,
+                    userName: action.payload.userName,
+                    isAdmin: action.payload.isAdmin,
+                    email: action.payload.email,
+                    isActive: true,
+                    profile: action.payload.profile,
+
+            };
         case ACTION.CREATE_REMINDER:
             return {
                 ...state,

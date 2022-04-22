@@ -18,6 +18,14 @@
     opacity: 0.6;
 }
 
+.user-profile-pic{
+    border-radius: 50% !important;
+    height: 50px !important;
+    width: 50px !important;
+    text-align: center;
+    border: 1px solid rgb(202 167 41);
+}
+
 
 .modal-button{
     text-transform: capitalize !important;

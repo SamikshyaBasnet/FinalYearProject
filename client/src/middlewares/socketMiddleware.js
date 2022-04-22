@@ -24,7 +24,6 @@ export const socketMiddleWare = (baseUrl) => {
             //send private messages
             if (action.type === ACTION.SEND_SOCKET_PRIVATE_MESSAGE) {
                 socket.emit('simple-chat-private-message', action.payload);
-
             }
 
             //call sign in action to send the socket workspace our userid to indentify individual socekt connections
@@ -35,20 +34,20 @@ export const socketMiddleWare = (baseUrl) => {
 
             // Pull workspace list off initial data load
             // Use to "join" our workspace "rooms"
-            // if (action.type === ACTION.GET_INITIAL_DATA) {
-            //     // Get list of workspace Ids (used for "room" names on socket workspace)
-            //     let workspaces = Object.keys(action.payload.workspaces);
-            //     let workspaceIds = [];
-            //     workspaces.forEach((workspace, i) => {
-            //         workspaceIds[i] = workspace.split('-')[1];
-            //         // socket.emit('subscribe', workspace);
-            //     });
+            if (action.type === ACTION.GET_INITIAL_DATA) {
+                // Get list of workspace Ids (used for "room" names on socket workspace)
+                let workspaces = Object.keys(action.payload.workspaces);
+                let workspaceIds = [];
+                workspaces.forEach((workspace, i) => {
+                    workspaceIds[i] = workspace.split('-')[1];
 
-            //     // Subscribe to each workspace (Creates a room on socket io)
-            //     workspaceIds.forEach((workspaceId) => {
-            //         socket.emit('subscribe', workspaceId);
-            //     });
-            // }
+                });
+
+                // Subscribe to each workspace (Creates a room on socket io)
+                workspaceIds.forEach((workspaceId) => {
+                    socket.emit('subscribe', workspaceId);
+                });
+            }
 
             // If user creates a workspace we need to join that room
             if (action.type === ACTION.CREATE_WORKSPACE) {
@@ -84,7 +83,7 @@ function setupSocketListener(socket = Socket, storeAPI) {
             });
         }
 
-        socket.removeAllListeners();
+        // socket.removeAllListeners();
     })
 
 }

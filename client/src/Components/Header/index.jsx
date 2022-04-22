@@ -12,6 +12,8 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDateTimePicker,
 } from '@material-ui/pickers';
+import AvatarPicker from "./AvatarPicker";
+
 import {
     SwipeableDrawer,
     Button,
@@ -64,10 +66,19 @@ export default function Header() {
     const [userListDrawerVisible, setUserListDrawerVisible] = useState(false);
     const [title, setTitle] = useState('');
     let user_name = user.userName;
-    const [userName, setUserName] = useState(user_name);
+
+    const [userName, setUserName] = useState(user.userName);
     const [dateState, setDateState] = useState(new Date());
     const [name, setName] = useState('');
     const [body, setBody] = useState('');
+    console.log("user name of p=", userName)
+    //for profile
+    const [avatarImage, setAvatarImage] = useState();
+
+    const handleImageChange = (imageFile) => {
+        setAvatarImage(imageFile);
+    };
+
     //search messge
     const [searchMessage, setSearchMessage] = useState('');
 
@@ -181,14 +192,6 @@ export default function Header() {
 
     }
 
-    //avatar picker
-
-    const [avatarImage, setAvatarImage] = useState();
-
-    const handleImageChange = (imageFile) => {
-        setAvatarImage(imageFile);
-    };
-
     //  Signs the user out
     const handleSignOut = () => {
         const userId = user.userId;
@@ -214,7 +217,7 @@ export default function Header() {
         boxShadow: 24,
         overflow: "scroll",
         p: 4,
-        height: 480,
+        height: 500,
 
     };
     const handleRenameUserName = (userName) => {
@@ -442,11 +445,18 @@ export default function Header() {
 
                 </div>
                 <div className="header__right">
-                    <div className="user-profile" onClick={handleOpen}>
-                        <p className="user">
-                            {user.userName.charAt(0).toUpperCase()}
-                        </p>
-                    </div>
+                    {user.profile === "" ?
+                        <div className="user-profile" onClick={handleOpen}>
+                            <p className="user">
+                                {user.userName.charAt(0).toUpperCase()}
+
+                            </p>
+                        </div> :
+                        <div onClick={handleOpen}>
+                            <img className='user-profile-pic' src={`/uploads/${user.profile}`} alt="" height="20" width="20" />
+                        </div>
+                    }
+
                     <Modal
                         open={open}
                         onClose={handleClose}
@@ -457,11 +467,11 @@ export default function Header() {
                             {/* <Slide direction={createDirection} in={createVisible} mountOnEnter unmountOnExit timeout={100}> */}
                             <Grid container spacing={3} style={{ color: "#fff" }}>
                                 <Grid item xs={12}>
-                                    <div className="user-profile">
-                                        <p className="user">
-                                            {user.userName.charAt(0).toUpperCase()}
-                                        </p>
-                                    </div>
+                                    <AvatarPicker
+                                        handleChangeImage={handleImageChange}
+                                        avatarImage={avatarImage}
+                                    />
+
                                 </Grid>
                                 <Grid item xs={12}>
                                     <p>Display Name</p>

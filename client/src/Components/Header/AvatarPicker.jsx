@@ -2,17 +2,21 @@ import React, { useEffect, useRef } from "react";
 import List from "@material-ui/core/List";
 import t from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import { Avatar, Badge } from "@material-ui/core";
+import { Avatar, Badge, Button } from "@material-ui/core";
 import withStyles from "@material-ui/core/styles/withStyles";
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import useTheme from "@material-ui/core/styles/useTheme";
-
+import { loadUserData, uploadProfile } from '../../actions';
+import { useSelector, useDispatch } from "react-redux";
+import Axios from '../API/api';
 import("screw-filereader");
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
         display: "flex",
+        justifyContent: "space-between",
         "& > *": {
             margin: theme.spacing(1)
         }
@@ -27,9 +31,9 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 15
     },
     large: {
-        width: theme.spacing(25),
-        height: theme.spacing(25),
-        border: `4px solid ${theme.palette.primary.main}`
+        width: theme.spacing(10),
+        height: theme.spacing(10),
+        border: `4px solid rgb(202 167 41)`
     }
 }));
 
@@ -38,18 +42,26 @@ const EditIconButton = withStyles((theme) => ({
         width: 22,
         height: 22,
         padding: 15,
-        border: `2px solid ${theme.palette.primary.main}`
+        border: `1px solid rgb(202 167 41)`
     }
 }))(IconButton);
 
 export const AvatarPicker = (props) => {
     const [file, setFile] = React.useState("");
+    const [fileName, setFileName] = React.useState("");
+
+    const [editPic, setEditPic] = React.useState(false);
+
+    const dispatch = useDispatch();
     const theme = useTheme();
     const classes = useStyles();
 
     const imageRef = useRef();
 
     const { handleChangeImage, avatarImage } = props;
+
+    const user = useSelector((state) => state.user);
+
 
     useEffect(() => {
         if (!file && avatarImage) {
@@ -82,25 +94,43 @@ export const AvatarPicker = (props) => {
                 handleChangeImage(resizedFile);
             });
         });
+
     };
 
     const showOpenFileDialog = () => {
         imageRef.current.click();
+
     };
 
     const handleChange = (event) => {
         const fileObject = event.target.files[0];
         if (!fileObject) return;
         renderImage(fileObject);
+        setFile(event.target.files[0]);
+        setFileName(event.target.files[0].name);
+        setEditPic(true)
     };
 
+
+    const uploadFile = async (e) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("fileName", fileName);
+        await Axios.post(
+            `/uploadprofile?fileName=${fileName}&userId=${user.userId}`,
+            formData
+        ).then((res) => {
+
+            dispatch(uploadProfile(res.data))
+        });
+    };
+    console.log("is edit pic=", editPic)
     return (
         <List data-testid={"image-upload"}>
             <div
                 style={{
                     display: "flex",
-                    justifyContent: "center",
-                    margin: "20px 10px"
+                    margin: "-27px -16px",
                 }}
             >
                 <div className={classes.root}>
@@ -113,14 +143,42 @@ export const AvatarPicker = (props) => {
                         badgeContent={
                             <EditIconButton
                                 onClick={showOpenFileDialog}
-                                style={{ background: theme.palette.primary.main }}
+                                style={{ background: 'rgb(202 167 41)' }}
                             >
                                 <EditIcon />
                             </EditIconButton>
                         }
                     >
-                        <Avatar alt={"avatar"} src={file} className={classes.large} />
+                        {/* {user.profile !== "" ?
+
+                            <div className="user-profile">
+                                <p className="user">
+                                    {user.userName.charAt(0).toUpperCase()}
+
+                                </p>
+                            </div>
+                            :
+
+                            <div className="user-profile">
+                                <p className="user">
+                                    <img src={user.profile === "" ? `${user.userName.charAt(0).toUpperCase()}` : `/public/uploads/${user.profile}`} alt="" />
+                                    {/* {user.userName.charAt(0).toUpperCase()} 
+                                </p>
+                            </div>
+                        } */}
+                        {user.profile === "" ?
+                            <Avatar alt={"avatar"} src={editPic ? file : `/uploads/${user.profile}`}
+                                className={classes.large}
+                            /> :
+                            <div>
+                                <img className='user-profile-pic' src={editPic ? file : `/uploads/${user.profile}`} alt="" height="20" width="20" />
+                            </div>
+                        }
+
+
                     </Badge>
+
+
                     <input
                         ref={imageRef}
                         type="file"
@@ -129,7 +187,16 @@ export const AvatarPicker = (props) => {
                         onChange={handleChange}
                     />
                 </div>
+                <div>
+                    <Button className="modal-button"
+                        onClick={uploadFile}
+                        style={{ top: "30px", left: "60px" }}>Save</Button>
+                </div>
+
             </div>
+
+
+
         </List>
     );
 };
