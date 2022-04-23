@@ -1,4 +1,13 @@
-
+/* .MuiPaper-root, .MuiMenu-paper, .MuiPopover-paper, .MuiPaper-elevation8, .MuiPaper-rounded{
+  left: 300px !important;
+} */
+.reaction-menu{
+    left: 600px !important;
+   
+}
+.emoji-l{
+   display: flex;  
+}
 .pinned_msg_container{
     background-color: rgb(80, 3, 79);
     color: white;
@@ -10,6 +19,9 @@
     margin: 0px;
     padding: 0px;
     z-index: 1;
+}
+.react-message-emoji-button{
+    margin-left: 10px;
 }
 .pinmsg{
     color: rgb(216, 203, 55) !important;
@@ -24,4 +36,8 @@
 .image{
     height: 50px;
     width: auto;
+}
+.reaction-emoji-wrapper{
+    display: flex;
+    background-color: rgb(64, 33, 63);
 }

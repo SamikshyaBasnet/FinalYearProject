@@ -57,9 +57,9 @@ router.get('/user/user-data', async (req, res) => {
         if (err) {
             res.status(400).send('Server error');
             console.log("error occured", err);
-            throw err;
+
         } else {
-            console.log("user profile data=", result)
+
             res.json({
                 userId: userId,
                 userName: result[0].username,
@@ -157,6 +157,24 @@ function sendResetPasswordEmail(email, token) {
 
 }
 
+//search message
+
+router.post('/usermessages/searchprivatemessage', (req, res) => {
+
+    const message = req.query.message;
+    db.query(`SELECT u.username, m.id, m.message, m.date from usermessages m
+    JOIN users u ON u.user_id = m.user_from
+    WHERE m.message='${message}'`,
+        (err, result) => {
+            if (err) {
+                throw err
+            } else {
+                console.log("searcg", result);
+                res.send(result);
+            }
+        }
+    )
+});
 
 // Route to get data associated with a specific user
 // Expects -> userId
@@ -566,7 +584,7 @@ router.post("/user/login", (req, res) => {
                 } else {
                     return res.json({
                         auth: false,
-                        message: "Your account is pending.Please check your email to verify your email."
+                        message: "Your account is pending.Please check your email to verify your email address."
                     })
 
                 }
@@ -598,7 +616,7 @@ router.get('/user/logout', async (req, res) => {
         })
     });
 });
-
+console.log("hi");
 
 //editing profile
 // Route to rename a channel
@@ -648,9 +666,20 @@ router.post('/user/usernameedit', (req, res) => {
 
 // rename a channel
 const editUserName = (userName, userId) => {
+
+    db.query(
+        `UPDATE messages INNER JOIN users 
+        ON messages.username = users.username
+         SET messages.username = '${userName}'`
+    );
+
     db.query(
         `UPDATE users SET username = '${userName}' WHERE user_id = '${userId}'`
     );
+
+
+
+
     // db.query(
     //     `UPDATE messages SET username = '${userName}' WHERE user_id = '${userId}'`
     // );

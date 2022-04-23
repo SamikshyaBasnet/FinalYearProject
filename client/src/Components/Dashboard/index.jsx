@@ -11,6 +11,7 @@ import { loadUserData, isUserAuth, loadUserProfileData, loadReminders, updateAct
 import { useDispatch, useSelector } from 'react-redux';
 import Axios from '../API/api';
 import '../../App.css';
+import socketClient from "socket.io-client";
 
 function Dashboard() {
 
@@ -19,16 +20,23 @@ function Dashboard() {
     // Get State from Redux Store
     const user = useSelector((state) => state.user);
     const userId = user.userId;
+    const username = user.userName;
 
     const { activeWorkspace } = useSelector((state) => state.chat);
     // console.log("active workspace", activeWorkspace);
 
     const dispatch = useDispatch();
 
+    const baseUrl = 'http://localhost:5000';
+    var socket = socketClient(baseUrl);
+
+    // socket.on('connection', function () {
+    //     socket.emit('user_connected', username);
+    // })
     // Also fetches new list of active users in activeWorkspace
     const updateActiveStatus = () => {
-        dispatch(updateActiveState());
-        dispatch(updateActiveUserList(activeWorkspace.split('-')[1]));
+        // dispatch(updateActiveState());
+        // dispatch(updateActiveUserList(activeWorkspace.split('-')[1]));
         setTimeout(updateActiveStatus, 5 * 60000);
     };
 
@@ -39,11 +47,13 @@ function Dashboard() {
     useEffect(() => {
         if (!user.isSignedIn) {
             navigate('/');
+
+            socket.disconnect();
+
         } else {
             navigate('/dashboard')
             const res = dispatch(loadUserData(userId));
-            console.log("load user dTata", res);
-            updateActiveStatus();
+            // Status();
             dispatch(loadReminders(userId));
 
         }
@@ -73,6 +83,7 @@ function Dashboard() {
                 //   dispatch(signIn(response.data))
                 dispatch(loadUserProfileData(user));
                 navigate('/dashboard');
+
             }
         })
     };

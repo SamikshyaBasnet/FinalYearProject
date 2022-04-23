@@ -10,7 +10,8 @@ const multer = require('multer')
 
 let app = express();
 let server = http.createServer(app);
-
+// Express API Setup
+app.disable('x-powered-by');
 
 const io = require("socket.io")(server, {
     cors: {
@@ -133,13 +134,12 @@ async function main() {
         let sessionUserId = '';
         let action = SocketAction;
 
-        socket.on('get online users', (onlineUsers) => {
+
+        socket.on('user_connected', function (userId) {
+            console.log("username=", userId)
             //Send over the onlineUsers
-            socket.emit('get online users', onlineUsers);
-            console.log(
-                "onlin",
-                onlineUsers
-            )
+            console.log("user connected lol", userId)
+
         })
 
 
@@ -160,6 +160,7 @@ async function main() {
             });
             console.log("clients=", clients)
 
+
             // clients.map((client) => {
             //     var userId = client.sessionUserId
             //     db.query(`UPDATE users SET isActive ='1' WHERE user_id = '${userId}'`);
@@ -173,7 +174,6 @@ async function main() {
 
         socket.on('subscribe', (workspaceId) => {
             socket.join(workspaceId);
-
         });
 
 
@@ -259,22 +259,11 @@ async function main() {
         socket.on('disconnect', () => {
             clients.find((client, i) => {
                 if (client.userId === sessionUserId) {
-                    // Emit to all connected users that this user left (disconnects all voice peering calls with him)
-                    let action = {
-                        type: 'user-leave',
-                        payload: {
-                            userId: client.userId
-                        }
-                    };
-                    socket.emit('update', action);
-
                     // Remove from global socket client list
-                    clients.splice(i, 1);
+                    return clients.splice(i, 1);
                 }
             });
-            const disconnect = true;
-            delete onlineUsers[socket.username]
-            console.log('user ' + ' disconnected');
+
         });
     });
 }

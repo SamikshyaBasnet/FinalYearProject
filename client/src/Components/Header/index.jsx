@@ -40,6 +40,7 @@ import {
     loadReminders,
     loadSearchedMessages,
     loadPrivateSearchedMessages,
+    loadUserProfileData
 } from '../../actions';
 import Sidebar from '../Sidebar';
 import ActiveUserList from '../ActiveUserList';
@@ -51,7 +52,7 @@ export default function Header() {
 
     // Get State from Redux Store
     const chatStore = useSelector((state) => state.chat);
-    const { activeChannel, activePMUser, activeView, searchedMessages } = chatStore;
+    var { activeChannel, activePMUser, activeView, searchedMessages } = chatStore;
     const user = useSelector((state) => state.user);
     const { userId } = useSelector((state) => state.user);
     let { reminders } = useSelector((state) => state.user);
@@ -65,13 +66,12 @@ export default function Header() {
     const [sideBarDrawerVisible, setSideBarDrawerVisible] = useState(false);
     const [userListDrawerVisible, setUserListDrawerVisible] = useState(false);
     const [title, setTitle] = useState('');
-    let user_name = user.userName;
+
 
     const [userName, setUserName] = useState(user.userName);
     const [dateState, setDateState] = useState(new Date());
     const [name, setName] = useState('');
     const [body, setBody] = useState('');
-    console.log("user name of p=", userName)
     //for profile
     const [avatarImage, setAvatarImage] = useState();
 
@@ -180,15 +180,18 @@ export default function Header() {
         if (e.key === 'Enter' && !e.shiftKey) {
 
             if (activeView === "workspaces") {
+                console.log("search pm");
                 dispatch(loadSearchedMessages(searchMessage, channelId))
+
             }
-            else {
+            else if (activeView === "home") {
+                console.log("search pm");
                 dispatch(loadPrivateSearchedMessages(searchMessage))
             }
             setOpenSearchModal(true)
             setSearchMessage('');
         }
-        searchedMessages = [];
+
 
     }
 
@@ -227,7 +230,9 @@ export default function Header() {
         ).then((response) => {
             if (response.data.renamed === true) {
                 setUserName(userName)
-                dispatch(loadUserData(user.userId))
+                dispatch(loadUserData(user.userId));
+                dispatch(loadUserProfileData(user.userId))
+
                 // handleSnackMessage(response.data.message, true);
             }
             else {

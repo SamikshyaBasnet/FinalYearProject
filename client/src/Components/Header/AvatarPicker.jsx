@@ -31,8 +31,9 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 15
     },
     large: {
-        width: theme.spacing(10),
-        height: theme.spacing(10),
+        width: theme.spacing(12),
+        height: theme.spacing(12),
+        borderRadius: '50%',
         border: `4px solid rgb(202 167 41)`
     }
 }));
@@ -124,7 +125,7 @@ export const AvatarPicker = (props) => {
             dispatch(uploadProfile(res.data))
         });
     };
-    console.log("is edit pic=", editPic)
+
     return (
         <List data-testid={"image-upload"}>
             <div
@@ -171,7 +172,7 @@ export const AvatarPicker = (props) => {
                                 className={classes.large}
                             /> :
                             <div>
-                                <img className='user-profile-pic' src={editPic ? file : `/uploads/${user.profile}`} alt="" height="20" width="20" />
+                                <img className={classes.large} src={editPic ? file : `/uploads/${user.profile}`} alt="" height="20" width="20" />
                             </div>
                         }
 

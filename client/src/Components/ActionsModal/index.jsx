@@ -119,7 +119,8 @@ export default function ActionsModal({ handleSnackMessage, modalType }) {
     // Method to handle renaming of workspaces
     const handleRenameWorkspace = (workspaceName, workspaceId) => {
         Axios.post(
-            `/workspace/rename?workspaceName=${workspaceName}&workspaceId=${workspaceId}&userId=${userId}`
+            `/workspace/rename?workspaceName=${workspaceName}&workspaceId=${workspaceId}
+            &userId=${userId}`
         ).then((response) => {
             if (response.data.renamed === true) {
                 console.log("Workspace rename", response);
@@ -178,8 +179,8 @@ export default function ActionsModal({ handleSnackMessage, modalType }) {
     // Method to handle renaming of channels
     const handleRenameChannel = (channelName, channelId) => {
         Axios.post(
-            `/channel/rename?channelName=${channelName}&channelId=${channelId}&workspaceId=${activeWorkspace.split('-')[1]
-            }&userId=${userId}`
+            `/channel/rename?channelName=${channelName}&channelId=${channelId}&
+            workspaceId=${activeWorkspace.split('-')[1]}&userId=${userId}`
         ).then((response) => {
             if (response.data.renamed === true) {
                 setChannelName(channelName)

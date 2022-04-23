@@ -60,10 +60,11 @@ function Login() {
             console.log(response);
             if (response.data.auth === true) {
                 dispatch(signIn(response.data));
+
                 localStorage.setItem("token", response.data.token)
                 localStorage.setItem("userId", response.data.userId)
                 navigate('/dashboard')
-                //    socket.emit('simple-chat-sign-in', response.data);
+
             }
             else {
                 setLoginStatus(response.data.message);
@@ -158,7 +159,7 @@ function Login() {
                     <p className='signup'>New to Slack?&nbsp;
                         <Link to="/register">Create an account</Link>
                     </p>
-                    <Link to="/workspace">Create an workspace</Link>
+                    {/* <Link to="/workspace">Create an workspace</Link> */}
 
                 </div>
             </div >

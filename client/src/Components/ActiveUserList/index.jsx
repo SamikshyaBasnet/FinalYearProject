@@ -15,7 +15,7 @@ const ActiveUserList = () => {
 
     const { allUserList } = useSelector((state) => state.chat);
     const { activeWorkspace, activeUserList } = useSelector((state) => state.chat);
-
+    const user = useSelector((state) => state.user);
     // Local state
     const [userInfoVisible, setUserInfoVisible] = useState(false);
     const [userName, setUserName] = useState('');
@@ -35,16 +35,16 @@ const ActiveUserList = () => {
     }
     // Get active user list in given server
 
-
+    const userId = user.userId
     const baseUrl = 'http://localhost:5000';
     var socket = socketClient(baseUrl);
-    socket.on('get online users', (allUserList) => {
-        //You may have not have seen this for loop before. It's syntax is for(key in obj)
-        //Our usernames are keys in the object of onlineUsers.
-        for (userName in allUserList) {
-            ('.users-online').append(`<div class="user-online">${userName}</div>`);
-        }
-    })
+    // socket.on('user_connected', (user) => {
+    //     //You may have not have seen this for loop before. It's syntax is for(key in obj)
+    //     //Our usernames are keys in the object of onlineUsers.
+    //     for (userName in allUserList) {
+    //         ('.users-online').append(`<div class="user-online">${userName}</div>`);
+    //     }
+    // })
     return (
         <div className="user-list-container">
             <List className="users-list">
@@ -66,7 +66,7 @@ const ActiveUserList = () => {
                                     </div> :
                                     <div>
                                         <img key={user.username} className='user-profile-pic' src={`/uploads/${user.profile}`} alt="" height="20" width="20" />
-                                        <div className="user-list-online"></div>
+                                        {/* <div className="user-list-online"></div> */}
                                     </div>
 
                                 }

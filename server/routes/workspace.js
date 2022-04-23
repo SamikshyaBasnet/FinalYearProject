@@ -6,6 +6,14 @@ let router = express.Router();
 var randtoken = require('rand-token');
 const bcrypt = require("bcrypt");
 const saltRounds = 10
+
+const {
+    ReasonPhrases,
+    StatusCodes,
+    getReasonPhrase,
+    getStatusCode
+} = require('http-status-codes');
+
 // Route to create a workspace
 // Expects -> workspace NAme
 // Expects -> User Id
@@ -217,7 +225,6 @@ router.post('/workspace/invite', (req, res) => {
 
     const senderUsername = req.body.senderUsername;
     const workspaceName = req.body.workspaceName;
-    //const senderEmail = req.body.senderEmail;
 
     if (!workspaceId || !receiverEmail) {
         res.status(400).json({
@@ -225,16 +232,21 @@ router.post('/workspace/invite', (req, res) => {
             joined: false
         });
     } else {
-        db.query(`SELECT users.email from users JOIN userworkspaces WHERE workspace_id = '${workspaceId}' AND users.email = '${receiverEmail}'`,
+        db.query(
+
+            `SELECT u.email from users u JOIN userworkspaces 
+            w ON u.user_id = w.user_id WHERE 
+        w.workspace_id = '${workspaceId}' AND u.email = '${receiverEmail}'`,
             (err, result) => {
                 if (err) {
                     res.status(400).send('Server error');
                     throw err;
                 } else if (result.length > 0) {
-                    res.json({
-                        message: `This person is already a member!`,
-                        invitationSend: false
-                    });
+                    res.status(StatusCodes.MULTI_STATUS)
+                        .json({
+                            message: `This person is already a member!`,
+                            invitationSend: false
+                        });
                 } else {
                     sendEmail(receiverEmail, senderUsername, workspaceName, workspaceId)
 
@@ -301,10 +313,11 @@ router.post('/workspace/rename', (req, res) => {
     } = req.query;
 
     if (!workspaceName || !workspaceId || !userId) {
-        res.json({
-            message: "Please enter the workspace name.",
-            renamed: false
-        });
+        res.status(StatusCodes.BAD_REQUEST)
+            .json({
+                message: "Please provide all the details includes workspace name, workspace id and userid.",
+                renamed: false
+            });
     } else {
         db.query(`SELECT * from workspaceadmins WHERE admin_id = '${userId}' AND workspace_id = '${workspaceId}'`,
             (err, result) => {

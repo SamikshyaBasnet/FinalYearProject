@@ -27,10 +27,11 @@ export const socketMiddleWare = (baseUrl) => {
             }
 
             //call sign in action to send the socket workspace our userid to indentify individual socekt connections
-            if (action.type === ACTION.SIGN_IN) {
+            if (action.type === ACTION.SIGN_IN || action.type === ACTION.GET_ALL_DATA) {
                 socket.emit('simple-chat-sign-in', action.payload);
                 listener = setupSocketListener(socket, storeAPI);
             }
+
 
             // Pull workspace list off initial data load
             // Use to "join" our workspace "rooms"

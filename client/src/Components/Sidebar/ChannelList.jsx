@@ -120,7 +120,7 @@ function ChannelList(props) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("userId");
                 navigate('/')
-                socket.emit('disconnect');
+
             }
         })
     }
@@ -207,7 +207,7 @@ function ChannelList(props) {
 
             <div className='channel-extra' onClick={() => handleModalShow('invite-people')}>
                 <PersonAddOutlined className="channel-icon" />
-                <p className="channel-extra-name">&nbsp; Invite People</p>
+                <p className="channel-extra-name">&nbsp; Invite Friend</p>
             </div>
 
             <Button className="modal-button" onClick={handleSignOut}>Sign out</Button>

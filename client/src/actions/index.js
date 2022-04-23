@@ -17,6 +17,8 @@ export const signUp = (user) => ({
 export const signIn = (user) => ({
     type: ACTION.SIGN_IN,
     payload: user
+
+
 });
 
 
@@ -24,9 +26,8 @@ export const signIn = (user) => ({
 export const loadUserProfileData = (userId) => async (dispatch) => {
     let url = `/user/user-data?userId=${userId}`;
     const res = await Axios.get(url);
-    console.log("user result", res);
     const init = dispatch(userPData(res.data));
-    console.log("initial data", init);
+
 };
 
 // On sign out
@@ -49,12 +50,16 @@ export const createWorkspace = (workspace) => ({
 });
 
 //get active user list in workspace
-export const updateActiveUserList = (workspaceId) => async (dispatch) => {
-    const res = await Axios.get(`/workspace/activeusers?workspaceId=${workspaceId}`)
+export const updateActiveUserList = (username) => async (dispatch) => {
+    // const res = await Axios.get(`/workspace/activeusers?workspaceId=${workspaceId}`)
     dispatch({
         type: ACTION.UPDATE_ACTIVE_USERS,
-        payload: res.data
+        payload: username
     });
+
+    // socket.on('connection', function () {
+    //     socket.emit('user_connected', username);
+    // })
 
 };
 
@@ -64,7 +69,7 @@ export const getUsersInWorkspace = (workspaceId) => async (dispatch) => {
         type: ACTION.GET_ALL_USERS,
         payload: res.data
     });
-    console.log("all users in q=", res.data)
+
 };
 
 
@@ -76,7 +81,7 @@ export const createChannel = (channel) => ({
 
 // Action to change the current Active Server
 export const changeWorkspace = (workspace) => (dispatch) => {
-    dispatch(updateActiveUserList(workspace.split('-')[1]));
+    // dispatch(updateActiveUserList(workspace.split('-')[1]));
     dispatch(getUsersInWorkspace(workspace.split('-')[1]));
     dispatch({
         type: ACTION.CHANGE_WORKSPACE,
@@ -149,15 +154,13 @@ export const userPData = (data) => ({
 export const loadUserData = (userId) => async (dispatch) => {
     let url = `/user/data?userId=${userId}`;
     const res = await Axios.get(url);
-    console.log("fun res", res);
 
     const workspaceId = Object.keys(res.data.data.workspaces)[0].split('-')[1]
     // get active user list for first server
-    dispatch(updateActiveUserList(workspaceId));
+
     dispatch(getUsersInWorkspace(workspaceId));
 
     const init = dispatch(initialData(res.data.data));
-    console.log("initial data", init);
 
     const actw = Object.keys(res.data.data.workspaces)[0]
     // console.log("active workspace = ", actw);
@@ -216,11 +219,30 @@ export const loadSearchedMessages = (message, channelId) => async (dispatch) => 
     dispatch(getSearchedMessages(res.data));
 }
 
-//for private message
+export const updateUsername = (userName) => async (dispatch) => {
+    // let url = `/user/usernameedit?userName=${userName}&userId=${userId}`;
+    // const res = await Axios.get(url);
 
+
+    // Axios.post(
+    //     `/user/usernameedit?userName=${userName}&userId=${userId}`
+    // ).then((response) => {
+    //     if (response.data.renamed === true) {
+    //         setUserName(userName)
+    //         dispatch(loadUserData(user.userId))
+    //         // handleSnackMessage(response.data.message, true);
+    //     }
+    //     else {
+    //         // handleSnackMessage(response.data.message, false);
+    //     }
+}
+
+
+
+//for private message
 export const loadPrivateSearchedMessages = (message) => async (dispatch) => {
-    let url = `/usermessage/searchprivatemessage?message=${message}`;
-    const res = await Axios.get(url);
+    let url = `/usermessages/searchprivatemessage?message=${message}`;
+    const res = await Axios.post(url);
     console.log("serch pm respinse", res)
     dispatch(getSearchedPrivateMessages(res.data));
 }
