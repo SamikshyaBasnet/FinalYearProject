@@ -178,16 +178,17 @@ export default function SendMessages() {
     }, [dispatch, channelId]);
 
     const handleFileSubmit = async (e) => {
-        e.preventDefault()
-        let formData = new FormData()
 
+        let formData = new FormData()
+        console.log("files = ", fileType)
 
         formData.append('file', image.data)
 
-        await Axios.post(`/fileupload?username=${user.userName}&channel=${activeChannel}&fileName=${chatMessage}`, formData).then((res) => {
-            console.log("file upload res=", res)
-            setChatMessage('');
-        })
+        await Axios.post(`/fileupload?username=${user.userName}&channel=${activeChannel}&fileName=${chatMessage}&fileType=${fileType}`,
+            formData).then((res) => {
+                console.log("file upload res=", res)
+                setChatMessage('');
+            })
 
     }
 
@@ -219,7 +220,7 @@ export default function SendMessages() {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: 400,
-        height: '241px',
+        height: '400px',
         bgcolor: '#320635',
         boxShadow: 24,
         p: 4,
@@ -288,6 +289,7 @@ export default function SendMessages() {
                         from: user.userName,
                         msg: chatMessage,
                         msgType: 'file',
+                        fileType: fileType,
                         type: 'channelMessage',
                     });
                 }
@@ -298,6 +300,7 @@ export default function SendMessages() {
                         from: user.userName,
                         msg: chatMessage,
                         msgType: 'text',
+                        fileType: fileType,
                         type: 'channelMessage',
                     });
                 }
@@ -448,7 +451,8 @@ export default function SendMessages() {
 
                                                         </p>
                                                     </div> :
-                                                    <img className='user-profile-pic' src={`/uploads/${user.profile}`} alt="" height="20" width="20" />
+                                                    <img className='user-profile-pic' src={`/uploads/${user.profile}`}
+                                                        alt="" height="20" width="20" />
 
                                                 }
 
@@ -459,11 +463,15 @@ export default function SendMessages() {
                                                     <div className="message-user">
                                                         {message.from.toLowerCase()}
                                                         <div className="message-date">{` - ${moment(message.date).format('LLL')}`}</div>
-                                                        {activeView === "workspaces" && message.msgType === "text" ? <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} /> : null}
-                                                        {/* <SmileyFace
-                                                            className="react-message-emoji-button"
-                                                            onClick={handleReactionEmojiClick} /> */}
+                                                        {activeView === "workspaces" ?
 
+                                                            <Tooltip title="See Reminders" key="reminders" placement="right">
+                                                                <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} />
+                                                            </Tooltip>
+
+
+                                                            : null
+                                                        }
 
                                                         <Button
                                                             id="basic-button"
@@ -507,11 +515,16 @@ export default function SendMessages() {
                                                         {message.msgType === 'text' ?
                                                             <p>{message.msg}</p> :
                                                             <div className="d-flex">
-                                                                <p>{message.msg}</p>
-                                                                {/* <img src={image.preview} width='100' height='100' /> */}
+                                                                {message.fileType === "image" ?
+                                                                    <img src={`/uploads/${message.msg}`} width='220' height='200' />
+                                                                    //src={`/uploads/${user.profile}`
+                                                                    :
+                                                                    <p>{message.msg}</p>
+                                                                }
+
                                                                 <HiDownload onClick={() => saveFile(`/uploads/${message.msg}`, message.msg)} className="mx-2" style={{ cursor: "pointer", fontSize: "22px" }} />
                                                             </div>
-                                                            // <p>file</p>
+
                                                         }
                                                     </div>
                                                     // message.msg

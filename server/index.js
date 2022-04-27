@@ -97,28 +97,25 @@ async function main() {
 
         console.log("more infor=", username, channel, fileName);
         res.json({})
-        console.log("file", file)
+
     });
 
-    // app.post('/uploadprofile', upload.single('image'), function (req, res) {
+    app.post('/uploadprofile', upload.single('file'), function (req, res) {
 
+        var imgsrc = req.query.fileName;
+        var userId = req.query.userId;
+        console.log("file name=", imgsrc);
+        var insertData = `UPDATE users SET profile='${imgsrc}' WHERE user_id='${userId}'`
 
-    //     var imgsrc = req.query.fileName;
-    //     var userId = req.query.userId;
-    //     console.log("file name=", imgsrc);
-    //     var insertData = `UPDATE users SET profile='${imgsrc}' WHERE user_id='${userId}'`
+        db.query(insertData, (err, result) => {
+            if (err) {
+                console.log('error', err)
+            }
+            res.send(imgsrc);
 
-    //     db.query(insertData, (err, result) => {
-    //         if (err) {
-    //             console.log('error', err)
-    //         }
+        })
 
-    //         res.send(imgsrc)
-    //     })
-
-    // });
-
-
+    });
 
     var current = new Date();
     const date = `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`;
@@ -165,6 +162,8 @@ async function main() {
             //     var userId = client.sessionUserId
             //     db.query(`UPDATE users SET isActive ='1' WHERE user_id = '${userId}'`);
             // })
+            db.query(`UPDATE users SET user_last_active = '${date}' WHERE user_id = '${sessionUserId}'`);
+
             db.query(`UPDATE users SET isActive ='1' WHERE user_id = '${sessionUserId}'`);
 
         });
@@ -179,8 +178,8 @@ async function main() {
 
         socket.on('simple-chat-message', async (msg = Message) => {
             //storing message in database;
-            const sqlquery = `INSERT INTO messages (channel_id, username, message, type, date) VALUES 
-            ('${msg.channel.split('-')[1]}', '${msg.from}', '${msg.msg}', '${msg.msgType}',  '${date}')`
+            const sqlquery = `INSERT INTO messages (channel_id, username, message, type, fileType, date) VALUES 
+            ('${msg.channel.split('-')[1]}', '${msg.from}', '${msg.msg}', '${msg.msgType}','${msg.fileType}',  '${date}')`
             console.log("Message", msg)
             db.query(sqlquery);
             const workspaceId = msg.workspace.split('-')[1];
@@ -206,8 +205,8 @@ async function main() {
             var to = await db.query(`SELECT user_id from users WHERE username = '${message.to}'`);
 
             db.query(
-                `INSERT INTO usermessages (user_from, user_to, message, type, date) VALUES (
-                   '${from[0].user_id}', '${to[0].user_id}', '${message.msg}', '${message.msgType}','${date}')`
+                `INSERT INTO usermessages (user_from, user_to, message, type, fileType, date) VALUES (
+                   '${from[0].user_id}', '${to[0].user_id}', '${message.msg}', '${message.msgType}', '${message.fileType}','${date}')`
             );
 
             //finding which socket the action to send to 
@@ -249,11 +248,10 @@ async function main() {
         });
 
 
-        // On ping update active status of current user (Client sends every 5 minutes)
-        // socket.on('update-active', () => {
-
-        //     db.query(`UPDATE users SET user_last_active = '${date}' WHERE user_id = '${sessionUserId}'`);
-        // });
+        //On ping update active status of current user(Client sends every 5 minutes)
+        socket.on('update-active', () => {
+            db.query(`UPDATE users SET user_last_active = '${date}' WHERE user_id = '${sessionUserId}'`);
+        });
 
         // On disconnect remove from client list
         socket.on('disconnect', () => {

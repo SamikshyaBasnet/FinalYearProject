@@ -12,7 +12,34 @@
     align-items: center;
     height: 100vh;
 }
+.login-register{
+    top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+.login_button{
+    background-color: transparent !important;
+    border: 2px solid rgb(113, 41, 123) !important;
+    color: rgb(71, 6, 75) !important;
+    padding: 10px 65px !important;
+    box-shadow: none !important;
+    transition: all ease 0.5s;
+}
+.login_button:hover{
+    color:  #fff !important;
+    border: none !important;
+}
+.register_button{
+    padding: 10px 35px !important;
+    right: 80px !important;
+    transition: all ease 0.5s;
+}
 
+.register_button:hover{
+    background-color: transparent !important;
+    border: 2px solid rgb(113, 41, 123) !important;
+    color: rgb(71, 6, 75) !important;
+}
 /* @media screen and (max-width: 850px) {
     .img {
         height: 400px !important;

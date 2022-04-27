@@ -50,13 +50,13 @@ export const createWorkspace = (workspace) => ({
 });
 
 //get active user list in workspace
-export const updateActiveUserList = (username) => async (dispatch) => {
-    // const res = await Axios.get(`/workspace/activeusers?workspaceId=${workspaceId}`)
+export const updateActiveUserList = (workspaceId) => async (dispatch) => {
+    const res = await Axios.get(`/workspace/activeusers?workspaceId=${workspaceId}`)
     dispatch({
         type: ACTION.UPDATE_ACTIVE_USERS,
-        payload: username
+        payload: res.data
     });
-
+    console.log("active users =", res.data)
     // socket.on('connection', function () {
     //     socket.emit('user_connected', username);
     // })
@@ -81,7 +81,7 @@ export const createChannel = (channel) => ({
 
 // Action to change the current Active Server
 export const changeWorkspace = (workspace) => (dispatch) => {
-    // dispatch(updateActiveUserList(workspace.split('-')[1]));
+    dispatch(updateActiveUserList(workspace.split('-')[1]));
     dispatch(getUsersInWorkspace(workspace.split('-')[1]));
     dispatch({
         type: ACTION.CHANGE_WORKSPACE,
@@ -159,7 +159,7 @@ export const loadUserData = (userId) => async (dispatch) => {
     // get active user list for first server
 
     dispatch(getUsersInWorkspace(workspaceId));
-
+    dispatch(updateActiveState(workspaceId))
     const init = dispatch(initialData(res.data.data));
 
     const actw = Object.keys(res.data.data.workspaces)[0]
@@ -219,23 +219,7 @@ export const loadSearchedMessages = (message, channelId) => async (dispatch) => 
     dispatch(getSearchedMessages(res.data));
 }
 
-export const updateUsername = (userName) => async (dispatch) => {
-    // let url = `/user/usernameedit?userName=${userName}&userId=${userId}`;
-    // const res = await Axios.get(url);
 
-
-    // Axios.post(
-    //     `/user/usernameedit?userName=${userName}&userId=${userId}`
-    // ).then((response) => {
-    //     if (response.data.renamed === true) {
-    //         setUserName(userName)
-    //         dispatch(loadUserData(user.userId))
-    //         // handleSnackMessage(response.data.message, true);
-    //     }
-    //     else {
-    //         // handleSnackMessage(response.data.message, false);
-    //     }
-}
 
 
 

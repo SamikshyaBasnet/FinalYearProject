@@ -14,6 +14,7 @@
      channel: '',
      from: '',
      msgType: '',
+     fileType: '',
      msg: '',
  }
 
@@ -22,6 +23,7 @@
      to: '',
      msg: '',
      msgType: '',
+     fileType: '',
  }
 
  module.exports = {

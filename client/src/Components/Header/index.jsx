@@ -26,6 +26,7 @@ import {
     List,
     ListItem,
     ListItemAvatar,
+    Tooltip,
     ListItemText,
     TableCell, TableContainer, TableHead, TableRow, Paper
 
@@ -92,7 +93,7 @@ export default function Header() {
         setSelectedDate(date);
     };
 
-
+    console.log("remiders=", reminders);
     useEffect(() => {
         setInterval(() => setDateState(new Date()), 30000);
     }, []);
@@ -106,7 +107,7 @@ export default function Header() {
 
 
     selectedDate = `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()} ${selectedDate.getHours()}:${selectedDate.getMinutes()}:${selectedDate.getSeconds()}`;
-
+    console.log("Seel dat", selectedDate)
 
     const handleCreateReminder = (name, body, selectedDate) => {
         Axios.post(`/reminders/create?name=${name}&body=${body}&date=${selectedDate}&userId=${userId}`
@@ -284,7 +285,10 @@ export default function Header() {
                 {/* <Typography variant="h6">{title} </Typography> */}
 
                 <div className="header__left">
-                    <AccessTimeIcon style={{ cursor: "pointer" }} onClick={handleReminderOpen} />
+                    <Tooltip title="See Reminders" key="reminders" placement="right">
+                        <AccessTimeIcon style={{ cursor: "pointer" }} onClick={handleReminderOpen} />
+                    </Tooltip>
+
                     <Modal
                         open={reminderOpen}
                         onClose={handleReminderClose}
@@ -336,7 +340,7 @@ export default function Header() {
                                                         onChange={handleDateChange}
                                                         label="Keyboard with error handler"
                                                         onError={console.log}
-                                                        minDate={new Date("2018-01-01T00:00")}
+                                                        //minDate={new Date("2018-01-01T00:00")}
                                                         format="yyyy-MM-dd hh:mm a"
                                                     />
 
@@ -354,32 +358,40 @@ export default function Header() {
                                     }}>
                                         You have no reminders right now.Click create to add new reminders.
                                     </div>
-                                ) : <TableContainer component={Paper} style={{ overflowY: "scroll" }}>
-                                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                        <TableHead>
-                                            <TableRow style={{ color: "#fff" }}>
-                                                <TableCell align="right">Title</TableCell>
-                                                <TableCell align="right">Description</TableCell>
-                                                <TableCell align="right">Date & Time</TableCell>
-                                                <TableCell align="right"></TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {reminders.map((reminder, i) => (
-                                                <TableRow
-                                                    key={i}
-                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                >
-                                                    <TableCell align="right">{reminder.Name}</TableCell>
-                                                    <TableCell align="right">{reminder.Body}</TableCell>
-                                                    <TableCell align="right">{reminder.Date}</TableCell>
-                                                    <TableCell align="right"><Button className="modal-button" onClick={() => handleDeleteReminder(reminder.Id)}>Done</Button></TableCell>
+                                ) :
+                                    <p>
+                                        <h2 className='text-center my-2'>You have {reminders.length} reminders.</h2>
+                                        <TableContainer component={Paper} style={{ overflowY: "scroll" }}>
+                                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                                <TableHead>
+                                                    <TableRow style={{ color: "#fff" }}>
+                                                        <TableCell align="right">Title</TableCell>
+                                                        <TableCell align="right">Description</TableCell>
+                                                        <TableCell align="right">Date & Time</TableCell>
+                                                        <TableCell align="right"></TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {reminders.map((reminder, i) => (
+                                                        <TableRow
+                                                            key={i}
+                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                        >
+                                                            <TableCell align="right">{reminder.Name}</TableCell>
+                                                            <TableCell align="right">{reminder.Body}</TableCell>
+                                                            <TableCell align="right">{reminder.Date}</TableCell>
+                                                            <TableCell align="right">
+                                                                <Button className="modal-button mx-2" onClick={() => handleDeleteReminder(reminder.Id)}>Edit</Button>
+                                                                <Button className="modal-button" onClick={() => handleDeleteReminder(reminder.Id)}>Done</Button>
+                                                            </TableCell>
 
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>}
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </p>
+                                }
 
                             </Grid>
 
@@ -402,7 +414,7 @@ export default function Header() {
                     >
                         <Box sx={{ ...style, width: 450 }}>
                             <div className="pinned_msg">
-                                <h4>All the Messages</h4>
+                                <h4>We have found {searchedMessages.length} message to your search.</h4>
                                 <div>
                                     {searchedMessages.length === 0 ? (
                                         <div style={{
@@ -450,17 +462,21 @@ export default function Header() {
 
                 </div>
                 <div className="header__right">
-                    {user.profile === "" ?
-                        <div className="user-profile" onClick={handleOpen}>
-                            <p className="user">
-                                {user.userName.charAt(0).toUpperCase()}
+                    <Tooltip title="View Profile" key="profile" placement="right">
+                        {user.profile === "" ?
+                            <div className="user-profile" onClick={handleOpen}>
+                                <p className="user">
+                                    {user.userName.charAt(0).toUpperCase()}
 
-                            </p>
-                        </div> :
-                        <div onClick={handleOpen}>
-                            <img className='user-profile-pic' src={`/uploads/${user.profile}`} alt="" height="20" width="20" />
-                        </div>
-                    }
+                                </p>
+                            </div> :
+                            <div onClick={handleOpen}>
+                                <img className='user-profile-pic' src={`/uploads/${user.profile}`} alt="" height="20" width="20" />
+                            </div>
+                        }
+                    </Tooltip>
+
+
 
                     <Modal
                         open={open}

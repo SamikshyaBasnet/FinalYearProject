@@ -10,11 +10,12 @@ export const socketMiddleWare = (baseUrl) => {
     return (storeAPI) => {
 
         let socket = io(baseUrl);
-        let listener = socket.emit;
+
 
         //check action and emit from socket in calling
         // return storeAPI => next => (action = ACTION) => {
         return (next) => (action = ACTION) => {
+            let listener = socket.emit;
             //send messgaes over socket
             // if (action.type === ACTION.SEND_SOCKET_MESSAGE) {
             //     socket.emit('simple-chat-message', action.payload);
@@ -57,9 +58,9 @@ export const socketMiddleWare = (baseUrl) => {
             }
 
             // Updates our active state on server
-            // if (action.type === ACTION.UPDATE_ACTIVE_STATE) {
-            //     socket.emit('update-active');
-            // }
+            if (action.type === ACTION.UPDATE_ACTIVE_STATE) {
+                socket.emit('update-active');
+            }
             // 
             //socket.removeAllListeners();
 

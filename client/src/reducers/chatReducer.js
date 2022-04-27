@@ -13,6 +13,7 @@ export let ChatStore = {
                     from: '',
                     msg: '',
                     msgType: '',
+                    fileType: '',
                     date: Date,
                 },
             },
@@ -24,6 +25,7 @@ export let ChatStore = {
             to: '',
             msg: '',
             msgType: '',
+            fileType: '',
             date: Date
         },
     },
@@ -51,7 +53,7 @@ export let ChatStore = {
         msg: '',
         date: Date,
     }],
-    fileMsg: '',
+
 
 }
 
@@ -72,7 +74,7 @@ let initialState = {
     activePMUser: 'none',
     searchedMessages: [],
     pinnedMessages: [],
-    fileMsg: '',
+
 
 };
 let state;
@@ -82,7 +84,7 @@ export const chatReducer = (state = initialState, action) => {
 
         case ACTION.RECIEVE_SOCKET_MESSAGE:
             let {
-                workspace, channel, from, msg, msgType, date
+                workspace, channel, from, msg, msgType, fileType, date
             } = action.payload;
 
             return {
@@ -97,6 +99,7 @@ export const chatReducer = (state = initialState, action) => {
                                 from: from,
                                 msg: msg,
                                 msgType: msgType,
+                                fileType: fileType,
                                 date: date
                             }]
                         }
@@ -116,6 +119,7 @@ export const chatReducer = (state = initialState, action) => {
                                 to: action.payload.to,
                                 msg: action.payload.msg,
                                 msgType: action.payload.msgType,
+                                fileType: action.payload.fileType,
                                 date: action.payload.date
                             }
                         ]
@@ -131,6 +135,7 @@ export const chatReducer = (state = initialState, action) => {
                             to: action.payload.to,
                             msg: action.payload.msg,
                             msgType: action.payload.type,
+                            fileType: action.payload.fileType,
                             date: action.payload.date
                         }]
                     }
@@ -220,11 +225,6 @@ export const chatReducer = (state = initialState, action) => {
             return {
                 ...state,
                 activePMUser: action.payload
-            };
-        case ACTION.SEND_FILE:
-            return {
-                ...state,
-                fileMsg: action.payload.filename
             };
 
         default:

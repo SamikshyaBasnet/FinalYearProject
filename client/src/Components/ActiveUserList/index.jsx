@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { List, ListItem, ListItemAvatar, Avatar, ListItemText, Popover } from '@material-ui/core';
+import { List, ListItem, Button, ListItemAvatar, Avatar, ListItemText, Popover } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import UserInfo from '../UserInfo';
 import './activeuser.css';
@@ -16,6 +16,9 @@ const ActiveUserList = () => {
     const { allUserList } = useSelector((state) => state.chat);
     const { activeWorkspace, activeUserList } = useSelector((state) => state.chat);
     const user = useSelector((state) => state.user);
+    const isActive = user.isActive
+    activeUserList.includes()
+
     // Local state
     const [userInfoVisible, setUserInfoVisible] = useState(false);
     const [userName, setUserName] = useState('');
@@ -57,23 +60,22 @@ const ActiveUserList = () => {
                     return (
                         <ListItem button className="user-list-item" onClick={e => handleUserClick(e, user.username)}>
                             <ListItemAvatar className="message-user-icon">
+
                                 {user.profile === "" ?
-                                    <div key={user.username} className="user-profile">
-                                        <p className="user">
+
+                                    <div key={user.username} className='user-profile'>
+                                        <p className={`user`}>
                                             {user.username.charAt(0).toUpperCase()}
 
                                         </p>
                                     </div> :
                                     <div>
                                         <img key={user.username} className='user-profile-pic' src={`/uploads/${user.profile}`} alt="" height="20" width="20" />
-                                        {/* <div className="user-list-online"></div> */}
                                     </div>
-
                                 }
-                                {/* <Avatar>
-                  <img src={process.env.PUBLIC_URL + '/user.png'} alt="user icon" height="48" />
-                  <div className="user-list-online"></div>
-                </Avatar> */}
+                                <div className={isActive ? 'online' : null}>
+                                </div>
+
                             </ListItemAvatar>
                             <ListItemText>{user.username}</ListItemText>
                         </ListItem>
@@ -81,7 +83,8 @@ const ActiveUserList = () => {
                 })}
 
             </List>
-            <div className="users-online"></div>
+            {/* <Button className="modal-button" onClick={handleSignOut}>Sign out</Button> */}
+
             <Popover
                 id="user-info"
                 open={userInfoVisible}

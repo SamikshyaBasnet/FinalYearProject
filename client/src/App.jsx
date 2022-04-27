@@ -46,13 +46,13 @@ function App() {
       <Router>
         <Routes>
 
-          <Route exact path='/' element={<Login />} />
+          <Route exact path='/login' element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/workspace" element={<Workspace />} />
+          <Route path="/" element={<Workspace />} />
           <Route path="/workspace/create" element={<CreateWorkSpace />} />
           <Route path="/user/invited" element={<InvitedUser />} />
         </Routes>

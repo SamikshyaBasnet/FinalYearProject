@@ -446,6 +446,8 @@ router.get('/workspace/allusers', (req, res) => {
 
 router.get('/workspace/activeusers', async (req, res) => {
     const workspaceId = req.query.workspaceId;
+    console.log("id=", workspaceId);
+
     // Check params
     if (!workspaceId) {
         res.status(400).json({

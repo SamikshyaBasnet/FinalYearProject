@@ -60,7 +60,6 @@ function VerifyEmail() {
                         <Form.Control name="token"
                             {...register('token')}
                             value={token}
-                            name="token"
                             onChange={(e) => onChange(e)}
                             className={`input ${errors.token ? 'is-invalid' : ''}`}
                             type="token" placeholder="token"
@@ -81,7 +80,7 @@ function VerifyEmail() {
                     {verificationStatus}
                 </Alert>}
                 <div className="text-center">
-                    <p className='login-link'>Now Click here to create or join&nbsp; <Link to="/workspace">Workspace</Link></p>
+                    <p className='login-link'>Now Click here to&nbsp; <Link to="/login">Login</Link></p>
                 </div>
             </div >
         </div >

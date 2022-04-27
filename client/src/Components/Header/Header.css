@@ -88,39 +88,6 @@
     justify-content: space-around;
 }
 
-.user-profile {
-    display: flex;
-    justify-content: space-around;
-    border-radius: 50% !important;
-    background: rgb(189, 130, 54) !important;
-    height: 40px !important;
-    width: 40px !important;
-    text-align: center;
-    color: #fff !important;
-
-}
-
-.MuiTableCell-head, .MuiTableCell-body{
-    color: #fff !important;
-}
-
-.user {
-    text-align: center;
-    padding: 6px;
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.user-profile :hover {
-    text-decoration: none;
-    color: #fff;
-}
-
-@media screen and (max-width: 550px) {
-    .header__middle {
-        width: 50vw;
-    }
-}
 
 @media screen and (max-width: 420px) {
     .appbar {

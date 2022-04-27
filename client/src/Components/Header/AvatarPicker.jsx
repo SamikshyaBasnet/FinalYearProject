@@ -150,23 +150,7 @@ export const AvatarPicker = (props) => {
                             </EditIconButton>
                         }
                     >
-                        {/* {user.profile !== "" ?
 
-                            <div className="user-profile">
-                                <p className="user">
-                                    {user.userName.charAt(0).toUpperCase()}
-
-                                </p>
-                            </div>
-                            :
-
-                            <div className="user-profile">
-                                <p className="user">
-                                    <img src={user.profile === "" ? `${user.userName.charAt(0).toUpperCase()}` : `/public/uploads/${user.profile}`} alt="" />
-                                    {/* {user.userName.charAt(0).toUpperCase()} 
-                                </p>
-                            </div>
-                        } */}
                         {user.profile === "" ?
                             <Avatar alt={"avatar"} src={editPic ? file : `/uploads/${user.profile}`}
                                 className={classes.large}
@@ -189,9 +173,16 @@ export const AvatarPicker = (props) => {
                     />
                 </div>
                 <div>
-                    <Button className="modal-button"
-                        onClick={uploadFile}
-                        style={{ top: "30px", left: "60px" }}>Save</Button>
+                    {editPic ?
+                        <Button className="modal-button"
+                            onClick={uploadFile}
+                            style={{ top: "30px", left: "60px" }}>
+                            Save
+                        </Button>
+                        :
+                        null
+                    }
+
                 </div>
 
             </div>

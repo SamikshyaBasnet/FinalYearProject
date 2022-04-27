@@ -10,6 +10,7 @@ const initialState = {
     email: '',
     isActive: false,
     profile: '',
+    haveProfile: false,
     reminders: [{
         reminderId: '',
         name: '',

@@ -35,8 +35,8 @@ function Dashboard() {
     // })
     // Also fetches new list of active users in activeWorkspace
     const updateActiveStatus = () => {
-        // dispatch(updateActiveState());
-        // dispatch(updateActiveUserList(activeWorkspace.split('-')[1]));
+        dispatch(updateActiveState());
+        dispatch(updateActiveUserList(activeWorkspace.split('-')[1]));
         setTimeout(updateActiveStatus, 5 * 60000);
     };
 
@@ -47,13 +47,11 @@ function Dashboard() {
     useEffect(() => {
         if (!user.isSignedIn) {
             navigate('/');
-
             socket.disconnect();
-
         } else {
             navigate('/dashboard')
-            const res = dispatch(loadUserData(userId));
-            // Status();
+            dispatch(loadUserData(userId));
+            updateActiveStatus();
             dispatch(loadReminders(userId));
 
         }

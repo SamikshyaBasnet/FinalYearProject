@@ -210,7 +210,7 @@ function ChannelList(props) {
                 <p className="channel-extra-name">&nbsp; Invite Friend</p>
             </div>
 
-            <Button className="modal-button" onClick={handleSignOut}>Sign out</Button>
+            {/* <Button className="modal-button" onClick={handleSignOut}>Sign out</Button> */}
             <Menu
                 id="workspace-settings-menu"
                 anchorEl={workspaceAnchorEl}

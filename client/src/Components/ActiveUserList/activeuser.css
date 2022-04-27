@@ -20,15 +20,49 @@
 
 .user-list-item {
     padding: 0.8em;
+    padding-top: 14px !important;
     box-sizing: border-box;
 }
 
-.user-list-online {
+.online{
     width: 10px;
     height: 10px;
-    background: #0eb105;
+    background: #15df0a !important;
     position: absolute;
     border-radius: 50%;
-    bottom: 6px;
-    right: 4px;
+    left: 50px;
+    bottom: 10px;
+  
 }
+
+
+
+
+.user-profile {
+    display: flex;
+    justify-content: space-around;
+    border-radius: 50% !important;
+    background: rgb(189, 130, 54) !important;
+    height: 47px !important;
+    width: 47px !important;
+    text-align: center;
+    color: #fff !important;
+
+}
+
+.MuiTableCell-head, .MuiTableCell-body{
+    color: #fff !important;
+}
+
+.user {
+    text-align: center;
+    padding: 8px;   
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.user-profile :hover {
+    text-decoration: none;
+    color: #fff;
+}
+

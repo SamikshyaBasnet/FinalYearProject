@@ -78,7 +78,6 @@ function ResetPassword() {
                             <Form.Control name="token"
                                 {...register('token')}
                                 value={token}
-                                name="token"
                                 onChange={(e) => onChange(e)}
                                 className={`input ${errors.token ? 'is-invalid' : ''}`}
                                 type="token" placeholder="token"
@@ -93,7 +92,6 @@ function ResetPassword() {
                                 <Form.Control name="password"
                                     {...register('password')}
                                     value={password}
-                                    name="password"
                                     onChange={(e) => onChange(e)}
                                     className={`input ${errors.password ? 'is-invalid' : ''}`}
                                     type={seePassword ? 'text' : 'password'} placeholder="Password"
@@ -114,10 +112,9 @@ function ResetPassword() {
                                 <Form.Control name="confirmPassword"
                                     {...register('confirmPassword')}
                                     value={confirmPassword}
-                                    name="confirmPassword"
                                     onChange={(e) => onChange(e)}
                                     className={`input ${errors.confirmPassword ? 'is-invalid' : ''}`}
-                                    type="password" placeholder="Confirm Password"
+                                    type={seeConfirmPassword ? 'text' : 'password'} placeholder="Confirm Password"
                                 />
                                 <InputGroup.Text>
                                     <i onClick={confirmPasswordVisibilityHandler}
