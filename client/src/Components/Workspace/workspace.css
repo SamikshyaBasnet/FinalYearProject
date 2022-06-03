@@ -40,55 +40,6 @@
     border: 2px solid rgb(113, 41, 123) !important;
     color: rgb(71, 6, 75) !important;
 }
-/* @media screen and (max-width: 850px) {
-    .img {
-        height: 400px !important;
-        width: 400px !important;
-    }
-
-    .create_container h1,
-    .create_container p {
-        padding: 0px !important;
-        margin: 0px !important;
-    }
-
-} */
-
-/* @media screen and (max-width: 800px) {
-    .img {
-        height: 350px !important;
-        width: 350px !important;
-    }
-
-    .create_container h1,
-    .create_container p {
-        padding: 0px !important;
-        margin: 0px !important;
-    }
-
-    .create_container .create_button {
-        margin: 20px 0px !important;
-    }
-
-} */
-
-
-/* @media screen and (min-width: 960px) {
-    .img {
-        height: 450px !important;
-        width: 450px !important;
-    }
-
-    .create_container h1,
-    .create_container p {
-        padding: 0px !important;
-        margin: 0px !important;
-    }
-
-    .create_container .create_button {
-        margin: 20px 0px !important;
-    }
-} */
 
 @media screen and (min-width: 700px) and (max-width: 980px) {
     .img {

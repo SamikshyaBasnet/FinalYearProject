@@ -17,12 +17,6 @@ body {
   margin: 0;
 }
 
-/* .MuiPaper-elevation1 {
-  box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
-} */
-
-
-
 .MuiPaper-rounded {
   border-radius: 4px !important;
 }
@@ -83,105 +77,6 @@ body {
   display: flex;
   justify-content: center;
 }
-
-
-
-/* Sidebar.jsx */
-/* .sidebar-container {
-  display: flex;
-  height: 100%;
-}
-
-
-
-.servers-container {
-  display: flex;
-  height: 100%;
-  box-sizing: border-box;
-  color: white;
-  flex-basis: 20%;
-  height: 100%;
-  text-align: center;
-  background: #202225;
-}
-
-.server-icon svg {
-  width: 48px;
-  height: 48px;
-}
-
-.home-icon svg {
-  width: 48px;
-  height: 48px;
-}
-
-.menu-seperator {
-  border-top: 2px solid #2f3136;
-  width: 85%;
-  margin: 0 auto;
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-
-.home-icon::after {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 1px;
-  border-bottom: 2px solid grey;
-  width: 80%;
-}
-
-.channel-list {
-  width: 100%;
-  padding-top: 0 !important;
-  overflow-y: auto;
-}
-
-.title-container {
-  box-shadow: 0 2px 0px 0px #202225;
-  height: 64px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  font-size: 18px;
-  font-family: 'Roboto';
-  justify-content: space-between !important;
-}
-
-.channel-item {
-  display: flex;
-  justify-content: space-between !important;
-}
-
-.channel-item:hover .channel-settings {
-  display: inline-block !important;
-}
-
-.channel-hashtag {
-  font-style: unset;
-  font-size: 24px;
-  padding-right: 8px;
-  color: grey;
-  vertical-align: sub;
-  font-weight: 900;
-}
-
-.channel-settings {
-  font-size: 16px !important;
-  display: none !important;
-}
-
-.user-options {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  box-sizing: border-box;
-  background: #2a2c31;
-  list-style: none;
-}
-
 
 /* Messages.jsx */
 .messages-container {
@@ -365,15 +260,22 @@ body {
   border-radius: 6px !important;
 }
 
-/* Channel List Voice Users */
-
-.user-voice-item {
-  display: flex;
-  align-items: center;
-  padding: 0.5em;
-  padding-left: 2em;
+.MuiSvgIcon-root,
+.MuiButton-label,
+.MuiPickersClockNumber-clockNumber {
+  color: #fff !important;
+}
+.MuiPickersToolbar-toolbar, .MuiPickersClock-pin{
+  background-color: transparent !important;
+}
+.MuiPickersClockPointer-pointer{
+  background-color: #fff !important;
 }
 
-.user-voice-name {
-  padding-left: 1em;
+.MuiPickersCalendarHeader-iconButton {
+  background-color: transparent !important;
+}
+
+.MuiPickersDay-day, .MuiPickersCalendarHeader-dayLabel{
+  color: #fff !important;
 }

@@ -159,7 +159,6 @@ function Login() {
                     <p className='signup'>New to Slack?&nbsp;
                         <Link to="/register">Create an account</Link>
                     </p>
-                    {/* <Link to="/workspace">Create an workspace</Link> */}
 
                 </div>
             </div >

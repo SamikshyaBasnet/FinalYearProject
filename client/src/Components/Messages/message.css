@@ -2,7 +2,7 @@
   left: 300px !important;
 } */
 .reaction-menu{
-    left: 600px !important;
+    margin-left: 10px;
    
 }
 .emoji-l{
@@ -40,4 +40,8 @@
 .reaction-emoji-wrapper{
     display: flex;
     background-color: rgb(64, 33, 63);
+}
+
+.gopindisplay{
+    display: none;
 }

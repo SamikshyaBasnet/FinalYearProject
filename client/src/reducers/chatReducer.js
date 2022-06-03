@@ -14,6 +14,7 @@ export let ChatStore = {
                     msg: '',
                     msgType: '',
                     fileType: '',
+                    reaction: '',
                     date: Date,
                 },
             },
@@ -26,9 +27,11 @@ export let ChatStore = {
             msg: '',
             msgType: '',
             fileType: '',
+            reaction: '',
             date: Date
         },
     },
+
     activeWorkspace: '',
     activeChannel: '',
     allUserList: {
@@ -82,9 +85,9 @@ ChatStore = state;
 export const chatReducer = (state = initialState, action) => {
     switch (action.type) {
 
-        case ACTION.RECIEVE_SOCKET_MESSAGE:
+        case ACTION.RECEIVE_SOCKET_MESSAGE:
             let {
-                workspace, channel, from, msg, msgType, fileType, date
+                workspace, channel, from, msg, msgType, fileType, reaction, date
             } = action.payload;
 
             return {
@@ -100,6 +103,7 @@ export const chatReducer = (state = initialState, action) => {
                                 msg: msg,
                                 msgType: msgType,
                                 fileType: fileType,
+                                reaction: reaction,
                                 date: date
                             }]
                         }
@@ -120,6 +124,7 @@ export const chatReducer = (state = initialState, action) => {
                                 msg: action.payload.msg,
                                 msgType: action.payload.msgType,
                                 fileType: action.payload.fileType,
+                                reaction: action.payload.reaction,
                                 date: action.payload.date
                             }
                         ]
@@ -136,6 +141,7 @@ export const chatReducer = (state = initialState, action) => {
                             msg: action.payload.msg,
                             msgType: action.payload.type,
                             fileType: action.payload.fileType,
+                            reaction: action.payload.reaction,
                             date: action.payload.date
                         }]
                     }

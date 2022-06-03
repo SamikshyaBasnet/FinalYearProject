@@ -24,7 +24,8 @@ import {
     Menu,
     MenuItem,
     Button,
-    Modal
+    Modal,
+
 
 } from '@material-ui/core';
 import moment from 'moment';
@@ -35,6 +36,7 @@ import './message.css';
 import '../SendMessage/sendmessage.css';
 import Axios from '../API/api';
 import { GoPin } from 'react-icons/go';
+import { FiDivide } from 'react-icons/fi';
 
 
 export default function SendMessages() {
@@ -49,11 +51,22 @@ export default function SendMessages() {
     const dispatch = useDispatch();
     const channelId = activeChannel.split('-')[1];
 
+    const profile = chatStore.allUserList;
+    console.log("profile", profile.profile);
+
+    profile.map((user) => {
+        console.log("data", user.username, user.profile)
+    })
+
+
+
     // Local state
     const [chatMessage, setChatMessage] = useState('');
-    const [emojiReaction, setEmojiReaction] = useState('');
+    const [reaction, setEmojiReaction] = useState('');
 
     const [emojiMenuVisible, setEmojiMenuVisible] = useState(false);
+    const [showMessageOption, setShowMessageOption] = useState(false);
+
 
     const [reactionEmojiMenuVisible, setReactionEmojiMenuVisible] = useState(false);
     const [placeholderTitle, setPlaceholderTitle] = useState('');
@@ -77,11 +90,11 @@ export default function SendMessages() {
     //handle react click/
 
     const reactionopen = Boolean(anchorEl);
-    const handleReactionEmojiClick = (event) => {
-        setAnchorEl(event.currentTarget);
-        // setEmojiReaction(event.native);
-        // setReactionEmojiMenuVisible(false);
-    };
+    // const handleReactionEmojiClick = (event) => {
+    //     setAnchorEl(event.currentTarget);
+    //     // setEmojiReaction(event.native);
+    //     // setReactionEmojiMenuVisible(false);
+    // };
     const handleReactionEmojiClose = () => {
         setAnchorEl(null);
     };
@@ -100,11 +113,15 @@ export default function SendMessages() {
         to: '',
         msg: '',
         msgType: '',
+        reaction: '',
         date: Date,
     }]
     let messagesLength = 0;
 
-
+    const showOptions = () => {
+        setShowMessageOption(!showMessageOption);
+        console.log("message hover",);
+    }
     if (activeView === 'workspaces') {
 
         messages = chatStore.workspaces[activeWorkspace]['channels'][activeChannel];
@@ -121,15 +138,15 @@ export default function SendMessages() {
     }
 
     // Scroll to bottom of container if were not loading new messages
-    // useEffect(() => {
-    //     if (messageContainerBottomRef && messageContainerRef) {
-    //         if (loadMessages) {
-    //             messageContainerRef.scroll(0, 60);
-    //         } else {
-    //             messageContainerBottomRef.scrollIntoView({ block: 'end', behavior: 'smooth' });
-    //         }
-    //     }
-    // }, [loadMessages, messages, messageContainerRef, messageContainerBottomRef]);
+    useEffect(() => {
+        if (messageContainerBottomRef && messageContainerRef) {
+            if (loadMessages) {
+                messageContainerRef.scroll(0, 60);
+            } else {
+                messageContainerBottomRef.scrollIntoView({ block: 'end', behavior: 'smooth' });
+            }
+        }
+    }, [loadMessages, messages, messageContainerRef, messageContainerBottomRef]);
 
 
     // Handles to load more messages when scroll at top
@@ -257,10 +274,11 @@ export default function SendMessages() {
     }
     // Handles submission of messages
     // Dispatches event and sets TextField value to empty
+
     function handleSubmit(message) {
         if (activeView === 'workspaces' && message.type === 'channelMessage') {
-            socket.emit('simple-chat-message', message);
-            dispatch(receiveGroupMessage(message))
+            // socket.emit('simple-chat-message', message);
+            dispatch(sendMessage(message))
 
         } else if (activeView === 'home' && message.type === 'privateMessage') {
             //socket.emit('simple-chat-private-message', message);
@@ -290,6 +308,7 @@ export default function SendMessages() {
                         msg: chatMessage,
                         msgType: 'file',
                         fileType: fileType,
+                        reaction: reaction,
                         type: 'channelMessage',
                     });
                 }
@@ -301,6 +320,7 @@ export default function SendMessages() {
                         msg: chatMessage,
                         msgType: 'text',
                         fileType: fileType,
+                        reaction: reaction,
                         type: 'channelMessage',
                     });
                 }
@@ -313,6 +333,8 @@ export default function SendMessages() {
                         msg: chatMessage,
                         to: activePMUser,
                         msgType: "file",
+                        fileType: fileType,
+                        reaction: reaction,
                         type: 'privateMessage',
                     });
                 } else {
@@ -321,6 +343,8 @@ export default function SendMessages() {
                         to: activePMUser,
                         msg: chatMessage,
                         msgType: "text",
+                        reaction: reaction,
+                        fileType: '',
                         type: 'privateMessage',
                     });
                 }
@@ -338,6 +362,13 @@ export default function SendMessages() {
         setChatMessage(chatMessage + e.native);
         setEmojiMenuVisible(true);
     }
+
+    function handleReactionEmojiClick(e) {
+        setEmojiReaction(e.native);
+        setReactionEmojiMenuVisible(true);
+        console.log("reaction", e.native);
+    }
+
     //when reaction emoji clicked, close the menu
 
     const hiddenFileInput = React.useRef(null);
@@ -441,71 +472,46 @@ export default function SendMessages() {
                                 return (
 
                                     <Fade in={true} timeout={500}>
-                                        <ListItem className="message" key={i}>
+                                        <ListItem className="message">
                                             <ListItemAvatar className="message-user-icon">
 
-                                                {user.profile === "" ?
-                                                    <div className="user-profile">
-                                                        <p className="user">
-                                                            {message.from.charAt(0).toUpperCase()}
+                                                {/* {user.profile === "" ? */}
+                                                <div className="user-profile">
+                                                    <p className="user">
+                                                        {message.from.charAt(0).toUpperCase()}
 
-                                                        </p>
-                                                    </div> :
-                                                    <img className='user-profile-pic' src={`/uploads/${user.profile}`}
-                                                        alt="" height="20" width="20" />
+                                                    </p>
+                                                </div>
+                                                {/* :
+                                                <img className='user-profile-pic' src={`/uploads/${user.profile}`}
+                                                    alt="" height="20" width="20" /> */}
 
-                                                }
+                                                {/* } */}
 
                                             </ListItemAvatar>
 
                                             <ListItemText
                                                 primary={
-                                                    <div className="message-user">
+                                                    <div className="message-user" key={i}>
                                                         {message.from.toLowerCase()}
                                                         <div className="message-date">{` - ${moment(message.date).format('LLL')}`}</div>
                                                         {activeView === "workspaces" ?
 
-                                                            <Tooltip title="See Reminders" key="reminders" placement="right">
-                                                                <GoPin onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} />
+                                                            <Tooltip title="Pin Message" placement="right">
+
+                                                                <GoPin
+                                                                    className="message-settings"
+                                                                    key={message.id}
+                                                                    class={showMessageOption ? "" : "gopindisplay"}
+                                                                    onClick={() => handlePinMessage(message.id)} style={{ marginLeft: '20px' }} />
+
+
+
                                                             </Tooltip>
-
-
                                                             : null
                                                         }
 
-                                                        <Button
-                                                            id="basic-button"
-                                                            aria-controls={reactionopen ? 'basic-menu' : undefined}
-                                                            aria-haspopup="true"
-                                                            aria-expanded={reactionopen ? 'true' : undefined}
-                                                            onClick={handleReactionEmojiClick}
-                                                        >
-                                                            🙂
-                                                        </Button>
-                                                        {/* <p>{setEmojiReaction}</p> */}
-                                                        <Menu
-                                                            id="basic-menu"
-                                                            className="reaction-menu"
-                                                            anchorEl={reactionAnchorEl}
-                                                            open={reactionopen}
-                                                            //className="reaction-emoji-wrapper"
-                                                            onClose={handleReactionEmojiClose}
-                                                            MenuListProps={{
-                                                                'aria-labelledby': 'basic-button',
-                                                            }}
-
-                                                        >
-                                                            <div className="emoji-li">
-                                                                <MenuItem className='emoji-li' onClick={(e) => handleReactionEmojiClose(e)}>😂</MenuItem>
-                                                                <MenuItem className='emoji-li' onClick={(e) => handleReactionEmojiClose(e)}>😲</MenuItem>
-                                                                <MenuItem className='emoji-li' onClick={(e) => handleReactionEmojiClose(e)}>😍</MenuItem>
-                                                                <MenuItem className='emoji-li' onClick={(e) => handleReactionEmojiClose(e)}>😠</MenuItem>
-                                                                <MenuItem className='emoji-li' onClick={(e) => handleReactionEmojiClose(e)}>😢</MenuItem>
-
-                                                            </div>
-
-                                                        </Menu>
-
+                                                        {/* <SmileyFace className="reaction-menu" onClick={() => setReactionEmojiMenuVisible(!reactionEmojiMenuVisible)} /> */}
                                                     </div>
 
                                                 }
@@ -513,7 +519,13 @@ export default function SendMessages() {
                                                 secondary={
                                                     <div>
                                                         {message.msgType === 'text' ?
-                                                            <p>{message.msg}</p> :
+                                                            <div>
+                                                                <p key={message.id} onMouseEnter={(e) => showOptions(e)}>{message.msg}</p>
+                                                                <p>
+                                                                    {reaction}
+                                                                </p>
+                                                            </div>
+                                                            :
                                                             <div className="d-flex">
                                                                 {message.fileType === "image" ?
                                                                     <img src={`/uploads/${message.msg}`} width='220' height='200' />
@@ -523,6 +535,9 @@ export default function SendMessages() {
                                                                 }
 
                                                                 <HiDownload onClick={() => saveFile(`/uploads/${message.msg}`, message.msg)} className="mx-2" style={{ cursor: "pointer", fontSize: "22px" }} />
+                                                                <p>
+                                                                    {reaction}
+                                                                </p>
                                                             </div>
 
                                                         }
@@ -541,7 +556,7 @@ export default function SendMessages() {
                             : null}
                     </List>
 
-                    {/* <div ref={element => (messageContainerBottomRef = element)} id="messagesContainerBottom"></div> */}
+                    <div ref={element => (messageContainerBottomRef = element)} id="messagesContainerBottom"></div>
 
                     <Popover
                         id="user-info"
@@ -585,7 +600,14 @@ export default function SendMessages() {
 
             </div>
 
+            <div className={reactionEmojiMenuVisible ? 'send-message-emoji-menu show' : 'send-message-emoji-menu hide'}>
+                <div className="emoji-wrapper">
+                    <Picker onSelect={(e) => handleReactionEmojiClick(e)} />
+                </div>
 
-        </React.Fragment>
+            </div>
+
+
+        </React.Fragment >
     );
 }

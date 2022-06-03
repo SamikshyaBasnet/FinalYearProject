@@ -15,6 +15,7 @@
      from: '',
      msgType: '',
      fileType: '',
+     reaction: '',
      msg: '',
  }
 
@@ -24,6 +25,7 @@
      msg: '',
      msgType: '',
      fileType: '',
+     reaction: '',
  }
 
  module.exports = {

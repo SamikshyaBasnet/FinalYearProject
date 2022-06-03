@@ -8,9 +8,37 @@
     flex-basis: 100%; 
     justify-content: center;
     z-index: 10;
-    top: 385px;
+    top: 434px;
     background-color: #340e36;
 }
+
+
+/* @media (min-width: 500px) and (max-width: 800px) {
+    .send-message-container {
+        top: 338px;
+    }
+} */
+
+/* @media (min-width: 900px) and (max-width: 1200px) {
+    .send-message-container {
+        top: 496px;
+    }
+} */
+
+/* /imp */
+
+ /* @media (min-width: 200px) and (max-width: 900px) {
+    .send-message-container {
+        top: 496px;
+    }
+}  */
+
+/*@media (min-width: 1200px) and (max-width: 1400px) {
+    .send-message-container {
+        top: 496px;
+    }
+} */
+
 
 .message-input {
     flex-basis: 85%;
@@ -31,6 +59,7 @@
     font-size: 15px;
     height: 50px !important;
     border: 1px solid #4d244f;
+    color: #fff;
 }
 
 .message-text-area:focus {

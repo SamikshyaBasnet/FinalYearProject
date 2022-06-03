@@ -11,20 +11,27 @@ export const socketMiddleWare = (baseUrl) => {
 
         let socket = io(baseUrl);
 
-
+        socket = io(baseUrl, {
+            cors: {
+                origin: "http://localhost:5000",
+                credentials: true
+            },
+            transports: ['websocket']
+        });
         //check action and emit from socket in calling
         // return storeAPI => next => (action = ACTION) => {
         return (next) => (action = ACTION) => {
             let listener = socket.emit;
             //send messgaes over socket
-            // if (action.type === ACTION.SEND_SOCKET_MESSAGE) {
-            //     socket.emit('simple-chat-message', action.payload);
-
-            // }
+            if (action.type === ACTION.SEND_SOCKET_MESSAGE) {
+                socket.emit('simple-chat-message', action.payload);
+                return;
+            }
 
             //send private messages
             if (action.type === ACTION.SEND_SOCKET_PRIVATE_MESSAGE) {
                 socket.emit('simple-chat-private-message', action.payload);
+                return;
             }
 
             //call sign in action to send the socket workspace our userid to indentify individual socekt connections
@@ -32,7 +39,6 @@ export const socketMiddleWare = (baseUrl) => {
                 socket.emit('simple-chat-sign-in', action.payload);
                 listener = setupSocketListener(socket, storeAPI);
             }
-
 
             // Pull workspace list off initial data load
             // Use to "join" our workspace "rooms"
@@ -78,7 +84,12 @@ function setupSocketListener(socket = Socket, storeAPI) {
     return socket.on('update', (action) => {
         //     console.log("action=", action);
 
-        if (action.type === 'private-message') {
+        if (action.type === 'message') {
+            storeAPI.dispatch({
+                type: ACTION.RECEIVE_SOCKET_MESSAGE,
+                payload: action.payload
+            });
+        } else if (action.type === 'private-message') {
             storeAPI.dispatch({
                 type: ACTION.RECEIVE_SOCKET_PRIVATE_MESSAGE,
                 payload: action.payload

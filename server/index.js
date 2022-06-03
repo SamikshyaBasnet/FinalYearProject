@@ -53,11 +53,7 @@ async function main() {
         optionSuccessStatus: 200
     }
     app.use(cors(corsOptions));
-    // app.use(cors({
-    //     origin: ["http://localhost:3000"],
-    //     methods: ["GET", "POST", "DELETE"],
-    //     credentials: true,
-    // }))
+
     app.use(cookieParser());
     app.use(bodyParser.urlencoded({
         extended: true
@@ -122,6 +118,7 @@ async function main() {
 
     // username=${user.userName}&channel=${activeChannel}&type='channelMessage
 
+    const ENDPOINT = " http://localhost:3000";
 
 
 
@@ -178,8 +175,8 @@ async function main() {
 
         socket.on('simple-chat-message', async (msg = Message) => {
             //storing message in database;
-            const sqlquery = `INSERT INTO messages (channel_id, username, message, type, fileType, date) VALUES 
-            ('${msg.channel.split('-')[1]}', '${msg.from}', '${msg.msg}', '${msg.msgType}','${msg.fileType}',  '${date}')`
+            const sqlquery = `INSERT INTO messages (channel_id, username, message, type, fileType, reaction, date) VALUES 
+            ('${msg.channel.split('-')[1]}', '${msg.from}', '${msg.msg}', '${msg.msgType}','${msg.fileType}','${msg.reaction}','${date}')`
             console.log("Message", msg)
             db.query(sqlquery);
             const workspaceId = msg.workspace.split('-')[1];
@@ -190,10 +187,10 @@ async function main() {
                 payload: msg
             }
 
-            io.to(workspaceId).emit('simple-chat-message', action);
+            //  io.to(workspaceId).emit('simple-chat-message', action);
 
             // Emit the message to everyone that joined that server
-
+            io.to(workspaceId).emit('update', action);
         });
 
         //private messaging
@@ -205,8 +202,8 @@ async function main() {
             var to = await db.query(`SELECT user_id from users WHERE username = '${message.to}'`);
 
             db.query(
-                `INSERT INTO usermessages (user_from, user_to, message, type, fileType, date) VALUES (
-                   '${from[0].user_id}', '${to[0].user_id}', '${message.msg}', '${message.msgType}', '${message.fileType}','${date}')`
+                `INSERT INTO usermessages (user_from, user_to, message, type, fileType, reaction, date) VALUES (
+                   '${from[0].user_id}', '${to[0].user_id}', '${message.msg}', '${message.msgType}', '${message.fileType}', '${message.reaction}','${date}')`
             );
 
             //finding which socket the action to send to 
@@ -217,6 +214,7 @@ async function main() {
                     to: message.to,
                     msg: message.msg,
                     msgType: message.msgType,
+                    reaction: message.reaction,
                     user: message.from.toLowerCase()
                 }
             };
@@ -237,6 +235,7 @@ async function main() {
                     to: message.to,
                     msg: message.msg,
                     msgType: message.msgType,
+                    reaction: message.reaction,
                     user: message.to.toLowerCase()
                 }
             };
@@ -258,6 +257,7 @@ async function main() {
             clients.find((client, i) => {
                 if (client.userId === sessionUserId) {
                     // Remove from global socket client list
+                    socket.emit('update', action);
                     return clients.splice(i, 1);
                 }
             });

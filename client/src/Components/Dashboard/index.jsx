@@ -30,10 +30,7 @@ function Dashboard() {
     const baseUrl = 'http://localhost:5000';
     var socket = socketClient(baseUrl);
 
-    // socket.on('connection', function () {
-    //     socket.emit('user_connected', username);
-    // })
-    // Also fetches new list of active users in activeWorkspace
+
     const updateActiveStatus = () => {
         dispatch(updateActiveState());
         dispatch(updateActiveUserList(activeWorkspace.split('-')[1]));

@@ -31,22 +31,6 @@ const upload = multer({
     storage: storage
 });
 
-// router.post('/uploadprofile', upload.single('image'), function (req, res) {
-
-//     var imgsrc = req.query.fileName;
-//     var userId = req.query.userId;
-//     console.log("file name=", imgsrc);
-//     var insertData = `UPDATE users SET profile='${imgsrc}' WHERE user_id='${userId}'`
-
-//     db.query(insertData, (err, result) => {
-//         if (err) {
-//             console.log('error', err)
-//         }
-
-//         res.send(imgsrc)
-//     })
-
-// });
 
 router.get('/user/user-data', async (req, res) => {
     const userId = req.query.userId;
@@ -85,7 +69,7 @@ function sendEmail(email, token) {
             secure: false,
             auth: {
                 user: 'slackappnoreply@gmail.com',
-                pass: 'slackapp12@',
+                pass: 'nqsvnhqawblqcvvn',
             },
             tls: {
                 rejectUnauthorized: false,
@@ -100,6 +84,7 @@ function sendEmail(email, token) {
             <p>Kindly use this <a href="http://localhost:3000/verify-email?token=${token}">link</a>&nbsp;to verify your email address.</p>`
 
         };
+
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 return 1
@@ -128,7 +113,8 @@ function sendResetPasswordEmail(email, token) {
             secure: false,
             auth: {
                 user: 'slackappnoreply@gmail.com',
-                pass: 'slackapp12@',
+                pass: 'nqsvnhqawblqcvvn',
+
             },
             tls: {
                 rejectUnauthorized: false,
@@ -143,6 +129,7 @@ function sendResetPasswordEmail(email, token) {
             <p>Kindly use this <a href="http://localhost:3000/reset-password?token=${token}">link</a>&nbsp;to reset your password.</p>`
 
         };
+
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 return 1
@@ -150,6 +137,7 @@ function sendResetPasswordEmail(email, token) {
                 return 0
             }
         });
+
     } catch (error) {
         console.log("email not sent ", error);
     }
@@ -184,8 +172,7 @@ router.get('/user/data', async (req, res) => {
     await db.query(
         `SELECT workspaces.workspace_id, workspaces.workspace_name, channels.channel_id, 
         channels.channel_name, messages.message_id, messages.username,
-        
-        messages.message, messages.type, messages.fileType,
+        messages.message, messages.type, messages.fileType,  messages.reaction,
         messages.date
         FROM messages
         right JOIN channels ON messages.channel_id = channels.channel_id
@@ -221,6 +208,7 @@ router.get('/user/data', async (req, res) => {
                             msg: datas.message,
                             msgType: datas.type,
                             fileType: datas.fileType,
+                            reaction: datas.reaction,
                             date: datas.date
                         });
 
@@ -229,7 +217,7 @@ router.get('/user/data', async (req, res) => {
 
             //Query to get all Private messages for user
             db.query(
-                `SELECT b.username as user_from, c.username as user_to, a.message, a.type, a.fileType, a.date
+                `SELECT b.username as user_from, c.username as user_to, a.message, a.type, a.fileType, a.reaction, a.date
                 FROM usermessages a
                 JOIN users b ON b.user_id = a.user_from 
                 JOIN users c ON c.user_id = a.user_to 
@@ -269,6 +257,7 @@ router.get('/user/data', async (req, res) => {
                                 msg: privateMessage.message,
                                 msgType: privateMessage.type,
                                 fileType: privateMessage.fileType,
+                                reaction: privateMessage.reaction,
                                 date: privateMessage.date
                             });
 
@@ -309,6 +298,8 @@ router.post('/user/forgot-password', (req, res) => {
 
                 var token = randtoken.generate(20);
                 var sent = sendResetPasswordEmail(email, token);
+                console.log("sent?", sent);
+
                 if (sent != '0') {
                     db.query(`UPDATE users SET token = '${token}' WHERE email = "${email}"`, function (err, result) {
                         if (err) throw err;
@@ -620,7 +611,6 @@ router.get('/user/logout', async (req, res) => {
         })
     });
 });
-console.log("hi");
 
 //editing profile
 // Route to rename a channel

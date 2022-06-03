@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import collabImg from "../../assets/images/collabimg.svg";
 import {
-    Button, Row, Col, Form,
-    Alert,
+    Button, Row, Col,
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
@@ -10,11 +9,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import './workspace.css';
-import Axios from '../API/api';
-// import { createWorkspace } from '../../actions';
-//import { joinWorkspace } from '../../actions';
 
-const Workspace = () => {
+import { Link } from "react-router-dom";
+
+const Home = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const [loginStatus, setLoginStatus] = useState("");
@@ -47,8 +45,12 @@ const Workspace = () => {
         <div className='workspace_container'>
             <div className="create_container">
                 <div className="login-register">
-                    <Button onClick={createPage} className="login_button button mt-4 is-block">Login</Button>
-                    <Button onClick={createPage} className="register_button mx-3 button mt-4 is-block">Register</Button>
+                    <Link to="/login">
+                        <Button className="login_button button mt-4 is-block">Login</Button>
+                    </Link>
+                    <Link to="/register">
+                        <Button onClick={createPage} className="register_button mx-3 button mt-4 is-block">Register</Button>
+                    </Link>
                 </div>
                 <Row className="container py-3" >
                     <Col md="7" className="left px-5 pt-5 mt-5">
@@ -63,39 +65,9 @@ const Workspace = () => {
                     </Col>
                 </Row>
             </div >
-            {/* <div className="open_container container text-center">
-                <h1 className=''>OR</h1>
-                <Row className="form px-5 mx-5 py-5">
-                    <h1 className='fw-bold mb-3'>Join a Workspace</h1>
-                    <Form onSubmit={handleSubmit()}>
-                        <Form.Group className="mb-3" controlId="formBasicName">
-                            <Form.Control
-                                {...register('workspace_name')}
-                                value={workspace_name}
-                                onChange={(e) => onChange(e)}
-                                name="name"
-                                className={`input  ${errors.workspace_name ? 'is-invalid' : ''}`}
-                                type="name" placeholder="Enter workspace name"
-                            />
-                            <div className="invalid-feedback">
-                                <Alert variant='danger'>
-                                    {errors.workspace_name?.message}
-                                </Alert>
-                            </div>
-                        </Form.Group>
-                        <Form.Control className="button-block mt-4 mb-3 is-block button"
-                            value="Join" type="submit" />
 
-                    </Form>
-                    {error ? <div className="text-center">
-                        <Alert variant='danger'>
-                            {loginStatus}
-                        </Alert>
-                    </div> : ""}
-                </Row>
-            </div> */}
         </div >
     )
 }
 
-export default Workspace
+export default Home

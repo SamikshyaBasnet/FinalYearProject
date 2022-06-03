@@ -1,8 +1,7 @@
 import React from 'react';
 import { List, ListItem, ListItemAvatar, Avatar, ListItemText, Slide, Button, Typography } from '@material-ui/core';
-import { Person } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
-import { signOut, changePMUser } from '../../actions';
+import { changePMUser } from '../../actions';
 import '../../App.css';
 
 export default function PrivateMessageUserList() {
@@ -11,11 +10,6 @@ export default function PrivateMessageUserList() {
     const userList = Object.keys(privateMessages);
     const dispatch = useDispatch();
 
-    // Signs the user out
-    const handleSignOut = () => {
-        localStorage.clear();
-        dispatch(signOut());
-    };
 
     return (
         <div className="channels-container">
@@ -23,10 +17,7 @@ export default function PrivateMessageUserList() {
                 {userList.map((userItem, i) => (
                     < Slide direction="right" in={true} timeout={200 * (i + 1)} key={i}>
                         <ListItem button className="user-item" onClick={() => dispatch(changePMUser(userItem))}>
-                            {/* <Avatar>
-                                {' '}
-                                <img className="user" src={process.env.PUBLIC_URL + '/user.png'} alt="user icon" height="48" />{' '}
-                            </Avatar> */}
+
                             <div className="user-profile">
                                 <p className="user">
                                     {userItem.charAt(0).toUpperCase()}
@@ -40,17 +31,6 @@ export default function PrivateMessageUserList() {
                 ))}
             </List>
 
-            {/* <div className="user-options">
-                <ListItem className="user-info">
-                    <ListItemAvatar>
-                        <Avatar>
-                            <Person />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary={user.userName} />
-                    <Button className="modal-button" onClick={handleSignOut}> out</Button>
-                </ListItem>
-            </div> */}
         </div >
     );
 }

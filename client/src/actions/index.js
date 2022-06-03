@@ -241,7 +241,7 @@ export const sendMessage = (message) => ({
 
 //to receive the message to channel 
 export const receiveGroupMessage = (message) => ({
-    type: ACTION.RECIEVE_SOCKET_MESSAGE,
+    type: ACTION.RECEIVE_SOCKET_MESSAGE,
     payload: message
 });
 
